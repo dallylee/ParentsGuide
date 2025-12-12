@@ -1,0 +1,37 @@
+{
+    "id": "hospital-bag",
+    "title": "Hospital Bag Checklist",
+    "sections": [
+        {
+            "title": "For your Child",
+            "items": [
+                "Favourite stuffed animal or comfort object",
+                "Tablet or entertainment device",
+                "Headphones",
+                "Comfortable pyjamas",
+                "Special blanket",
+                "Slippers or grip socks"
+            ]
+        },
+        {
+            "title": "For You (The Parent)",
+            "items": [
+                "Change of comfortable clothes",
+                "Phone charger and power bank",
+                "Snacks and water bottle",
+                "Toiletries (toothbrush, toothpaste, deodorant)",
+                "Notebook and pen",
+                "Book or magazine",
+                "Any regular medication you take"
+            ]
+        },
+        {
+            "title": "Documents",
+            "items": [
+                "Hospital admission letters",
+                "Insurance cards / Medicare",
+                "List of child's medications"
+            ]
+        }
+    ]
+}

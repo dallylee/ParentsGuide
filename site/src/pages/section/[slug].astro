@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { ArrowLeft } from 'lucide-astro';
+
+export async function getStaticPaths() {
+  const sections = await getCollection('sections');
+  return sections.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title}>
+    <!-- Top Bar -->
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
+        <a href="/" class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
+            <ArrowLeft size={24} />
+        </a>
+        <span class="ml-2 font-semibold text-gray-800 truncate">{entry.data.title}</span>
+    </div>
+
+    <!-- Content -->
+    <article class="prose prose-slate prose-lg max-w-none p-6 pb-32 prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-gray-700 prose-li:text-gray-700">
+        <!-- Hero for section if specific image? Or just title -->
+        
+         <Content />
+    </article>
+</Layout>

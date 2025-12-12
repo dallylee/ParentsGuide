@@ -1,0 +1,52 @@
+---
+interface Props {
+    checklist: any;
+}
+const { checklist } = Astro.props;
+---
+<div class="checklist-container space-y-6">
+    {checklist.items && (
+        <ul class="space-y-3">
+            {checklist.items.map((item, i) => (
+                <li class="flex items-start">
+                    <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white border border-gray-100 rounded-xl shadow-sm w-full hover:bg-gray-50 transition">
+                         <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-item-${i}`} />
+                         <span class="text-gray-700 font-medium">{item}</span>
+                    </label>
+                </li>
+            ))}
+        </ul>
+    )}
+
+    {checklist.sections && checklist.sections.map((section, sIdx) => (
+        <div>
+            <h3 class="font-bold text-gray-800 mb-3 ml-1">{section.title}</h3>
+            <ul class="space-y-3">
+                {section.items.map((item, i) => (
+                    <li class="flex items-start">
+                        <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white border border-gray-100 rounded-xl shadow-sm w-full hover:bg-gray-50 transition">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-section-${sIdx}-item-${i}`} />
+                            <span class="text-gray-700 font-medium">{item}</span>
+                        </label>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    ))}
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('input[type="checkbox"]');
+    
+    inputs.forEach(input => {
+        const id = input.dataset.id;
+        const checked = localStorage.getItem(id) === 'true';
+        // @ts-ignore
+        input.checked = checked;
+
+        input.addEventListener('change', (e) => {
+            // @ts-ignore
+             localStorage.setItem(id, e.target.checked);
+        });
+    });
+</script>

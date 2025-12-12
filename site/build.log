@@ -1,0 +1,77 @@
+
+> site@0.0.1 build
+> astro build
+
+[33m[1m11:08:20[22m [WARN][39m Unsupported file type [1mC:\PROJECTS\ParentGuideApp\site\src\pages\desktop.ini[22m found. Prefix filename with an underscore (`_`) to ignore.
+[33m[1m11:08:20[22m [WARN][39m Unsupported file type [1mC:\PROJECTS\ParentGuideApp\site\src\pages\guide\desktop.ini[22m found. Prefix filename with an underscore (`_`) to ignore.
+[2m11:08:20[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+
+Auto-generating collections for folders in "src/content/" that are not defined as collections.
+This is deprecated, so you should define these collections yourself in "src/content.config.ts".
+The following collections have been auto-generated: data, guide, images
+
+[2m11:08:20[22m [34m[content][39m Syncing content
+[33m[1m11:08:20[22m [WARN] [glob-loader][39m No files found matching "**/*.md,!**/_*/**/*.md,!**/_*.md" in directory "src\content\data"
+[33m[1m11:08:20[22m [WARN] [glob-loader][39m No files found matching "**/*.md,!**/_*/**/*.md,!**/_*.md" in directory "src\content\images"
+[2m11:08:20[22m [34m[content][39m Synced content
+[2m11:08:20[22m [34m[types][39m Generated [2m406ms[22m
+[2m11:08:20[22m [34m[build][39m output: [34m"static"[39m
+[2m11:08:20[22m [34m[build][39m mode: [34m"static"[39m
+[2m11:08:20[22m [34m[build][39m directory: [34mC:\PROJECTS\ParentGuideApp\site\dist\[39m
+[2m11:08:20[22m [34m[build][39m Collecting build info...
+[2m11:08:20[22m [34m[build][39m [32mÔ£ô Completed in 479ms.[39m
+[2m11:08:20[22m [34m[build][39m Building static entrypoints...
+[33m[1m11:08:24[22m [WARN] [vite][39m [33m"matchHostname", "matchPathname", "matchPort" and "matchProtocol" are imported from external module "@astrojs/internal-helpers/remote" but never used in "node_modules/astro/dist/assets/utils/remotePattern.js".[39m
+[2m11:08:24[22m [34m[vite][39m [32mÔ£ô built in 4.20s[39m
+[2m11:08:24[22m [34m[build][39m [32mÔ£ô Completed in 4.23s.[39m
+
+[42m[30m building client (vite) [39m[49m
+[2m11:08:24[22m [34m[vite][39m transforming...
+[2m11:08:24[22m [34m[vite][39m [32mÔ£ô[39m 1 modules transformed.
+[2m11:08:24[22m [34m[vite][39m rendering chunks...
+[2m11:08:24[22m [34m[vite][39m [32mÔ£ô built in 9ms[39m
+
+[42m[30m generating static routes [39m[49m
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/checklist/[id].astro
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/checklist/discharge/index.html[22m [2m(+10ms)[22m 
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/checklist/hospital-bag/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/guide/[...slug].astro
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/04-talking-with-child/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/02-understanding-worries/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/01-start-here/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/06-navigating-hospital/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/05-the-journey/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/08-self-care-routine/index.html[22m [2m(+68ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/03-toolkit/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/09-extra-support/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/guide/10-growing-stronger/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/guide/07-bringing-home/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/search.astro
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/search/index.html[22m [2m(+4ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/section/[slug].astro
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/worries/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/start/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/toolkit/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/timeline/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/talking/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/hospital/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/self-care/index.html[22m [2m(+24ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/recovery/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/section/support/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/section/growth/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/support.astro
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/support/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/timeline.astro
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/timeline/index.html[22m [2m(+1ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/tool/[id].astro
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/tool/worry-time/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔö£ÔöÇ[39m [2m/tool/grounding-54321/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/tool/breathing-478/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/tools.astro
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/tools/index.html[22m [2m(+3ms)[22m 
+[2m11:08:24[22m [32mÔûÂ[39m src/pages/index.astro
+[2m11:08:24[22m   [34mÔööÔöÇ[39m [2m/index.html[22m [2m(+2ms)[22m 
+[2m11:08:24[22m [32mÔ£ô Completed in 195ms.
+[39m
+[2m11:08:24[22m [34m[build][39m 30 page(s) built in [1m4.93s[22m
+[2m11:08:24[22m [34m[build][39m [1mComplete![22m

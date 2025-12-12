@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { Search, ArrowRight } from 'lucide-astro';
+
+const sections = await getCollection('sections');
+const tools = await getCollection('tools');
+
+const searchIndex = [
+    ...sections.map(s => ({
+        title: s.data.title,
+        summary: s.data.summary,
+        url: `/section/${s.slug}`,
+        type: 'Guide',
+        tags: s.data.tags || []
+    })),
+    ...tools.map(t => ({
+        title: t.data.name,
+        summary: t.data.summary,
+        url: `/tool/${t.id}`,
+        type: 'Tool',
+        tags: []
+    }))
+];
+---
+
+<Layout title="Search">
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 p-4">
+        <div class="relative max-w-md mx-auto">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search class="h-5 w-5 text-gray-400" />
+            </div>
+            <input 
+                type="text" 
+                id="search-input" 
+                class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm shadow-soft transition-all" 
+                placeholder="Search guide & tools..." 
+                autofocus
+            />
+        </div>
+    </div>
+
+    <div id="results-container" class="p-4 space-y-4 max-w-md mx-auto pb-24">
+        <!-- Results will appear here -->
+        <p class="text-center text-gray-400 mt-10 text-sm">Type to find reassurance, tools, and advice.</p>
+    </div>
+</Layout>
+
+<script define:vars={{ searchIndex }}>
+    const input = document.getElementById('search-input');
+    const container = document.getElementById('results-container');
+
+    function renderResults(results) {
+        if (results.length === 0) {
+            container.innerHTML = '<p class="text-center text-gray-500 mt-10">No matches found.</p>';
+            return;
+        }
+
+        container.innerHTML = results.map(item => `
+            <a href="${item.url}" class="block bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-blue-200 transition-colors">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider ${item.type === 'Tool' ? 'text-green-600' : 'text-blue-600'}">${item.type}</span>
+                </div>
+                <h3 class="font-bold text-gray-900 text-lg mb-1">${item.title}</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">${item.summary}</p>
+            </a>
+        `).join('');
+    }
+
+    input.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        if(!query) {
+             container.innerHTML = '<p class="text-center text-gray-400 mt-10 text-sm">Type to find reassurance, tools, and advice.</p>';
+             return;
+        }
+
+        const results = searchIndex.filter(item => {
+            return item.title.toLowerCase().includes(query) ||
+                   item.summary.toLowerCase().includes(query) ||
+                   item.tags.some(tag => tag.toLowerCase().includes(query));
+        });
+
+        renderResults(results);
+    });
+</script>

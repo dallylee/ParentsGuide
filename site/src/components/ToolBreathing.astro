@@ -1,0 +1,89 @@
+---
+interface Props {
+    tool: any;
+}
+const { tool } = Astro.props;
+const phases = tool.steps; // [{phase, duration, text}]
+---
+
+<div class="breathing-container text-center py-8">
+    <div id="circle" class="w-64 h-64 rounded-full bg-pastel-1 mx-auto flex items-center justify-center relative shadow-glow transition-all duration-[4000ms] ease-in-out" style="--glow: var(--pastel-1)">
+        <div class="z-10 relative">
+             <div id="phase-text" class="text-2xl font-bold text-blue-900 mb-2">Ready?</div>
+             <div id="timer-text" class="text-6xl font-light text-blue-800">0</div>
+        </div>
+    </div>
+
+    <div class="mt-12 flex justify-center space-x-4">
+        <button id="start-btn" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold shadow-soft hover:bg-blue-700 transition">Start</button>
+        <button id="stop-btn" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold shadow-soft hidden">Stop</button>
+    </div>
+</div>
+
+<script define:vars={{phases}}>
+    const circle = document.getElementById('circle');
+    const phaseText = document.getElementById('phase-text');
+    const timerText = document.getElementById('timer-text');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+
+    let isRunning = false;
+    let currentPhaseIndex = 0;
+    let timeLeft = 0;
+    let animationFrame;
+    let lastTime;
+
+    function updatePhaseDisplay(phase) {
+        phaseText.textContent = phase.text;
+        if(phase.phase === 'inhale') {
+            circle.style.transform = 'scale(1.2)';
+        } else if (phase.phase === 'exhale') {
+             circle.style.transform = 'scale(1.0)';
+        } else {
+            // hold
+        }
+    }
+
+    function runTimer(timestamp) {
+        if (!isRunning) return;
+        if (!lastTime) lastTime = timestamp;
+        const elapsed = timestamp - lastTime;
+        
+        if (elapsed >= 1000) {
+            timeLeft--;
+            timerText.textContent = timeLeft;
+            lastTime = timestamp;
+
+            if (timeLeft <= 0) {
+                currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
+                const nextPhase = phases[currentPhaseIndex];
+                timeLeft = nextPhase.duration;
+                updatePhaseDisplay(nextPhase);
+            }
+        }
+        animationFrame = requestAnimationFrame(runTimer);
+    }
+
+    startBtn.addEventListener('click', () => {
+        isRunning = true;
+        startBtn.classList.add('hidden');
+        stopBtn.classList.remove('hidden');
+        
+        currentPhaseIndex = 0;
+        timeLeft = phases[0].duration;
+        updatePhaseDisplay(phases[0]);
+        timerText.textContent = timeLeft;
+        lastTime = null;
+        animationFrame = requestAnimationFrame(runTimer);
+    });
+
+    stopBtn.addEventListener('click', () => {
+        isRunning = false;
+        cancelAnimationFrame(animationFrame);
+        startBtn.classList.remove('hidden');
+        stopBtn.classList.add('hidden');
+        phaseText.textContent = "Ready?";
+        timerText.textContent = "0";
+        circle.style.transform = 'scale(1)';
+    });
+</script>

@@ -1,0 +1,305 @@
+Project goal
+
+Create a beautifully formatted, mobile-first static site for a Parent’s Guide. All longform copy must live in Markdown files under /content/sections. Structured elements, such as tools and checklists, live in JSON. The front end uses Astro + Tailwind. Menus and routing are driven by content/index.json. No long prose in components.
+
+Inputs and working directory
+
+Working directory: /ParentGuideApp/
+
+Source content: source/parent-guide.md
+If missing, use source/Summarised Parent's Guide.docx → convert to Markdown first.
+
+Images already present:
+
+content/images/hero.jpg
+
+content/images/calm.jpg
+
+GitHub repo for deployment: https://github.com/dallylee/ParentsGuide
+
+Deliverables
+
+Content pack in /content/:
+
+content/index.json (site index, routing, ordering)
+
+content/sections/*.md (10 sections, see IA below)
+
+content/tools/*.json (4-7-8 breathing, 5-4-3-2-1 grounding, worry-time)
+
+content/checklists/*.json (hospital bag, discharge readiness)
+
+content/data/crisis-contacts.json (UK: 999, NHS 111, Samaritans 116 123)
+
+Use and reference the supplied images
+
+Front end in /site/ using Astro + Tailwind:
+
+Mobile-first layout with a home card grid
+
+Pastel theme; soft glowing card shadows
+
+Bottom navigation with five items: Home, Tools, Timeline, Support, Search
+
+Each menu item opens a separate page, not a long scroller
+
+Deployment:
+
+Commit project to the existing GitHub repo
+
+GitHub Actions workflow to build and deploy to GitHub Pages
+
+Astro output to site/dist
+
+README.md at repo root with editing workflow
+
+Information architecture
+
+Create these primary sections as separate Markdown pages:
+
+Start here
+
+Understanding your worries
+
+Your calm toolkit
+
+Talking with your child
+
+Timeline before hospital
+
+Hospital day
+
+Home recovery
+
+Daily self-care
+
+When to get extra support
+
+Growing stronger
+
+Create these structured assets:
+
+Tools: 4-7-8 breathing, 5-4-3-2-1 grounding, worry-time
+
+Checklists: hospital bag (child and parent), discharge readiness
+
+Data: crisis contacts for the UK
+
+Content transformation
+
+Parse source/parent-guide.md.
+
+Split into ten section Markdown files under content/sections/, keeping existing headings as #, ##, ###.
+
+Extract checklists and step sequences to JSON with stable ids.
+
+Extract short, repeatable techniques to content/tools/*.json.
+
+If present, extract “say this / avoid that” pairs into content/scripts/*.json with {say, avoid, why}.
+
+Generate content/index.json with this shape and real values:
+
+{
+  "version": 1,
+  "sections": [
+    {
+      "id": "start",
+      "title": "Start here",
+      "slug": "start",
+      "order": 1,
+      "menu": "primary",
+      "summary": "Reassurance, why your calm matters, where to begin.",
+      "tags": ["orientation","anxiety"],
+      "est_read": 3,
+      "body": "sections/01-start-here.md",
+      "hero_image": "images/hero.jpg"
+    }
+  ],
+  "quick_tools": [
+    { "id": "breathing-478", "title": "4-7-8 breathing", "data": "tools/breathing-478.json", "image": "images/calm.jpg" },
+    { "id": "grounding-54321", "title": "5-4-3-2-1 grounding", "data": "tools/grounding-54321.json" },
+    { "id": "worry-time", "title": "Worry-time", "data": "tools/worry-time.json" }
+  ],
+  "checklists": [
+    { "id": "hospital-bag", "title": "Hospital bag", "data": "checklists/hospital-bag.json" },
+    { "id": "discharge", "title": "Discharge readiness", "data": "checklists/discharge.json" }
+  ],
+  "support": { "crisis_contacts": "data/crisis-contacts.json" }
+}
+
+
+Add front matter to each Markdown file mirroring metadata, for future rebuilds:
+
+---
+title: "Start here"
+slug: "start"
+order: 1
+menu: "primary"
+summary: "Reassurance, why your calm matters, where to begin."
+tags: ["orientation","anxiety"]
+est_read: 3
+hero_image: "images/hero.jpg"
+---
+
+
+End each page with a short “What to do next” linking to the next logical page.
+
+Use British English, short paragraphs optimised for mobile.
+
+Image handling
+
+Use content/images/hero.jpg on Home and the “Start here” page.
+
+Use content/images/calm.jpg on the breathing tool page and where supportive.
+
+If the source contains additional images, place extracted copies under content/images/auto/ and reference relatively.
+
+Generate WebP variants at build time and prefer them via <picture>.
+
+<img> must be responsive with max-width: 100% and descriptive alt.
+
+Design system and styles
+
+Theme variables (Tailwind or CSS variables):
+
+--bg: #f7faf9;
+
+--card: #ffffff;
+
+--text: #1f2937; /* slate-800 */
+
+--muted: #6b7280; /* gray-500 */
+
+--pastel-1: #cfe8ff; /* blue */
+
+--pastel-2: #ffe3d8; /* coral */
+
+--pastel-3: #e6ffd8; /* green */
+
+--pastel-4: #f5e8ff; /* purple */
+
+Cards:
+
+Rounded corners: rounded-xl
+
+Border: subtle border border-black/5
+
+Padding: p-4 md:p-6
+
+Glow shadow: two layers
+
+Ambient: shadow-[0_6px_16px_rgba(31,41,55,0.08)]
+
+Colour glow: shadow-[0_0_24px_var(--glow)]
+
+Rotate --glow across cards using the pastel variables for variety.
+
+Typography:
+
+System UI stack, base 16–18 px, comfortable line height, headings with clear hierarchy.
+
+Layout:
+
+Single column on mobile, generous vertical rhythm.
+
+Sticky bottom bar with five items; labels always visible.
+
+Accessibility:
+
+Tap targets ≥ 44 px.
+
+Focus outlines visible.
+
+Colour contrast compliant.
+
+Respect prefers-reduced-motion.
+
+Front end requirements (Astro + Tailwind)
+
+Routes
+
+/ Home, card grid fed by content/index.json
+
+/section/[slug] Markdown detail pages
+
+/tools list of tools
+
+/tool/[id] tool detail (timer or steps)
+
+/timeline timeline summary based on section data
+
+/support contacts and red flags
+
+/search client-side search
+
+Home
+
+Hero area with images/hero.jpg and the “Start here” summary line.
+
+Cards for primary sections and quick tools; alternate pastel glow.
+
+Components
+
+SectionPage: fetch Markdown body, auto-build “Jump to” from ## headings.
+
+ToolBreathing: read tools/breathing-478.json; minimal inhale/hold/exhale timer.
+
+Checklist: read checklist JSON; persist ticks in localStorage.
+
+Search: small index from title, summary, tags, and headings; cache locally.
+
+BottomNav: Home, Tools, Timeline, Support, Search.
+
+Content loading
+
+On boot, fetch and cache content/index.json.
+
+Lazy-load Markdown or JSON per route.
+
+Invalidate cache when index.json.version increments.
+
+Repository and deployment
+
+Scaffold Astro project in /site/ with Tailwind.
+
+Commit the whole project to https://github.com/dallylee/ParentsGuide.
+
+Add GitHub Actions workflow at .github/workflows/deploy.yml with:
+
+Node 20
+
+Build in site/
+
+Upload artifact from site/dist
+
+Deploy to GitHub Pages
+
+Enable GitHub Pages with “GitHub Actions” source.
+
+Acceptance criteria
+
+No longform prose inside .astro or component files.
+
+Menus and ordering driven by content/index.json.
+
+Each menu item opens its own page; no long single-page scrollers.
+
+Pastel theme and soft glows visible on cards.
+
+Two supplied images used appropriately.
+
+Lighthouse accessibility ≥ 95.
+
+Task plan
+
+Parse and split source/parent-guide.md into section Markdown files.
+
+Generate JSON for tools, checklists, and index.json.
+
+Scaffold Astro + Tailwind; implement routes and components.
+
+Apply theme and shadows; ensure responsive images.
+
+Commit and push to the GitHub repo; configure Pages.
+
+Output the deployed URL and a list of generated files.

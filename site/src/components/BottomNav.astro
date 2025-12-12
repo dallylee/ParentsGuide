@@ -1,0 +1,42 @@
+---
+import { Home, Briefcase, Calendar, Heart, Search } from 'lucide-astro';
+
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname === '/' ? '/' : pathname.replace(/\/$/, "");
+
+const navItems = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/tools', label: 'Tools', icon: Briefcase },
+  { href: '/timeline', label: 'Timeline', icon: Calendar },
+  { href: '/support', label: 'Support', icon: Heart },
+  { href: '/search', label: 'Search', icon: Search },
+];
+---
+
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
+  <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+    {navItems.map(({ href, label, icon: Icon }) => {
+      const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href));
+      return (
+        <a 
+            href={href} 
+            class:list={[
+                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
+                isActive ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
+            ]}
+            aria-label={label}
+        >
+          <Icon size={24} stroke-width={isActive ? 2.5 : 2} />
+          <span class="text-[10px] font-medium">{label}</span>
+        </a>
+      );
+    })}
+  </div>
+</nav>
+
+<style>
+    /* Safe area padding for iPhone X+ */
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+</style>
