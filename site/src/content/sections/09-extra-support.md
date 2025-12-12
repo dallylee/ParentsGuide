@@ -43,4 +43,4 @@ There are many resources available to support you through this challenging time.
 Reaching out for help is an act of empowerment. Now, let's look beyond the immediate crisis toward long-term healing and growth for your entire family.
 
 ### What to do next
-[Growing stronger together](/section/growth)
+[Growing stronger together](../growth)

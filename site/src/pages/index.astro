@@ -6,6 +6,8 @@ import { ArrowRight } from 'lucide-astro';
 const { sections, quick_tools } = indexData;
 const startSection = sections.find(s => s.id === 'start');
 const otherSections = sections.filter(s => s.id !== 'start');
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
 
 const pastelColors = [
     'var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'
@@ -14,7 +16,7 @@ const pastelColors = [
 <Layout title="A Parent's Guide">
     <!-- Hero -->
     <div class="relative h-64 md:h-72 w-full overflow-hidden rounded-b-3xl shadow-soft mb-8 bg-gray-200">
-        <img src="/images/hero.jpg" alt="Parent holding child's hand" class="w-full h-full object-cover" />
+        <img src={withBase('images/hero.jpg')} alt="Parent holding child's hand" class="w-full h-full object-cover" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
             <h1 class="text-white text-3xl font-bold mb-2 leading-tight">Finding Your Strength</h1>
             <p class="text-white/90 text-lg">{startSection?.summary}</p>
@@ -24,7 +26,7 @@ const pastelColors = [
     <div class="px-4 space-y-8 pb-8">
         <!-- Start Here Card -->
          {startSection && (
-         <a href={`/section/${startSection.slug}`} class="block group">
+         <a href={withBase(`section/${startSection.slug}`)} class="block group">
             <div class="bg-white rounded-xl p-6 shadow-soft border border-black/5 relative overflow-hidden transition-transform duration-300 transform group-hover:scale-[1.01]">
                 <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-blue-100"></div>
                  <div class="relative z-10 flex justify-between items-center">
@@ -45,7 +47,7 @@ const pastelColors = [
             <h3 class="text-lg font-bold text-gray-900 mb-4 px-2">Quick Calm Tools</h3>
             <div class="grid grid-cols-2 gap-4">
                 {quick_tools.map((tool, index) => (
-                    <a href={`/tool/${tool.id}`} class="bg-white rounded-xl p-4 shadow-soft border border-black/5 flex flex-col items-center text-center hover:scale-[1.02] transition-transform shadow-glow relative overflow-hidden" style={`--glow: ${pastelColors[index % 4]}80`}>
+                    <a href={withBase(`tool/${tool.id}`)} class="bg-white rounded-xl p-4 shadow-soft border border-black/5 flex flex-col items-center text-center hover:scale-[1.02] transition-transform shadow-glow relative overflow-hidden" style={`--glow: ${pastelColors[index % 4]}80`}>
                          <div class="absolute inset-0 opacity-20" style={`background-color: ${pastelColors[index % 4]}`}></div>
                          <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3 text-gray-800 font-bold text-lg bg-white shadow-sm relative z-10">
                             {index + 1}
@@ -61,8 +63,8 @@ const pastelColors = [
             <h3 class="text-lg font-bold text-gray-900 mb-4 px-2">Guide Sections</h3>
              <div class="grid grid-cols-1 gap-4">
                 {otherSections.map((section, index) => (
-                    <a 
-                        href={`/section/${section.slug}`} 
+                    <a
+                        href={withBase(`section/${section.slug}`)}
                         class="group relative block bg-white rounded-xl p-6 shadow-soft shadow-glow border border-black/5 transition-all hover:-translate-y-1"
                         style={`--glow: ${pastelColors[(index + 1) % 4]}`}
                     >

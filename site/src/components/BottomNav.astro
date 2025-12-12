@@ -1,22 +1,27 @@
 ---
 import { Home, Briefcase, Calendar, Heart, Search } from 'lucide-astro';
 
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const stripTrailingSlash = (path) => (path !== '/' && path.endsWith('/')) ? path.slice(0, -1) : path;
+
 const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname === '/' ? '/' : pathname.replace(/\/$/, "");
+const currentPath = stripTrailingSlash(pathname);
 
 const navItems = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/tools', label: 'Tools', icon: Briefcase },
-  { href: '/timeline', label: 'Timeline', icon: Calendar },
-  { href: '/support', label: 'Support', icon: Heart },
-  { href: '/search', label: 'Search', icon: Search },
+  { href: withBase(''), label: 'Home', icon: Home },
+  { href: withBase('tools'), label: 'Tools', icon: Briefcase },
+  { href: withBase('timeline'), label: 'Timeline', icon: Calendar },
+  { href: withBase('support'), label: 'Support', icon: Heart },
+  { href: withBase('search'), label: 'Search', icon: Search },
 ];
 ---
 
 <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
   <div class="flex justify-around items-center h-16 max-w-md mx-auto">
     {navItems.map(({ href, label, icon: Icon }) => {
-      const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href));
+      const hrefPath = stripTrailingSlash(href);
+      const isActive = currentPath === hrefPath || (hrefPath !== stripTrailingSlash(withBase('')) && currentPath.startsWith(hrefPath));
       return (
         <a 
             href={href} 

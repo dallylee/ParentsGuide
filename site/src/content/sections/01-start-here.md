@@ -22,4 +22,4 @@ Some parents feel that focusing on their own stress is selfish, but the opposite
 You can learn to handle your fear and be the calm anchor your child needs. Let’s begin by understanding the nature of the worries you're facing.
 
 ### What to do next
-[Understand your worries](/section/worries)
+[Understand your worries](../worries)

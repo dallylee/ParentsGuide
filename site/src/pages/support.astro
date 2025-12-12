@@ -4,11 +4,13 @@ import contactsData from '../content/data/crisis-contacts.json';
 import { ArrowLeft, Phone, AlertCircle } from 'lucide-astro';
 
 const contacts = contactsData.contacts;
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
 ---
 
 <Layout title="Support">
     <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href="/" class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
+        <a href={withBase('')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
             <ArrowLeft size={24} />
         </a>
         <span class="ml-2 font-semibold text-gray-800">Support & Crisis</span>
@@ -39,7 +41,7 @@ const contacts = contactsData.contacts;
         <section class="bg-blue-50 border border-blue-100 rounded-xl p-6">
             <h2 class="text-lg font-bold text-blue-900 mb-2">When to get extra support?</h2>
             <p class="text-blue-800 text-sm mb-4">Learn about the red flags for emotional and physical burnout.</p>
-            <a href="/section/support" class="block text-center bg-blue-600 text-white font-bold py-3 rounded-lg shadow-soft hover:bg-blue-700 transition">
+            <a href={withBase('section/support')} class="block text-center bg-blue-600 text-white font-bold py-3 rounded-lg shadow-soft hover:bg-blue-700 transition">
                 Read Support Guide
             </a>
         </section>

@@ -18,6 +18,8 @@ guideEntries.sort((a, b) => a.data.order - b.data.order);
 const currentIndex = guideEntries.findIndex(e => e.slug === entry.slug);
 const prevEntry = currentIndex > 0 ? guideEntries[currentIndex - 1] : null;
 const nextEntry = currentIndex < guideEntries.length - 1 ? guideEntries[currentIndex + 1] : null;
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
 ---
 
 <Layout title={entry.data.title}>
@@ -25,7 +27,7 @@ const nextEntry = currentIndex < guideEntries.length - 1 ? guideEntries[currentI
 		{/* Header */}
 		<header class="bg-white shadow-sm sticky top-0 z-50">
 			<div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
-				<a href="/" class="text-slate-500 hover:text-blue-600 flex items-center text-sm font-medium transition-colors">
+                                <a href={withBase('')} class="text-slate-500 hover:text-blue-600 flex items-center text-sm font-medium transition-colors">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
 					</svg>
@@ -45,7 +47,7 @@ const nextEntry = currentIndex < guideEntries.length - 1 ? guideEntries[currentI
 			{/* Navigation Footer */}
 			<div class="mt-8 grid grid-cols-2 gap-4">
 				{prevEntry ? (
-					<a href={`/guide/${prevEntry.slug}`} class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition group">
+                                        <a href={withBase(`guide/${prevEntry.slug}`)} class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition group">
 						<span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Previous</span>
 						<span class="block text-slate-700 font-medium group-hover:text-blue-600">{prevEntry.data.title}</span>
 					</a>
@@ -54,7 +56,7 @@ const nextEntry = currentIndex < guideEntries.length - 1 ? guideEntries[currentI
 				)}
 				
 				{nextEntry ? (
-					<a href={`/guide/${nextEntry.slug}`} class="block p-4 bg-white rounded-xl border border-slate-200 text-right hover:border-blue-300 hover:shadow-md transition group">
+                                        <a href={withBase(`guide/${nextEntry.slug}`)} class="block p-4 bg-white rounded-xl border border-slate-200 text-right hover:border-blue-300 hover:shadow-md transition group">
 						<span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Next</span>
 						<span class="block text-slate-700 font-medium group-hover:text-blue-600">{nextEntry.data.title}</span>
 					</a>
