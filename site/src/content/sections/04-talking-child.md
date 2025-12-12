@@ -47,4 +47,4 @@ Children learn how to handle difficult situations by watching you. You can model
 By communicating with warm honesty and projecting confidence, you can significantly reduce your child's fear of the unknown. You've prepared yourself; now let's prepare for the journey itself.
 
 ### What to do next
-[View the timeline](/section/timeline)
+[View the timeline](../timeline)

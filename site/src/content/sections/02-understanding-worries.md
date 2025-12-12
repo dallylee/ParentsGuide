@@ -35,4 +35,4 @@ Certain things can intensify your distress, while others can buffer it. Knowing 
 You're not at the mercy of your fear. You can learn to handle it. The rest of this guide will give you concrete, proven techniques to stay grounded for your own wellbeing and your child’s benefit.
 
 ### What to do next
-[Build your calm toolkit](/section/toolkit)
+[Build your calm toolkit](../toolkit)

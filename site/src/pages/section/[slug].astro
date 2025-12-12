@@ -11,6 +11,9 @@ export async function getStaticPaths() {
   }));
 }
 
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
@@ -18,7 +21,7 @@ const { Content } = await entry.render();
 <Layout title={entry.data.title}>
     <!-- Top Bar -->
     <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href="/" class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
+        <a href={withBase('')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
             <ArrowLeft size={24} />
         </a>
         <span class="ml-2 font-semibold text-gray-800 truncate">{entry.data.title}</span>

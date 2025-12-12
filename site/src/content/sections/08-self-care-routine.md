@@ -28,4 +28,4 @@ This simple, non-negotiable checklist is not meant to be another burden. Think o
 These small, consistent actions are the building blocks of resilience. But sometimes, even with the best tools, the stress can feel like too much. Let's talk about what to do when these daily practices are not enough.
 
 ### What to do next
-[Know when to get extra support](/section/support)
+[Know when to get extra support](../support)

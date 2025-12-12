@@ -5,6 +5,8 @@ import { ArrowLeft } from 'lucide-astro';
 
 const tools = await getCollection('tools');
 const checklists = await getCollection('checklists');
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
 
 const pastelColors = [
     'var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'
@@ -12,7 +14,7 @@ const pastelColors = [
 ---
 <Layout title="Calm Tools">
     <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href="/" class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
+        <a href={withBase('')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
             <ArrowLeft size={24} />
         </a>
         <span class="ml-2 font-semibold text-gray-800">Your Calm Toolkit</span>
@@ -24,7 +26,7 @@ const pastelColors = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
                 {tools.map((tool, index) => (
-                    <a href={`/tool/${tool.id}`} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[index % 4]}80`}>
+                    <a href={withBase(`tool/${tool.id}`)} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[index % 4]}80`}>
                         <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl" style={`background-color: ${pastelColors[index % 4]}`}>
                             {index + 1}
                         </div>
@@ -42,7 +44,7 @@ const pastelColors = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Preparation Checklists</h2>
             <div class="space-y-4">
                 {checklists.map((list, index) => (
-                    <a href={`/checklist/${list.id}`} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[(index + 2) % 4]}80`}>
+                    <a href={withBase(`checklist/${list.id}`)} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[(index + 2) % 4]}80`}>
                         <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 text-2xl" style={`background-color: ${pastelColors[(index + 2) % 4]}`}>
                             ✓
                         </div>

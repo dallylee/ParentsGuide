@@ -5,19 +5,21 @@ import { Search, ArrowRight } from 'lucide-astro';
 
 const sections = await getCollection('sections');
 const tools = await getCollection('tools');
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
 
 const searchIndex = [
     ...sections.map(s => ({
         title: s.data.title,
         summary: s.data.summary,
-        url: `/section/${s.slug}`,
+        url: withBase(`section/${s.slug}`),
         type: 'Guide',
         tags: s.data.tags || []
     })),
     ...tools.map(t => ({
         title: t.data.name,
         summary: t.data.summary,
-        url: `/tool/${t.id}`,
+        url: withBase(`tool/${t.id}`),
         type: 'Tool',
         tags: []
     }))

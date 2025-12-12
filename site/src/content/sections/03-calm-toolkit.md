@@ -67,4 +67,4 @@ These strategies help you change your relationship to anxiety rather than trying
 With these tools, you can begin to manage your own state. This newfound calm is the essential foundation for the next crucial task: talking with your child about what's to come.
 
 ### What to do next
-[Learn how to talk to your child](/section/talking)
+[Learn how to talk to your child](../talking)

@@ -1,3 +1,5 @@
 ---
-return Astro.redirect('/section/timeline');
+const base = import.meta.env.BASE_URL;
+
+return Astro.redirect(`${base}section/timeline`);
 ---
