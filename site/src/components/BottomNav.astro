@@ -10,30 +10,35 @@ const currentPath = stripTrailingSlash(pathname);
 const homePath = stripTrailingSlash(withBase(''));
 
 const navItems = [
-    { href: withBase(''), label: 'Home', icon: Home },
-    { href: withBase('section/start/'), label: 'Your guide', icon: BookOpen },
-    { href: withBase('tools/'), label: 'Tools', icon: Briefcase },
-    { href: withBase('section/timeline/'), label: 'Timeline', icon: Calendar },
-    { href: withBase('notes/'), label: 'Notes', icon: FileText },
+    { href: withBase(''), label: 'Home', icon: Home, color: '#cfe8ff', delay: '0ms' },
+    { href: withBase('section/start/'), label: 'Your guide', icon: BookOpen, color: '#f5e8ff', delay: '120ms' },
+    { href: withBase('tools/'), label: 'Tools', icon: Briefcase, color: '#ffe3d8', delay: '240ms' },
+    { href: withBase('section/timeline/'), label: 'Timeline', icon: Calendar, color: '#e6ffd8', delay: '360ms' },
+    { href: withBase('notes/'), label: 'Notes', icon: FileText, color: '#cfe8ff', delay: '480ms' },
 ];
 ---
 
-<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
+<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
   <div class="flex justify-around items-center h-16 max-w-md mx-auto">
-      {navItems.map(({ href, label, icon: Icon }) => {
+      {navItems.map(({ href, label, icon: Icon, color, delay }) => {
         const hrefPath = stripTrailingSlash(href);
         const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
         return (
-        <a 
-            href={href} 
+        <a
+            href={href}
             class:list={[
                 "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
-                isActive ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
+                isActive ? "text-gray-800" : "text-gray-500 hover:text-gray-600"
             ]}
             aria-label={label}
         >
-          <Icon size={24} stroke-width={isActive ? 2.5 : 2} />
-          <span class="text-[10px] font-medium">{label}</span>
+          <span
+            class:list={["nav-icon", isActive ? "nav-icon-active" : "nav-icon-inactive"]}
+            style={`--icon-glow: ${color}; color: ${color}; animation-delay: ${delay};`}
+          >
+            <Icon size={24} stroke-width={isActive ? 2.5 : 2} stroke="currentColor" fill="currentColor" />
+          </span>
+          <span class:list={["text-[10px] font-medium", isActive ? "text-gray-800" : "text-gray-500"]}>{label}</span>
         </a>
       );
     })}
@@ -41,8 +46,73 @@ const navItems = [
 </nav>
 
 <style>
+    .nav-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.9;
+        transition: opacity 200ms ease, filter 200ms ease;
+        filter: drop-shadow(0 0 0px var(--icon-glow));
+    }
+
+    .nav-icon-active {
+        opacity: 1;
+        filter: drop-shadow(0 0 6px var(--icon-glow));
+    }
+
+    .nav-icon-inactive {
+        opacity: 0.85;
+    }
+
+    @keyframes iconBreathGlow {
+      0%   { filter: drop-shadow(0 0 0px var(--icon-glow)); opacity: 0.90; }
+      50%  { filter: drop-shadow(0 0 10px var(--icon-glow)); opacity: 1.00; }
+      100% { filter: drop-shadow(0 0 0px var(--icon-glow)); opacity: 0.90; }
+    }
+
+    @keyframes navHelloBounce {
+      0%   { transform: translateY(6px) scale(0.98); opacity: 0; }
+      60%  { transform: translateY(-2px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0) scale(1.00); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .nav-icon {
+        animation: iconBreathGlow 3.8s ease-in-out infinite;
+        will-change: filter, opacity;
+      }
+
+      .nav-hello .nav-icon {
+        animation-name: navHelloBounce, iconBreathGlow;
+        animation-duration: 650ms, 3.8s;
+        animation-timing-function: ease-out, ease-in-out;
+        animation-iteration-count: 1, infinite;
+        animation-fill-mode: both, none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-icon {
+        filter: drop-shadow(0 0 6px var(--icon-glow));
+        opacity: 1;
+      }
+    }
+
     /* Safe area padding for iPhone X+ */
     .pb-safe {
         padding-bottom: env(safe-area-inset-bottom);
     }
 </style>
+
+<script>
+  (() => {
+    try {
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+      const nav = document.getElementById('bottom-nav');
+      if (!nav) return;
+      nav.classList.add('nav-hello');
+      window.setTimeout(() => nav.classList.remove('nav-hello'), 900);
+    } catch {}
+  })();
+</script>
