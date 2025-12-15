@@ -16,14 +16,19 @@ const glows = [
 ];
 ---
 <Layout title="Calm Tools">
-    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href={withBase('')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft size={24} />
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-3 flex items-center">
+        <a
+          href={withBase('')}
+          class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        >
+            <ArrowLeft size={20} />
+            <span class="leading-none">Back</span>
         </a>
-        <span class="ml-2 font-semibold text-gray-800">Your Calm Toolkit</span>
+        <span class="ml-3 font-semibold text-gray-800">Your Calm Toolkit</span>
     </div>
 
-    <div class="p-4 space-y-8 pb-32">
+    <div class="px-4 pt-6 pb-28">
+        <div class="mx-auto max-w-2xl space-y-8">
         <!-- Tools Section -->
         <div>
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
@@ -31,7 +36,7 @@ const glows = [
                 {tools.map((tool, index) => (
                     <a
                         href={withBase(`tool/${tool.id}/`)}
-                        class="card-glow block p-6 flex items-center relative transition-transform"
+                        class="card-glow block p-6 flex items-center relative transition-transform w-full pg-link-reset"
                         style={`--glow: ${glows[index % glows.length]}`}
                         data-tool-card={tool.id}
                     >
@@ -64,7 +69,7 @@ const glows = [
                 {checklists.map((list, index) => (
                     <a
                         href={withBase(`checklist/${list.id}`)}
-                        class="card-glow block p-6 flex items-center transition-transform"
+                        class="card-glow block p-6 flex items-center transition-transform w-full pg-link-reset"
                         style={`--glow: ${glows[(index + 2) % glows.length]}`}
                     >
                         <div
@@ -80,6 +85,7 @@ const glows = [
                     </a>
                 ))}
             </div>
+        </div>
         </div>
     </div>
 </Layout>

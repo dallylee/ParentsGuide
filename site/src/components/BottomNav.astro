@@ -1,41 +1,55 @@
 ---
-import { Home, Briefcase, Calendar, FileText, BookOpen } from 'lucide-astro';
+// BottomNav.astro
+// Conflict resolved: keep incoming structure + active-path logic, remove color/delay/glow variables and any animations/scripts.
 
-const base = import.meta.env.BASE_URL;
-const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
-const stripTrailingSlash = (path) => (path !== '/' && path.endsWith('/')) ? path.slice(0, -1) : path;
+const stripTrailingSlash = (path) => path.replace(/\/+$/, "");
+const homePath = stripTrailingSlash(withBase("/"));
 
-const pathname = new URL(Astro.request.url).pathname;
-const currentPath = stripTrailingSlash(pathname);
-const homePath = stripTrailingSlash(withBase(''));
-
+// navItems defined without color/delay fields
 const navItems = [
-    { href: withBase(''), label: 'Home', icon: Home },
-    { href: withBase('section/start/'), label: 'Your guide', icon: BookOpen },
-    { href: withBase('tools/'), label: 'Tools', icon: Briefcase },
-    { href: withBase('section/timeline/'), label: 'Timeline', icon: Calendar },
-    { href: withBase('notes/'), label: 'Notes', icon: FileText },
+  { href: withBase("/"), label: "Home", icon: Home },
+  { href: withBase("section/start/"), label: "Your guide", icon: BookOpen },
+  { href: withBase("tools/"), label: "Tools", icon: Briefcase },
+  { href: withBase("section/timeline/"), label: "Timeline", icon: Calendar },
+  { href: withBase("notes/"), label: "Notes", icon: FileText },
 ];
+
+// currentPath detection (works on client & server fallback)
+let currentPath = "/";
+if (typeof window !== "undefined" && window.location && window.location.pathname) {
+  currentPath = stripTrailingSlash(window.location.pathname);
+} else if (Astro && Astro.request && Astro.request.url) {
+  // server-side fallback if Astro.request is available
+  try {
+    const url = new URL(Astro.request.url);
+    currentPath = stripTrailingSlash(url.pathname);
+  } catch (e) {
+    currentPath = "/";
+  }
+}
 ---
 
-<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
-  <div class="flex justify-around items-center h-16 max-w-md mx-auto">
-      {navItems.map(({ href, label, icon: Icon }) => {
-        const hrefPath = stripTrailingSlash(href);
-        const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
-        return (
+<nav aria-label="Primary" class="site-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur border-t border-gray-100">
+  <!-- Incoming container kept -->
+  <div class="grid h-16 max-w-2xl w-full grid-cols-5 mx-auto">
+    {navItems.map(({ href, label, icon: Icon }) => {
+      const hrefPath = stripTrailingSlash(href);
+      const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
+      return (
         <a
-            href={href}
-            class:list={[
-                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 text-slate-800",
-                isActive ? "text-slate-900" : "opacity-90 hover:text-slate-900"
-            ]}
-            aria-label={label}
+          href={href}
+          class:list={[
+            "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 no-underline",
+            isActive ? "text-gray-800" : "text-gray-500 hover:text-gray-600"
+          ]}
+          aria-label={label}
         >
           <span class:list={["nav-icon", isActive ? "nav-icon-active" : "nav-icon-inactive"]}>
-            <Icon size={24} stroke-width={isActive ? 2.5 : 2} stroke="currentColor" fill="currentColor" />
+            <Icon class="w-6 h-6" size={24} stroke-width={isActive ? 2.5 : 2} stroke="currentColor" fill="currentColor" />
           </span>
-          <span class:list={["text-[10px] font-medium", isActive ? "text-slate-900" : "text-slate-800"]}>{label}</span>
+          <span class:list={["text-xs leading-tight font-medium whitespace-nowrap", isActive ? "text-gray-800" : "text-gray-500"]}>
+            {label}
+          </span>
         </a>
       );
     })}
@@ -43,26 +57,19 @@ const navItems = [
 </nav>
 
 <style>
-    .nav-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0.95;
-        transition: opacity 200ms ease, filter 200ms ease;
-        filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.12));
-    }
+  /* Static soft monochrome glow (no animations) */
+  .nav-icon {
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.12));
+  }
+  .nav-icon-active {
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.16));
+  }
 
-    .nav-icon-active {
-        opacity: 1;
-        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.16));
-    }
-
-    .nav-icon-inactive {
-        opacity: 0.85;
-    }
-
-    /* Safe area padding for iPhone X+ */
-    .pb-safe {
-        padding-bottom: env(safe-area-inset-bottom);
-    }
+  /* Ensure icons inherit text color and layout is consistent */
+  .site-bottom-nav a {
+    color: inherit;
+  }
+  .site-bottom-nav .nav-icon svg {
+    display: block;
+  }
 </style>
