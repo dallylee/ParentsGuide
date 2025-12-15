@@ -77,7 +77,7 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
                     Clear notes
                 </button>
             </div>
-            <p id="status-message" class="text-sm text-gray-500"></p>
+            <p id="status-message" class="text-sm text-gray-500" role="status" aria-live="polite"></p>
         </form>
     </div>
 </Layout>
@@ -88,7 +88,24 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
     const status = document.getElementById('status-message');
     const fields = ['clinic', 'ward', 'consultant', 'surgeryDate', 'arrivalTime', 'mainPhone', 'secondaryPhone', 'questions', 'parking'];
 
+    const isStorageAvailable = () => {
+        try {
+            const testKey = '__pg_notes_test__';
+            localStorage.setItem(testKey, 'ok');
+            localStorage.removeItem(testKey);
+            return true;
+        } catch (error) {
+            console.error('Storage unavailable', error);
+            return false;
+        }
+    };
+
     const loadNotes = () => {
+        if (!isStorageAvailable()) {
+            status.textContent = 'Saving notes is unavailable in this browser or mode.';
+            return;
+        }
+
         try {
             const saved = localStorage.getItem(storageKey);
             if (!saved) return;
@@ -108,6 +125,11 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
     };
 
     const saveNotes = () => {
+        if (!isStorageAvailable()) {
+            status.textContent = 'Saving notes is unavailable in this browser or mode.';
+            return;
+        }
+
         const data = {};
         fields.forEach((field) => {
             const input = document.getElementById(field);
@@ -141,4 +163,5 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
     document.getElementById('clear-notes')?.addEventListener('click', clearNotes);
 
     loadNotes();
+    status.textContent = status.textContent || 'Notes are stored locally on this device.';
 </script>

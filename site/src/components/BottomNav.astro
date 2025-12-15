@@ -7,6 +7,7 @@ const stripTrailingSlash = (path) => (path !== '/' && path.endsWith('/')) ? path
 
 const pathname = new URL(Astro.request.url).pathname;
 const currentPath = stripTrailingSlash(pathname);
+const homePath = stripTrailingSlash(withBase(''));
 
 const navItems = [
   { href: withBase(''), label: 'Home', icon: Home },
@@ -18,10 +19,10 @@ const navItems = [
 
 <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
   <div class="flex justify-around items-center h-16 max-w-md mx-auto">
-    {navItems.map(({ href, label, icon: Icon }) => {
-      const hrefPath = stripTrailingSlash(href);
-      const isActive = currentPath === hrefPath || (hrefPath !== stripTrailingSlash(withBase('')) && currentPath.startsWith(hrefPath));
-      return (
+      {navItems.map(({ href, label, icon: Icon }) => {
+        const hrefPath = stripTrailingSlash(href);
+        const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
+        return (
         <a 
             href={href} 
             class:list={[
