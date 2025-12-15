@@ -44,10 +44,10 @@ const ogImage = Astro.site ? new URL(resolvedImagePath, Astro.site).toString() :
 
 		<title>{title}</title>
 	</head>
-	<body class="min-h-screen bg-bg pb-24 text-gray-800">
-        <main class="max-w-md mx-auto min-h-screen bg-bg shadow-2xl shadow-gray-200/50 overflow-hidden relative">
-		    <slot />
+        <body class="min-h-screen bg-bg pb-28 text-gray-800 overflow-x-hidden">
+        <main class="max-w-2xl w-full mx-auto min-h-screen bg-bg shadow-2xl shadow-gray-200/50 relative px-4 sm:px-6 overflow-x-hidden">
+                    <slot />
             <BottomNav />
         </main>
-	</body>
+        </body>
 </html>

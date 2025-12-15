@@ -20,20 +20,25 @@ const { entry } = Astro.props;
 ---
 
 <Layout title={entry.data.name}>
-     <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href={withBase('tools/')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft size={24} />
+     <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-3 flex items-center">
+        <a
+          href={withBase('tools/')}
+          class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        >
+            <ArrowLeft size={20} />
+            <span class="leading-none">Back</span>
         </a>
-        <span class="ml-2 font-semibold text-gray-800">{entry.data.name}</span>
+        <span class="ml-3 font-semibold text-gray-800">{entry.data.name}</span>
     </div>
 
-    <div class="p-6 pb-24">
-        <div class="mb-6">
-            <p class="text-gray-600 text-lg leading-relaxed">{entry.data.summary}</p>
-        </div>
+    <div class="px-4 pt-6 pb-28">
+        <div class="mx-auto max-w-2xl space-y-6">
+            <div class="pg-link-reset">
+                <p class="text-gray-700 text-lg leading-relaxed">{entry.data.summary}</p>
+            </div>
 
         {entry.data.type === 'embed' && entry.data.embed ? (
-            <div class="space-y-4">
+            <div class="space-y-4 pg-link-reset">
                 <div class="mt-4 w-full max-w-xl">
                     <iframe
                         src={entry.data.embed.src}
@@ -60,6 +65,7 @@ const { entry } = Astro.props;
         ) : (
             <ToolSteps tool={entry.data} />
         )}
+        </div>
     </div>
 </Layout>
 

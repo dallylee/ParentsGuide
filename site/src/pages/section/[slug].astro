@@ -86,36 +86,40 @@ const fallbackHtml = !sections.length ? await renderMarkdownToHtml(entry.body) :
 
 <Layout title={entry.data.title}>
     <!-- Top Bar -->
-    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href={withBase('')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft size={24} />
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-3 flex items-center">
+        <a
+          href={withBase('')}
+          class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        >
+            <ArrowLeft size={20} />
+            <span class="leading-none">Back</span>
         </a>
-        <span class="ml-2 font-semibold text-gray-800 truncate">{entry.data.title}</span>
+        <span class="ml-3 font-semibold text-gray-800 truncate">{entry.data.title}</span>
     </div>
 
-    <div class="bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 pb-32 pt-6">
-        <div class="mx-auto flex max-w-3xl flex-col gap-4">
-            <section class="card-glow p-5 md:p-6" style={`--glow: ${glows[0]}`}>
+    <div class="bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 pb-28 pt-6">
+        <div class="mx-auto flex max-w-2xl flex-col gap-4">
+            <section class="card-glow p-5 md:p-6 pg-link-reset" style={`--glow: ${glows[0]}`}>
                 <div class="flex flex-col gap-2">
                     <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Section</p>
                     <h1 class="text-2xl font-bold text-slate-900 md:text-3xl">{entry.data.title}</h1>
                     <p class="text-base text-slate-700 md:text-lg">{entry.data.summary}</p>
                 </div>
                 {introHtml && (
-                    <div class="prose prose-slate mt-4 max-w-none text-base leading-relaxed prose-p:text-gray-700 prose-li:text-gray-700" set:html={introHtml} />
+                    <div class="prose prose-slate mt-4 max-w-none text-base leading-relaxed prose-p:text-gray-700 prose-li:text-gray-700 pg-link-reset" set:html={introHtml} />
                 )}
                 {!sections.length && fallbackHtml && (
-                    <div class="prose prose-slate mt-4 max-w-none text-base leading-relaxed prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-li:text-gray-700 prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:no-underline prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100" set:html={fallbackHtml} />
+                    <div class="prose prose-slate mt-4 max-w-none text-base leading-relaxed prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-li:text-gray-700 prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={fallbackHtml} />
                 )}
             </section>
 
             {sectionHtml.map((section, idx) => (
-                <section class="card-glow p-5 md:p-6" style={`--glow: ${glows[idx % glows.length]}`}>
+                <section class="card-glow p-5 md:p-6 pg-link-reset" style={`--glow: ${glows[idx % glows.length]}`}>
                     <div class="flex items-start gap-3">
                         <div class="mt-1 h-2.5 w-2.5 rounded-full bg-gradient-to-br from-indigo-200 via-indigo-300 to-indigo-400 shadow-[0_0_12px_rgba(79,70,229,0.35)]"></div>
                         <h2 class="text-xl font-semibold text-slate-900 md:text-2xl">{section.title}</h2>
                     </div>
-                    <div class="prose prose-slate mt-3 max-w-none text-base leading-relaxed prose-headings:font-semibold prose-h3:text-lg prose-p:text-gray-700 prose-li:text-gray-700 prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:no-underline prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100" set:html={section.html} />
+                    <div class="prose prose-slate mt-3 max-w-none text-base leading-relaxed prose-headings:font-semibold prose-h3:text-lg prose-p:text-gray-700 prose-li:text-gray-700 prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={section.html} />
                 </section>
             ))}
         </div>
