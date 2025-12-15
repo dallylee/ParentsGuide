@@ -45,14 +45,14 @@ const pastelColors = ['var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', '
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {phases.map((phase, index) => {
                     const imagePath = phase.hero_image ? withBase(phase.hero_image) : null;
-                    const glow = `${pastelColors[index % pastelColors.length]}80`;
+                    const glow = pastelColors[index % pastelColors.length];
                     const buttonColor = pastelColors[(index + 1) % pastelColors.length];
 
                     return (
                         <a
                             href={withBase(`section/${phase.slug}/`)}
-                            class="group block rounded-xl border border-black/5 bg-white p-5 sm:p-6 shadow-soft shadow-glow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transition transform hover:-translate-y-0.5"
-                            style={`--glow: ${glow}`}
+                            class="group block pg-card pg-card-glow p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transition transform hover:-translate-y-0.5"
+                            style={`--glow-colour: color-mix(in srgb, ${glow} 70%, transparent)`}
                         >
                             <div class="flex items-start gap-4">
                                 {imagePath && (

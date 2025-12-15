@@ -3,13 +3,17 @@ interface Props {
     checklist: any;
 }
 const { checklist } = Astro.props;
+const pastelColors = ['var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'];
 ---
 <div class="checklist-container space-y-6">
     {checklist.items && (
         <ul class="space-y-3">
             {checklist.items.map((item, i) => (
                 <li class="flex items-start">
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white border border-gray-100 rounded-xl shadow-sm w-full hover:bg-gray-50 transition">
+                    <label
+                        class="pg-card pg-card-glow flex items-center space-x-3 cursor-pointer p-3 w-full transition"
+                        style={`--glow-colour: color-mix(in srgb, ${pastelColors[i % pastelColors.length]} 70%, transparent)`}
+                    >
                          <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-item-${i}`} />
                          <span class="text-gray-700 font-medium">{item}</span>
                     </label>
@@ -24,7 +28,10 @@ const { checklist } = Astro.props;
             <ul class="space-y-3">
                 {section.items.map((item, i) => (
                     <li class="flex items-start">
-                        <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white border border-gray-100 rounded-xl shadow-sm w-full hover:bg-gray-50 transition">
+                        <label
+                            class="pg-card pg-card-glow flex items-center space-x-3 cursor-pointer p-3 w-full transition"
+                            style={`--glow-colour: color-mix(in srgb, ${pastelColors[(sIdx + i) % pastelColors.length]} 70%, transparent)`}
+                        >
                             <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-section-${sIdx}-item-${i}`} />
                             <span class="text-gray-700 font-medium">{item}</span>
                         </label>
