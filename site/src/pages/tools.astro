@@ -26,8 +26,18 @@ const pastelColors = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
                 {tools.map((tool, index) => (
-                    <a href={withBase(`tool/${tool.id}/`)} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[index % 4]}80`}>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl" style={`background-color: ${pastelColors[index % 4]}`}>
+                    <a
+                        href={withBase(`tool/${tool.id}/`)}
+                        class="pg-card pg-card-glow block p-6 flex items-center relative transition-transform"
+                        style={`--glow-colour: color-mix(in srgb, ${pastelColors[index % 4]} 70%, transparent)`}
+                        data-tool-card={tool.id}
+                    >
+                        <span class="tool-indicator" aria-hidden="true" data-indicator></span>
+
+                        <div
+                            class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl"
+                            style={`background-color: ${pastelColors[index % 4]}`}
+                        >
                             {index + 1}
                         </div>
                         <div class="space-y-1">
@@ -49,8 +59,15 @@ const pastelColors = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Preparation Checklists</h2>
             <div class="space-y-4">
                 {checklists.map((list, index) => (
-                    <a href={withBase(`checklist/${list.id}`)} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[(index + 2) % 4]}80`}>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 text-2xl" style={`background-color: ${pastelColors[(index + 2) % 4]}`}>
+                    <a
+                        href={withBase(`checklist/${list.id}`)}
+                        class="pg-card pg-card-glow block p-6 flex items-center transition-transform"
+                        style={`--glow-colour: color-mix(in srgb, ${pastelColors[(index + 2) % 4]} 70%, transparent)`}
+                    >
+                        <div
+                            class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 text-2xl"
+                            style={`background-color: ${pastelColors[(index + 2) % 4]}`}
+                        >
                             ✓
                         </div>
                         <div>
@@ -63,3 +80,64 @@ const pastelColors = [
         </div>
     </div>
 </Layout>
+
+<style>
+    .tool-indicator {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 12px;
+        height: 12px;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.9));
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
+        animation: indicatorPulse 3.8s ease-in-out infinite;
+    }
+
+    @keyframes indicatorPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.12);
+            transform: scale(1.05);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.06);
+            transform: scale(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .tool-indicator {
+            animation: none;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        }
+    }
+</style>
+
+<script>
+    const storageKey = 'parentsGuideUsedTools_v1';
+
+    const parseUsedTools = () => {
+        try {
+            return JSON.parse(localStorage.getItem(storageKey) || '{}');
+        } catch (error) {
+            console.warn('Could not read used tools', error);
+            return {};
+        }
+    };
+
+    const usedTools = parseUsedTools();
+    const cards = document.querySelectorAll('[data-tool-card]');
+
+    cards.forEach((card) => {
+        const toolId = card.getAttribute('data-tool-card');
+        const indicator = card.querySelector('[data-indicator]');
+
+        if (toolId && usedTools[toolId]) {
+            indicator?.classList.add('hidden');
+        }
+    });
+</script>

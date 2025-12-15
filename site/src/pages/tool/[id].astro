@@ -62,3 +62,24 @@ const { entry } = Astro.props;
         )}
     </div>
 </Layout>
+
+<script>
+    const storageKey = 'parentsGuideUsedTools_v1';
+    const toolId = '{entry.id}';
+
+    const markToolUsed = () => {
+        if (!toolId) return;
+
+        try {
+            const existing = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            existing[toolId] = new Date().toISOString();
+            localStorage.setItem(storageKey, JSON.stringify(existing));
+        } catch (error) {
+            console.warn('Could not save tool usage', error);
+        }
+    };
+
+    markToolUsed();
+
+    document.getElementById('start-btn')?.addEventListener('click', markToolUsed);
+</script>
