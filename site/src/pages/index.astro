@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import siteIndex from '../content/index.json';
+import siteIndex from '../../../content/index.json';
 
 const home = siteIndex.home;
 const base = import.meta.env.BASE_URL;
@@ -33,11 +33,9 @@ const hrefWithBase = (href) =>
                 <div aria-hidden="true"></div>
 
                 <section class="max-w-xl pb-2">
-                    {home?.hero_description ? (
-                        <p class="text-white/90 text-sm sm:text-base leading-relaxed max-w-prose">
-                            {home.hero_description}
-                        </p>
-                    ) : null}
+                    <p class="mt-0 text-white/90 text-sm sm:text-base leading-relaxed max-w-prose">
+                        {home.hero_description ?? ""}
+                    </p>
 
                     <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                         <a
