@@ -4,6 +4,12 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-astro';
 
 const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 ---
 
 <Layout title="Notes">
@@ -15,70 +21,72 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
     </div>
 
     <div class="p-6 space-y-6">
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-soft p-4 space-y-2">
-            <h1 class="text-xl font-bold text-gray-900">Your surgery day notes</h1>
-            <p class="text-sm text-gray-600">Keep key details handy. Everything is saved locally on your device.</p>
+        <div class="card-glow p-5 space-y-4" style={`--glow: ${glows[1]}`}>
+            <div class="space-y-2">
+                <h1 class="text-xl font-bold text-gray-900">Your surgery day notes</h1>
+                <p class="text-sm text-gray-600">Keep key details handy. Everything is saved locally on your device.</p>
+            </div>
+
+            <form id="notes-form" class="space-y-4">
+                <div class="space-y-2">
+                    <label for="clinic" class="block text-sm font-semibold text-gray-800">Clinic / Hospital</label>
+                    <input id="clinic" name="clinic" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. St. Mary's" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="ward" class="block text-sm font-semibold text-gray-800">Ward / Department</label>
+                    <input id="ward" name="ward" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Children's surgery ward" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="consultant" class="block text-sm font-semibold text-gray-800">Consultant / Surgeon</label>
+                    <input id="consultant" name="consultant" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Dr. Patel" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="surgeryDate" class="block text-sm font-semibold text-gray-800">Surgery date</label>
+                        <input id="surgeryDate" name="surgeryDate" type="date" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="arrivalTime" class="block text-sm font-semibold text-gray-800">Arrival time</label>
+                        <input id="arrivalTime" name="arrivalTime" type="time" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="mainPhone" class="block text-sm font-semibold text-gray-800">Main phone number</label>
+                    <input id="mainPhone" name="mainPhone" type="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. 01234 567890" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="secondaryPhone" class="block text-sm font-semibold text-gray-800">Secondary phone number</label>
+                    <input id="secondaryPhone" name="secondaryPhone" type="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Optional backup contact" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="questions" class="block text-sm font-semibold text-gray-800">Questions to ask</label>
+                    <textarea id="questions" name="questions" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="List any questions for your care team"></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="parking" class="block text-sm font-semibold text-gray-800">Parking / directions</label>
+                    <textarea id="parking" name="parking" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Notes on where to park, entrances, or transport"></textarea>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button id="save-notes" type="button" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-soft hover:bg-blue-700 transition-colors">
+                        <Save size={18} class="mr-2" />
+                        Save notes
+                    </button>
+                    <button id="clear-notes" type="button" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-gray-100 text-gray-800 font-semibold shadow-soft hover:bg-gray-200 transition-colors">
+                        <Trash2 size={18} class="mr-2" />
+                        Clear notes
+                    </button>
+                </div>
+                <p id="status-message" class="text-sm text-gray-500" role="status" aria-live="polite"></p>
+            </form>
         </div>
-
-        <form id="notes-form" class="space-y-4">
-            <div class="space-y-2">
-                <label for="clinic" class="block text-sm font-semibold text-gray-800">Clinic / Hospital</label>
-                <input id="clinic" name="clinic" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. St. Mary's" />
-            </div>
-
-            <div class="space-y-2">
-                <label for="ward" class="block text-sm font-semibold text-gray-800">Ward / Department</label>
-                <input id="ward" name="ward" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Children's surgery ward" />
-            </div>
-
-            <div class="space-y-2">
-                <label for="consultant" class="block text-sm font-semibold text-gray-800">Consultant / Surgeon</label>
-                <input id="consultant" name="consultant" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Dr. Patel" />
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label for="surgeryDate" class="block text-sm font-semibold text-gray-800">Surgery date</label>
-                    <input id="surgeryDate" name="surgeryDate" type="date" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-                <div class="space-y-2">
-                    <label for="arrivalTime" class="block text-sm font-semibold text-gray-800">Arrival time</label>
-                    <input id="arrivalTime" name="arrivalTime" type="time" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-            </div>
-
-            <div class="space-y-2">
-                <label for="mainPhone" class="block text-sm font-semibold text-gray-800">Main phone number</label>
-                <input id="mainPhone" name="mainPhone" type="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. 01234 567890" />
-            </div>
-
-            <div class="space-y-2">
-                <label for="secondaryPhone" class="block text-sm font-semibold text-gray-800">Secondary phone number</label>
-                <input id="secondaryPhone" name="secondaryPhone" type="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Optional backup contact" />
-            </div>
-
-            <div class="space-y-2">
-                <label for="questions" class="block text-sm font-semibold text-gray-800">Questions to ask</label>
-                <textarea id="questions" name="questions" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="List any questions for your care team"></textarea>
-            </div>
-
-            <div class="space-y-2">
-                <label for="parking" class="block text-sm font-semibold text-gray-800">Parking / directions</label>
-                <textarea id="parking" name="parking" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Notes on where to park, entrances, or transport"></textarea>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                <button id="save-notes" type="button" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-soft hover:bg-blue-700 transition-colors">
-                    <Save size={18} class="mr-2" />
-                    Save notes
-                </button>
-                <button id="clear-notes" type="button" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-gray-100 text-gray-800 font-semibold shadow-soft hover:bg-gray-200 transition-colors">
-                    <Trash2 size={18} class="mr-2" />
-                    Clear notes
-                </button>
-            </div>
-            <p id="status-message" class="text-sm text-gray-500" role="status" aria-live="polite"></p>
-        </form>
     </div>
 </Layout>
 

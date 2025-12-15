@@ -20,7 +20,12 @@ const fallbackPhases = sections.filter((section) => {
 });
 
 const phases = preferredPhases.length > 0 ? preferredPhases : fallbackPhases;
-const pastelColors = ['var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'];
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 ---
 
 <Layout title="Timeline">
@@ -38,21 +43,21 @@ const pastelColors = ['var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', '
         </header>
 
         {phases.length === 0 ? (
-            <div class="rounded-xl border border-dashed border-gray-200 bg-white px-4 py-10 text-center text-gray-600 shadow-soft">
+            <div class="card-glow px-4 py-10 text-center text-gray-600" style={`--glow: ${glows[0]}`}>
                 No timeline phases available yet.
             </div>
         ) : (
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {phases.map((phase, index) => {
                     const imagePath = phase.hero_image ? withBase(phase.hero_image) : null;
-                    const glow = pastelColors[index % pastelColors.length];
-                    const buttonColor = pastelColors[(index + 1) % pastelColors.length];
+                    const glow = glows[index % glows.length];
+                    const buttonColor = glows[(index + 1) % glows.length];
 
                     return (
                         <a
                             href={withBase(`section/${phase.slug}/`)}
-                            class="group block pg-card pg-card-glow p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transition transform hover:-translate-y-0.5"
-                            style={`--glow-colour: color-mix(in srgb, ${glow} 70%, transparent)`}
+                            class="group block card-glow p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transition transform hover:-translate-y-0.5"
+                            style={`--glow: ${glow}`}
                         >
                             <div class="flex items-start gap-4">
                                 {imagePath && (

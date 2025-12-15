@@ -7,6 +7,12 @@ const sections = await getCollection('sections');
 const tools = await getCollection('tools');
 const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 
 const searchIndex = [
     ...sections.map(s => ({
@@ -48,7 +54,7 @@ const searchIndex = [
     </div>
 </Layout>
 
-<script define:vars={{ searchIndex }}>
+<script define:vars={{ searchIndex, glows }}>
     const input = document.getElementById('search-input');
     const container = document.getElementById('results-container');
 
@@ -58,8 +64,8 @@ const searchIndex = [
             return;
         }
 
-        container.innerHTML = results.map(item => `
-            <a href="${item.url}" class="block bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-blue-200 transition-colors">
+        container.innerHTML = results.map((item, index) => `
+            <a href="${item.url}" class="card-glow block p-4 hover:border-blue-200 transition-colors" style="--glow: ${glows[index % glows.length]}">
                 <div class="flex justify-between items-center mb-1">
                     <span class="text-xs font-bold uppercase tracking-wider ${item.type === 'Tool' ? 'text-green-600' : 'text-blue-600'}">${item.type}</span>
                 </div>
