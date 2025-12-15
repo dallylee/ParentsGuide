@@ -1,5 +1,15 @@
 {
     "version": 1,
+    "home": {
+        "hero_image": "images/hero.jpg",
+        "hero_title": "Finding Your Strength",
+        "hero_subtitle": "Why your calm matters, where to begin.",
+        "primary_cta": { "label": "Start here", "href": "/section/start/" },
+        "secondary_ctas": [
+            { "label": "Tools", "href": "/tools/" },
+            { "label": "Timeline", "href": "/section/timeline/" }
+        ]
+    },
     "sections": [
         {
             "id": "start",
