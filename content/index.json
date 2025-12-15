@@ -3,7 +3,7 @@
     "home": {
         "hero_image": "images/hero.jpg",
         "hero_title": "Finding Your Strength",
-        "hero_subtitle": "Why your calm matters, where to begin.",
+        "hero_subtitle": "Why your calm matters and where to begin.",
         "hero_description": "Facing your child’s surgery can feel overwhelming. This short, supportive guide brings together the latest clinical advice on preparing for your child’s surgery, with gentle tools to help you stay calm, grounded, and be the reassuring presence your child needs.",
         "primary_cta": { "label": "Start here", "href": "/section/start/" },
         "secondary_ctas": [
