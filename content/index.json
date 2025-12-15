@@ -4,7 +4,7 @@
         "hero_image": "images/hero.jpg",
         "hero_title": "Finding Your Strength",
         "hero_subtitle": "Why your calm matters, where to begin.",
-        "hero_description": "Facing your child’s surgery can be overwhelming. This short, supportive audio guide helps you feel steadier in the storm. Packed with calming reminders, breathing techniques, and practical mindset tools, it’s designed to lower your anxiety and help you be the reassuring presence your child needs.",
+        "hero_description": "Facing your child’s surgery can feel overwhelming. This short, supportive guide brings together the latest clinical advice on preparing for your child’s surgery, with gentle tools to help you stay calm, grounded, and be the reassuring presence your child needs.",
         "primary_cta": { "label": "Start here", "href": "/section/start/" },
         "secondary_ctas": [
             { "label": "Tools", "href": "/tools/" },
