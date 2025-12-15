@@ -19,7 +19,7 @@ const navItems = [
 ---
 
 <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
-  <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+  <div class="grid h-16 max-w-2xl w-full grid-cols-5 mx-auto">
       {navItems.map(({ href, label, icon: Icon, color, delay }) => {
         const hrefPath = stripTrailingSlash(href);
         const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
@@ -27,7 +27,7 @@ const navItems = [
         <a
             href={href}
             class:list={[
-                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
+                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 no-underline",
                 isActive ? "text-gray-800" : "text-gray-500 hover:text-gray-600"
             ]}
             aria-label={label}
@@ -36,9 +36,9 @@ const navItems = [
             class:list={["nav-icon", isActive ? "nav-icon-active" : "nav-icon-inactive"]}
             style={`--icon-glow: ${color}; color: ${color}; animation-delay: ${delay};`}
           >
-            <Icon size={24} stroke-width={isActive ? 2.5 : 2} stroke="currentColor" fill="currentColor" />
+            <Icon class="w-6 h-6" size={24} stroke-width={2} stroke="currentColor" fill="currentColor" />
           </span>
-          <span class:list={["text-[10px] font-medium", isActive ? "text-gray-800" : "text-gray-500"]}>{label}</span>
+          <span class:list={["text-xs leading-tight font-medium whitespace-nowrap", isActive ? "text-gray-800" : "text-gray-500"]}>{label}</span>
         </a>
       );
     })}

@@ -4,7 +4,11 @@
 
 @layer base {
   body {
-    @apply antialiased text-gray-800 bg-bg;
+    @apply antialiased text-gray-800 bg-bg overflow-x-hidden;
+  }
+
+  html {
+    @apply overflow-x-hidden;
   }
 }
 
@@ -28,11 +32,29 @@
       0 10px 28px rgba(31, 41, 55, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
     box-shadow: var(--shadow-a), 0 20px 40px var(--glow);
     transition: transform 300ms ease, box-shadow 900ms ease;
+    overflow: clip;
+    max-width: 100%;
+  }
+
+  @supports not (overflow: clip) {
+    .card-glow,
+    .pg-card {
+      overflow: hidden;
+    }
   }
 
   .card-glow:hover,
   .pg-card:hover {
     transform: translateY(-2px);
+  }
+
+  .pg-link-reset :where(a) {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .pg-link-reset :where(a:hover) {
+    text-decoration: underline;
   }
 }
 
@@ -60,5 +82,14 @@
   .pg-card,
   .pg-card-glow {
     animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-glow,
+  .pg-card {
+    box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1), 0 18px 36px var(--glow);
+    animation: none;
+    filter: drop-shadow(0 8px 18px rgba(31, 41, 55, 0.08));
   }
 }
