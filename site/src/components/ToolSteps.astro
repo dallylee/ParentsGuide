@@ -3,14 +3,19 @@ interface Props {
     tool: any;
 }
 const { tool } = Astro.props;
-const pastelColors = ['var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'];
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 ---
 
 <div class="space-y-6 py-4">
     {tool.steps?.map((step, idx) => (
         <div
-            class="pg-card pg-card-glow p-4 flex items-start"
-            style={`--glow-colour: color-mix(in srgb, ${pastelColors[idx % pastelColors.length]} 70%, transparent)`}
+            class="card-glow p-4 flex items-start"
+            style={`--glow: ${glows[idx % glows.length]}`}
         >
              <div class="w-8 h-8 rounded-full bg-pastel-3 flex-shrink-0 flex items-center justify-center font-bold text-green-800 mr-4">
                  {step.count || "•"}

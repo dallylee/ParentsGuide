@@ -8,8 +8,11 @@ const checklists = await getCollection('checklists');
 const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
 
-const pastelColors = [
-    'var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
 ];
 ---
 <Layout title="Calm Tools">
@@ -28,15 +31,15 @@ const pastelColors = [
                 {tools.map((tool, index) => (
                     <a
                         href={withBase(`tool/${tool.id}/`)}
-                        class="pg-card pg-card-glow block p-6 flex items-center relative transition-transform"
-                        style={`--glow-colour: color-mix(in srgb, ${pastelColors[index % 4]} 70%, transparent)`}
+                        class="card-glow block p-6 flex items-center relative transition-transform"
+                        style={`--glow: ${glows[index % glows.length]}`}
                         data-tool-card={tool.id}
                     >
                         <span class="tool-indicator" aria-hidden="true" data-indicator></span>
 
                         <div
                             class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl"
-                            style={`background-color: ${pastelColors[index % 4]}`}
+                            style={`background-color: ${glows[index % glows.length]}`}
                         >
                             {index + 1}
                         </div>
@@ -61,12 +64,12 @@ const pastelColors = [
                 {checklists.map((list, index) => (
                     <a
                         href={withBase(`checklist/${list.id}`)}
-                        class="pg-card pg-card-glow block p-6 flex items-center transition-transform"
-                        style={`--glow-colour: color-mix(in srgb, ${pastelColors[(index + 2) % 4]} 70%, transparent)`}
+                        class="card-glow block p-6 flex items-center transition-transform"
+                        style={`--glow: ${glows[(index + 2) % glows.length]}`}
                     >
                         <div
                             class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 text-2xl"
-                            style={`background-color: ${pastelColors[(index + 2) % 4]}`}
+                            style={`background-color: ${glows[(index + 2) % glows.length]}`}
                         >
                             ✓
                         </div>

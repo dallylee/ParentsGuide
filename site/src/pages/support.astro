@@ -6,6 +6,12 @@ import { ArrowLeft, Phone, AlertCircle } from 'lucide-astro';
 const contacts = contactsData.contacts;
 const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 ---
 
 <Layout title="Support">
@@ -24,8 +30,8 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
                 Emergency Contacts
             </h2>
             <div class="space-y-4">
-                {contacts.map(contact => (
-                    <div class="bg-red-50 border border-red-100 rounded-xl p-4 shadow-sm">
+                {contacts.map((contact, index) => (
+                    <div class="card-glow p-4 space-y-3" style={`--glow: ${glows[index % glows.length]}`}>
                         <h3 class="font-bold text-red-900 text-lg">{contact.name}</h3>
                         <p class="text-red-700 text-sm mb-3">{contact.description}</p>
                         <a href={`tel:${contact.number.replace(/\s/g, '')}`} class="flex items-center justify-center bg-white text-red-600 font-bold py-3 rounded-lg border border-red-200 shadow-sm hover:bg-red-50 transition-colors">
@@ -38,7 +44,7 @@ const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
         </section>
 
         <!-- Red Flags Link -->
-        <section class="bg-blue-50 border border-blue-100 rounded-xl p-6">
+        <section class="card-glow p-6" style={`--glow: ${glows[2]}`}>
             <h2 class="text-lg font-bold text-blue-900 mb-2">When to get extra support?</h2>
             <p class="text-blue-800 text-sm mb-4">Learn about the red flags for emotional and physical burnout.</p>
             <a href={withBase('section/support')} class="block text-center bg-blue-600 text-white font-bold py-3 rounded-lg shadow-soft hover:bg-blue-700 transition">
