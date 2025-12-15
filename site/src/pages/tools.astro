@@ -26,12 +26,17 @@ const pastelColors = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
                 {tools.map((tool, index) => (
-                    <a href={withBase(`tool/${tool.id}`)} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[index % 4]}80`}>
+                    <a href={withBase(`tool/${tool.id}/`)} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[index % 4]}80`}>
                         <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl" style={`background-color: ${pastelColors[index % 4]}`}>
                             {index + 1}
                         </div>
-                        <div>
-                            <h2 class="text-xl font-bold text-gray-900">{tool.data.name}</h2>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-bold text-gray-900">{tool.data.name}</h2>
+                                {tool.data.type === 'embed' && (
+                                    <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Audio</span>
+                                )}
+                            </div>
                             <p class="text-gray-600 text-sm">{tool.data.summary}</p>
                         </div>
                     </a>

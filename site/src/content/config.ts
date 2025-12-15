@@ -14,22 +14,30 @@ const sections = defineCollection({
 });
 
 const tools = defineCollection({
-	type: 'data',
-	schema: z.object({
-		id: z.string(),
-		name: z.string(),
-		summary: z.string().optional(),
-		type: z.string().optional(),
-		steps: z.array(z.object({
-			phase: z.string().optional(),
-			duration: z.number().optional(),
-			text: z.string().optional(),
-			count: z.number().optional(),
-			action: z.string().optional(),
-		})).optional(),
-		instructions: z.union([z.string(), z.array(z.string())]).optional(),
-		repeat: z.number().optional(),
-	})
+        type: 'data',
+        schema: z.object({
+                id: z.string(),
+                title: z.string().optional(),
+                name: z.string(),
+                summary: z.string().optional(),
+                type: z.string().optional(),
+                tags: z.array(z.string()).optional(),
+                steps: z.array(z.object({
+                        phase: z.string().optional(),
+                        duration: z.number().optional(),
+                        text: z.string().optional(),
+                        count: z.number().optional(),
+                        action: z.string().optional(),
+                })).optional(),
+                instructions: z.union([z.string(), z.array(z.string())]).optional(),
+                repeat: z.number().optional(),
+                embed: z.object({
+                        provider: z.string().optional(),
+                        share_url: z.string(),
+                        src: z.string(),
+                        height: z.number().optional(),
+                }).optional(),
+        })
 });
 
 const checklists = defineCollection({

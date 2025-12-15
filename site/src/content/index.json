@@ -171,6 +171,12 @@
             "title": "Worry Time",
             "data": "tools/worry-time.json",
             "summary": "Scheduled worry"
+        },
+        {
+            "id": "podcast-episode-01",
+            "title": "Podcast episode",
+            "data": "tools/podcast-episode-01.json",
+            "image": "images/calm.jpg"
         }
     ],
     "checklists": [

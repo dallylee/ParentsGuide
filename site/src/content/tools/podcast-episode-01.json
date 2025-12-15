@@ -1,0 +1,14 @@
+{
+  "id": "podcast-episode-01",
+  "type": "embed",
+  "title": "Podcast episode",
+  "name": "Podcast episode",
+  "summary": "A short supportive audio guide to help you feel steadier and calmer.",
+  "tags": ["audio", "podcast", "calm"],
+  "embed": {
+    "provider": "spotify",
+    "share_url": "https://open.spotify.com/episode/60dXfw2MXleAkQhfZ5r2BV?si=z7uGObwvTHe7GfYj5-b0tA",
+    "src": "https://open.spotify.com/embed/episode/60dXfw2MXleAkQhfZ5r2BV",
+    "height": 152
+  }
+}

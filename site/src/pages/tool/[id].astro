@@ -21,7 +21,7 @@ const { entry } = Astro.props;
 
 <Layout title={entry.data.name}>
      <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href={withBase('tools')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
+        <a href={withBase('tools/')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
             <ArrowLeft size={24} />
         </a>
         <span class="ml-2 font-semibold text-gray-800">{entry.data.name}</span>
@@ -32,7 +32,30 @@ const { entry } = Astro.props;
             <p class="text-gray-600 text-lg leading-relaxed">{entry.data.summary}</p>
         </div>
 
-        {entry.data.type === 'timer' ? (
+        {entry.data.type === 'embed' && entry.data.embed ? (
+            <div class="space-y-4">
+                <div class="mt-4 w-full max-w-xl">
+                    <iframe
+                        src={entry.data.embed.src}
+                        width="100%"
+                        height={entry.data.embed.height ?? 152}
+                        frameborder="0"
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"
+                        title={entry.data.name}
+                        class="rounded-lg border border-black/5"
+                    ></iframe>
+                </div>
+                <a
+                    href={entry.data.embed.share_url}
+                    class="inline-flex items-center text-emerald-700 hover:text-emerald-900 font-medium"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                >
+                    Open in Spotify
+                </a>
+            </div>
+        ) : entry.data.type === 'timer' ? (
             <ToolBreathing tool={entry.data} />
         ) : (
             <ToolSteps tool={entry.data} />
