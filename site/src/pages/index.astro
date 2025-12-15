@@ -44,15 +44,6 @@ const hrefWithBase = (href) =>
                         >
                             {home.primary_cta.label}
                         </a>
-
-                        {home.secondary_ctas?.map((cta) => (
-                            <a
-                                href={hrefWithBase(cta.href)}
-                                class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-base font-medium border border-white/40 text-white hover:bg-white/10 min-h-[44px]"
-                            >
-                                {cta.label}
-                            </a>
-                        ))}
                     </div>
                 </section>
             </div>
