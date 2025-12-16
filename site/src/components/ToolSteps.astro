@@ -30,7 +30,7 @@ const glows = [
 
     {tool.instructions && (
         <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-100">
-             <h3 class="font-bold text-yellow-800 mb-2">Instructions</h3>
+            <h3 class="font-normal text-yellow-800 mb-2">Instructions</h3>
              <ul class="list-disc list-inside space-y-2 text-yellow-900">
                 {Array.isArray(tool.instructions) ? tool.instructions.map(i => <li>{i}</li>) : <li>{tool.instructions}</li>}
              </ul>
