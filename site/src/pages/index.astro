@@ -8,24 +8,22 @@ const hrefWithBase = (href) =>
     href.startsWith("/") ? `${base}${href.replace(/^\/+/, "")}` : href;
 ---
 <Layout title="A Parent's Guide">
-    <main class="min-h-[100svh] relative overflow-hidden">
+    <main class="min-h-[100svh] relative overflow-hidden bg-white">
         <img
             src={`${base}${home.hero_image.replace(/^\/+/, "")}`}
             alt="Calming background image"
-            class="absolute inset-0 h-full w-full object-cover"
+            class="absolute inset-0 h-full w-full object-cover bg-white"
             loading="eager"
             decoding="async"
         />
 
-        <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/65"></div>
-
         <div class="relative z-10 min-h-[100svh] px-5 sm:px-8">
             <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14">
                 <header class="max-w-2xl mx-auto text-center">
-                    <h1 class="text-white text-3xl sm:text-4xl font-semibold leading-tight hero-reveal hero-reveal-1">
+                    <h1 class="text-black text-3xl sm:text-4xl font-semibold leading-tight hero-reveal hero-reveal-1">
                         {home.hero_title}
                     </h1>
-                    <p class="mt-3 text-white/90 text-base sm:text-lg leading-relaxed hero-reveal hero-reveal-2">
+                    <p class="mt-3 text-black text-base sm:text-lg leading-relaxed hero-reveal hero-reveal-2">
                         {home.hero_subtitle}
                     </p>
                 </header>
@@ -33,7 +31,7 @@ const hrefWithBase = (href) =>
                 <div aria-hidden="true"></div>
 
                 <section class="max-w-2xl mx-auto pb-6 text-center">
-                    <p class="mt-0 text-white/90 text-lg sm:text-xl leading-relaxed max-w-prose mx-auto hero-reveal hero-reveal-3">
+                    <p class="mt-0 text-black text-lg sm:text-xl leading-relaxed max-w-prose mx-auto hero-reveal hero-reveal-3">
                         {home.hero_description ?? ""}
                     </p>
                 </section>
