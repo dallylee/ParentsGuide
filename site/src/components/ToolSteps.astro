@@ -1,4 +1,6 @@
 ---
+import Card from './Card.astro';
+
 interface Props {
     tool: any;
 }
@@ -11,20 +13,20 @@ const glows = [
 ];
 ---
 
-<div class="space-y-6 py-4">
-    {tool.steps?.map((step, idx) => (
-        <div
-            class="card-glow p-4 flex items-start"
-            style={`--glow: ${glows[idx % glows.length]}`}
-        >
-             <div class="w-8 h-8 rounded-full bg-pastel-3 flex-shrink-0 flex items-center justify-center font-bold text-green-800 mr-4">
-                 {step.count || "•"}
-             </div>
-             <div>
-                 <p class="text-gray-800 font-medium text-lg">{step.action || step.text}</p>
-             </div>
-        </div>
-    ))}
+    <div class="space-y-6 py-4">
+        {tool.steps?.map((step, idx) => (
+            <Card
+                class="p-4 flex items-start"
+                style={`--glow: ${glows[idx % glows.length]}`}
+            >
+                 <div class="w-8 h-8 rounded-full bg-pastel-3 flex-shrink-0 flex items-center justify-center font-bold text-green-800 mr-4">
+                     {step.count || "•"}
+                 </div>
+                 <div>
+                     <p class="text-gray-800 font-medium text-lg">{step.action || step.text}</p>
+                 </div>
+            </Card>
+        ))}
 
     {tool.instructions && (
         <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-100">

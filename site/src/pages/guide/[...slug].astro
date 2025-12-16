@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
 
 export async function getStaticPaths() {
   const guideEntries = await getCollection('guide');
@@ -46,26 +47,26 @@ const glows = [
 		</header>
 
                 <main class="max-w-3xl mx-auto px-6 py-10">
-                        <article class="prose prose-slate prose-lg max-w-none card-glow p-8 md:p-12" style={`--glow: ${glows[0]}`}>
+                        <Card as="article" class="prose prose-slate prose-lg max-w-none p-8 md:p-12" style={`--glow: ${glows[0]}`}>
                                 <Content />
-                        </article>
+                        </Card>
 
                         {/* Navigation Footer */}
                         <div class="mt-8 grid grid-cols-2 gap-4">
                                 {prevEntry ? (
-                                        <a href={withBase(`guide/${prevEntry.slug}`)} class="block p-4 card-glow transition group" style={`--glow: ${glows[1]}`}>
+                                        <Card as="a" href={withBase(`guide/${prevEntry.slug}`)} class="p-4 transition group" style={`--glow: ${glows[1]}`}>
                                                 <span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Previous</span>
                                                 <span class="block text-slate-700 font-medium group-hover:text-blue-600">{prevEntry.data.title}</span>
-                                        </a>
+                                        </Card>
                                 ) : (
                                         <div />
                                 )}
 
                                 {nextEntry ? (
-                                        <a href={withBase(`guide/${nextEntry.slug}`)} class="block p-4 card-glow text-right transition group" style={`--glow: ${glows[2]}`}>
+                                        <Card as="a" href={withBase(`guide/${nextEntry.slug}`)} class="p-4 text-right transition group" style={`--glow: ${glows[2]}`}>
                                                 <span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Next</span>
                                                 <span class="block text-slate-700 font-medium group-hover:text-blue-600">{nextEntry.data.title}</span>
-                                        </a>
+                                        </Card>
 				) : (
 					<div />
 				)}

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
 import { ArrowLeft } from 'lucide-astro';
 
 const tools = await getCollection('tools');
@@ -34,9 +35,10 @@ const glows = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
                 {tools.map((tool, index) => (
-                    <a
+                    <Card
+                        as="a"
                         href={withBase(`tool/${tool.id}/`)}
-                        class="card-glow block p-6 flex items-center relative transition-transform w-full pg-link-reset"
+                        class="p-6 flex items-center"
                         style={`--glow: ${glows[index % glows.length]}`}
                         data-tool-card={tool.id}
                     >
@@ -57,7 +59,7 @@ const glows = [
                             </div>
                             <p class="text-gray-600 text-sm">{tool.data.summary}</p>
                         </div>
-                    </a>
+                    </Card>
                 ))}
             </div>
         </div>
@@ -67,9 +69,10 @@ const glows = [
             <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Preparation Checklists</h2>
             <div class="space-y-4">
                 {checklists.map((list, index) => (
-                    <a
+                    <Card
+                        as="a"
                         href={withBase(`checklist/${list.id}`)}
-                        class="card-glow block p-6 flex items-center transition-transform w-full pg-link-reset"
+                        class="p-6 flex items-center"
                         style={`--glow: ${glows[(index + 2) % glows.length]}`}
                     >
                         <div
@@ -82,7 +85,7 @@ const glows = [
                             <h2 class="text-xl font-bold text-gray-900">{list.data.title}</h2>
                             <p class="text-gray-600 text-sm">Interactive checklist</p>
                         </div>
-                    </a>
+                    </Card>
                 ))}
             </div>
         </div>

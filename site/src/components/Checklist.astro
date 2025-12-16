@@ -1,4 +1,6 @@
 ---
+import Card from './Card.astro';
+
 interface Props {
     checklist: any;
 }
@@ -15,13 +17,14 @@ const glows = [
         <ul class="space-y-3">
             {checklist.items.map((item, i) => (
                 <li class="flex items-start">
-                    <label
-                        class="card-glow flex items-center space-x-3 cursor-pointer p-3 w-full transition"
+                    <Card
+                        as="label"
+                        class="flex items-center space-x-3 cursor-pointer p-3 w-full transition"
                         style={`--glow: ${glows[i % glows.length]}`}
                     >
                          <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-item-${i}`} />
                          <span class="text-gray-700 font-medium">{item}</span>
-                    </label>
+                    </Card>
                 </li>
             ))}
         </ul>
@@ -33,13 +36,14 @@ const glows = [
             <ul class="space-y-3">
                 {section.items.map((item, i) => (
                     <li class="flex items-start">
-                        <label
-                            class="card-glow flex items-center space-x-3 cursor-pointer p-3 w-full transition"
+                        <Card
+                            as="label"
+                            class="flex items-center space-x-3 cursor-pointer p-3 w-full transition"
                             style={`--glow: ${glows[(sIdx + i) % glows.length]}`}
                         >
                             <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-section-${sIdx}-item-${i}`} />
                             <span class="text-gray-700 font-medium">{item}</span>
-                        </label>
+                        </Card>
                     </li>
                 ))}
             </ul>
