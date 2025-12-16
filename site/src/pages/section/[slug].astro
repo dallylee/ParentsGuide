@@ -189,10 +189,10 @@ const nextCta = nextSection
                     <p class="text-base text-slate-800 md:text-lg font-medium">{entry.data.summary}</p>
                 </div>
                 {introHtml && (
-                    <div class="prose prose-slate mt-4 max-w-none text-base leading-relaxed prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium pg-link-reset" set:html={introHtml} />
+                    <div class="prose prose-slate guide-content mt-4 max-w-none text-base leading-relaxed prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium pg-link-reset" set:html={introHtml} />
                 )}
                 {!sections.length && fallbackHtml && (
-                    <div class="prose prose-slate mt-4 max-w-none text-base leading-relaxed prose-h2:text-xl prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={fallbackHtml} />
+                    <div class="prose prose-slate guide-content mt-4 max-w-none text-base leading-relaxed prose-h2:text-xl prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={fallbackHtml} />
                 )}
             </Card>
 
@@ -202,7 +202,7 @@ const nextCta = nextSection
                         <div class="mt-1 h-2.5 w-2.5 rounded-full bg-gradient-to-br from-indigo-200 via-indigo-300 to-indigo-400 shadow-[0_0_12px_rgba(79,70,229,0.35)]"></div>
                         <h2 class="text-xl font-semibold text-slate-900 md:text-2xl">{section.title}</h2>
                     </div>
-                    <div class="prose prose-slate mt-3 max-w-none text-base leading-relaxed prose-h3:text-lg prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={section.html} />
+                    <div class="prose prose-slate guide-content mt-3 max-w-none text-base leading-relaxed prose-h3:text-lg prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={section.html} />
                 </Card>
             ))}
 
