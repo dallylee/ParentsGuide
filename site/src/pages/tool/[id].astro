@@ -39,6 +39,15 @@ const { entry } = Astro.props;
                 <p class="text-slate-800 text-lg leading-relaxed font-medium">{entry.data.summary}</p>
             </div>
 
+            <div class="mt-3 text-sm text-slate-700 rounded-lg bg-emerald-50/80 border border-emerald-100 px-4 py-3">
+                <p class="font-semibold text-emerald-900 mb-1">Quick how-to</p>
+                <ul class="space-y-1 list-disc pl-5">
+                    <li>Select how many cycles you want to run below.</li>
+                    <li>Start begins the sequence, Pause holds the timer, Restart resets everything.</li>
+                    <li>Breathe in through your nose and out slowly through your mouth.</li>
+                </ul>
+            </div>
+
         {entry.id === 'grounding-54321' ? (
             <ToolGrounding tool={entry.data} />
         ) : entry.id === 'worry-time' ? (
