@@ -1,0 +1,151 @@
+---
+interface Props {
+    imgSrc: string;
+    typingTargets?: string[];
+}
+
+const { imgSrc, typingTargets = [] } = Astro.props;
+const base = import.meta.env.BASE_URL ?? '/';
+const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
+---
+<div
+    class="absolute inset-0 h-full w-full"
+    data-hero-intro
+    data-typing-targets={JSON.stringify(typingTargets)}
+>
+    <img
+        src={imgSrc}
+        alt="Calming background image"
+        class="absolute inset-0 h-full w-full object-cover bg-white"
+        loading="eager"
+        decoding="async"
+    />
+    <video
+        class="absolute inset-0 h-full w-full object-cover hero-intro-video"
+        src={videoSrc}
+        muted
+        autoplay
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+    ></video>
+</div>
+
+<script>
+    const container = document.querySelector('[data-hero-intro]');
+    const typingSelectors = JSON.parse(container?.getAttribute('data-typing-targets') ?? '[]');
+    // These timings align the typing to finish with the 15s animation.
+    const typingStarts = [11.5, 12.8, 14.0];
+    const videoDurationSeconds = 15.0;
+    const fadeStartSeconds = 14.7; // Fade begins here to hide the video before/at the end.
+    const fadeDurationSeconds = 0.7;
+
+    const introKey = 'pg_hero_intro_seen';
+
+    const video = container?.querySelector('video');
+
+    if (container && video) {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let introSeen = false;
+        try {
+            introSeen = Boolean(localStorage.getItem(introKey));
+        } catch (error) {
+            // If storage is blocked, treat as unseen but do not break the experience.
+        }
+
+        const skipIntro = prefersReduced || introSeen;
+
+        if (skipIntro) {
+            video.style.display = 'none';
+        } else {
+            // Mark as seen immediately; remove via localStorage.removeItem('pg_hero_intro_seen') to replay.
+            try {
+                localStorage.setItem(introKey, '1');
+            } catch (error) {
+                // Non-blocking.
+            }
+
+            document.body.classList.add('hero-intro-paused');
+
+            const typedNodes = typingSelectors
+                .map((selector, index) => {
+                    const el = selector ? document.querySelector(selector) : null;
+                    if (!el) return null;
+                    const fullText = el.textContent ?? '';
+                    el.textContent = '';
+                    el.setAttribute('aria-live', 'polite');
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
+                    const start = typingStarts[index] ?? typingStarts[typingStarts.length - 1] ?? 0;
+                    return { el, fullText, start };
+                })
+                .filter(Boolean);
+
+            const typeText = (node) => {
+                const { el, fullText, start } = node;
+                if (!el) return;
+                const safeLength = Math.max(1, fullText.length);
+                // Adjust typing speed by changing videoDurationSeconds or these per-target start times.
+                const duration = Math.max(0, videoDurationSeconds - start);
+                const step = duration / safeLength;
+
+                setTimeout(() => {
+                    fullText.split('').forEach((char, idx) => {
+                        setTimeout(() => {
+                            el.textContent = fullText.slice(0, idx + 1);
+                        }, step * 1000 * (idx + 1));
+                    });
+                    setTimeout(() => {
+                        el.textContent = fullText;
+                    }, duration * 1000);
+                }, start * 1000);
+            };
+
+            typedNodes.forEach(typeText);
+
+            const startVideo = () => {
+                video.currentTime = 0;
+                video.play().catch(() => {
+                    // Autoplay might be blocked; fall back to showing the final frame.
+                    video.style.opacity = '0';
+                });
+            };
+
+            startVideo();
+
+            setTimeout(() => {
+                video.classList.add('hero-intro-video--fade');
+            }, fadeStartSeconds * 1000);
+
+            setTimeout(() => {
+                video.pause();
+                video.currentTime = 0;
+                video.style.pointerEvents = 'none';
+                video.style.visibility = 'hidden';
+                document.body.classList.remove('hero-intro-paused');
+            }, (fadeStartSeconds + fadeDurationSeconds) * 1000);
+
+            setTimeout(() => {
+                document.body.classList.remove('hero-intro-paused');
+            }, videoDurationSeconds * 1000);
+        }
+    }
+</script>
+
+<style>
+    .hero-intro-video {
+        opacity: 1;
+        transition: opacity 700ms ease;
+        background: #fff;
+    }
+
+    .hero-intro-video--fade {
+        opacity: 0;
+    }
+
+    :global(body.hero-intro-paused .hero-reveal) {
+        animation: none !important;
+        opacity: 0;
+        transform: none;
+    }
+</style>

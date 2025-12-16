@@ -1,20 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import HeroBackgroundIntro from '../components/HeroBackgroundIntro.astro';
 import siteIndex from '../../../content/index.json';
 
 const home = siteIndex.home;
 const base = import.meta.env.BASE_URL;
 const hrefWithBase = (href) =>
     href.startsWith("/") ? `${base}${href.replace(/^\/+/, "")}` : href;
+const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
 ---
 <Layout title="A Parent's Guide">
     <main class="min-h-[100svh] relative overflow-hidden bg-white">
-        <img
-            src={`${base}${home.hero_image.replace(/^\/+/, "")}`}
-            alt="Calming background image"
-            class="absolute inset-0 h-full w-full object-cover bg-white"
-            loading="eager"
-            decoding="async"
+        <HeroBackgroundIntro
+            imgSrc={heroImgSrc}
+            typingTargets={[".hero-reveal-1", ".hero-reveal-2", ".hero-reveal-3"]}
         />
 
         <div class="relative z-10 min-h-[100svh] px-5 sm:px-8">
