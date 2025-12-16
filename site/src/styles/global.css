@@ -110,11 +110,31 @@
   line-height: 1.65;
 }
 
-@media (max-width: 420px) {
+/* Maintain justified body copy on mobile; only relax for ultra-narrow screens to avoid rivers */
+@media (max-width: 360px) {
   .pg-card :where(p, li, blockquote),
   .guide-content :where(p, li, blockquote),
   .timeline-content :where(p, li, blockquote) {
     text-align: left;
+  }
+}
+
+/* Mobile glow intensity: boost colour/opacity without altering blur, inset, or spread */
+@media (max-width: 639px) {
+  :root {
+    --glow-1: rgba(207, 232, 255, 0.78);
+    --glow-2: rgba(255, 227, 216, 0.74);
+    --glow-3: rgba(230, 255, 216, 0.7);
+    --glow-4: rgba(245, 232, 255, 0.78);
+  }
+
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    opacity: 0.24;
+    background:
+      radial-gradient(75% 110% at 16% 22%, color-mix(in srgb, var(--glow) 94%, white 6%) 0%, transparent 62%),
+      radial-gradient(80% 110% at 84% 78%, color-mix(in srgb, var(--glow) 92%, white 8%) 0%, transparent 66%);
   }
 }
 
