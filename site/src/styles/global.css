@@ -51,48 +51,42 @@
   --pastel-2: #ffe3d8;
   --pastel-3: #e6ffd8;
   --pastel-4: #f5e8ff;
-  --glow-1: rgba(207, 232, 255, 0.75);
-  --glow-2: rgba(255, 227, 216, 0.7);
-  --glow-3: rgba(230, 255, 216, 0.7);
-  --glow-4: rgba(245, 232, 255, 0.75);
+  --glow-1: rgba(207, 232, 255, 0.6);
+  --glow-2: rgba(255, 227, 216, 0.56);
+  --glow-3: rgba(230, 255, 216, 0.54);
+  --glow-4: rgba(245, 232, 255, 0.6);
 }
 
 @layer components {
   .card-glow,
-  .pg-card {
+  .pg-card,
+  .pg-card-glow {
     @apply rounded-2xl border border-black/5 bg-white;
     position: relative;
     isolation: isolate;
     --glow: var(--glow-1);
-    --shadow-a: 0 10px 30px rgba(31, 41, 55, 0.1), 0 18px 38px rgba(0, 0, 0, 0.08),
-      0 10px 28px rgba(31, 41, 55, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
-    box-shadow: var(--shadow-a), 0 20px 40px var(--glow);
-    transition: transform 300ms ease, box-shadow 900ms ease;
+    --shadow-ambient: 0 8px 20px rgba(31, 41, 55, 0.08);
+    box-shadow: var(--shadow-ambient), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    transition: transform 200ms ease, box-shadow 240ms ease;
     overflow: visible;
     max-width: 100%;
   }
 
-  .card-glow::before,
-  .pg-card::before,
-  .pg-card-glow::before {
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
     content: "";
     position: absolute;
-    inset: -12px -10px;
+    inset: 6px;
     border-radius: inherit;
     background:
-      radial-gradient(80% 120% at 0% 50%, color-mix(in srgb, var(--glow) 90%, white 10%) 0%, transparent 52%),
-      radial-gradient(80% 120% at 100% 50%, color-mix(in srgb, var(--glow) 90%, white 10%) 0%, transparent 52%),
-      linear-gradient(90deg, color-mix(in srgb, var(--glow) 55%, white 45%) 0%, transparent 22%, transparent 78%, color-mix(in srgb, var(--glow) 55%, white 45%) 100%);
-    filter: blur(26px) saturate(1.05);
-    opacity: 0.9;
+      radial-gradient(75% 110% at 16% 22%, color-mix(in srgb, var(--glow) 90%, white 10%) 0%, transparent 62%),
+      radial-gradient(80% 110% at 84% 78%, color-mix(in srgb, var(--glow) 88%, white 12%) 0%, transparent 66%);
+    filter: blur(12px);
+    opacity: 0.18;
     z-index: -1;
     pointer-events: none;
-    transition: opacity 800ms ease, filter 1200ms ease;
-  }
-
-  .card-glow:hover,
-  .pg-card:hover {
-    transform: translateY(-2px);
+    transition: opacity 200ms ease, filter 220ms ease;
   }
 
   .pg-link-reset :where(a) {
@@ -105,62 +99,47 @@
   }
 }
 
-@keyframes glowPulse {
-  0% {
-    box-shadow: var(--shadow-a), 0 24px 44px var(--glow);
-  }
-  50% {
-    box-shadow: var(--shadow-a), 0 28px 60px var(--glow);
-  }
-  100% {
-    box-shadow: var(--shadow-a), 0 24px 44px var(--glow);
-  }
-}
-
-@keyframes glowHueShift {
-  0% {
-    filter: blur(26px) saturate(1.05) hue-rotate(0deg);
-  }
-  50% {
-    filter: blur(26px) saturate(1.05) hue-rotate(14deg);
-  }
-  100% {
-    filter: blur(26px) saturate(1.05) hue-rotate(28deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
+@media (min-width: 640px) {
   .card-glow,
+  .pg-card,
   .pg-card-glow {
-    animation: glowPulse 12s ease-in-out infinite;
+    --shadow-ambient: 0 12px 28px rgba(31, 41, 55, 0.1);
+    box-shadow: var(--shadow-ambient), 0 0 0 1px rgba(0, 0, 0, 0.04), 0 14px 32px color-mix(in srgb, var(--glow) 88%, transparent 12%);
   }
 
-  .card-glow::before,
-  .pg-card::before,
-  .pg-card-glow::before {
-    animation: glowHueShift 22s linear infinite;
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    inset: -6px;
+    filter: blur(18px);
+    opacity: 0.3;
+  }
+}
+
+@media (hover: hover) {
+  .card-glow:hover,
+  .pg-card:hover,
+  .pg-card-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(31, 41, 55, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04),
+      0 16px 34px color-mix(in srgb, var(--glow) 94%, transparent 6%);
+  }
+
+  .card-glow:hover::after,
+  .pg-card:hover::after,
+  .pg-card-glow:hover::after {
+    opacity: 0.38;
+    filter: blur(20px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card-glow,
   .pg-card,
-  .pg-card-glow {
-    animation: none;
-  }
-
-  .card-glow::before,
-  .pg-card::before,
-  .pg-card-glow::before {
-    animation: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .card-glow,
-  .pg-card {
-    box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1), 0 18px 36px var(--glow);
-    animation: none;
-    filter: drop-shadow(0 8px 18px rgba(31, 41, 55, 0.08));
+  .pg-card-glow,
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    transition: none;
   }
 }
