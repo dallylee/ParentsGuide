@@ -8,10 +8,17 @@ const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => `${base}${path.replace(/^\/+/, "")}`;
 
 const preferredSlugs = ['timeline', 'hospital-day', 'home-recovery', 'discharge'];
-const sections = siteIndex.sections ?? [];
+const sections = (siteIndex.sections ?? []).map((section) => ({
+    ...section,
+    group: section.group ?? 'guide'
+}));
+
+const timelineSections = sections
+    .filter((section) => section.group === 'timeline')
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
 const preferredPhases = preferredSlugs
-    .map((slug) => sections.find((section) => section.slug === slug))
+    .map((slug) => timelineSections.find((section) => section.slug === slug))
     .filter(Boolean);
 
 const fallbackPhases = sections.filter((section) => {
@@ -20,7 +27,9 @@ const fallbackPhases = sections.filter((section) => {
     return tags.includes('timeline') || title.includes('timeline') || title.includes('hospital');
 });
 
-const phases = preferredPhases.length > 0 ? preferredPhases : fallbackPhases;
+const phases = timelineSections.length > 0
+    ? (preferredPhases.length > 0 ? preferredPhases : timelineSections)
+    : fallbackPhases;
 const glows = [
     'rgba(207, 232, 255, 0.75)',
     'rgba(255, 227, 216, 0.7)',

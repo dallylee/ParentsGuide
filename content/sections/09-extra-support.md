@@ -1,6 +1,7 @@
 ---
 title: "When You Need Extra Support"
 slug: "support"
+group: "timeline"
 order: 9
 menu: "primary"
 summary: "Red flags and avenues for professional help."

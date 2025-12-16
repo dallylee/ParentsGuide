@@ -1,6 +1,7 @@
 ---
 title: "Your Daily Self-Care Routine"
 slug: "self-care"
+group: "timeline"
 order: 8
 menu: "primary"
 summary: "Simple, non-negotiable actions for your wellbeing."

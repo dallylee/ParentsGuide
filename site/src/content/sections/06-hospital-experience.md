@@ -1,6 +1,7 @@
 ---
 title: "Navigating the Hospital Experience"
 slug: "hospital"
+group: "timeline"
 order: 6
 menu: "primary"
 summary: "Surgery day, coping while waiting, and reunion."

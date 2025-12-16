@@ -1,6 +1,7 @@
 ---
 title: "Bringing Your Child Home"
 slug: "recovery"
+group: "timeline"
 order: 7
 menu: "primary"
 summary: "Creating a healing space and preventing burnout."

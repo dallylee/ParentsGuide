@@ -1,6 +1,7 @@
 ---
 title: "Your Toolkit for Staying Calm"
 slug: "toolkit"
+group: "guide"
 order: 3
 menu: "primary"
 summary: "Practical tools to manage thoughts and body response."
