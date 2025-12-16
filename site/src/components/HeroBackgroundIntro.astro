@@ -67,7 +67,7 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
 
         if (skipIntro) {
             video.style.display = 'none';
-            showStaticText(false);
+            showStaticText(true);
         } else {
             document.body.classList.add('hero-intro-paused');
 
@@ -161,12 +161,13 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
 
     :global(body.hero-intro-paused .hero-reveal) {
         animation: none !important;
-        opacity: 0;
+    opacity: 0;
         transform: translateY(6px);
         transition: opacity 420ms ease, transform 420ms ease;
     }
 
-    :global(.hero-reveal.is-on) {
+:global(.hero-reveal.is-on),
+:global(body.hero-intro-paused .hero-reveal.is-on) {
         opacity: 1;
         transform: translateY(0);
     }
