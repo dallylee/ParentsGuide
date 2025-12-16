@@ -42,13 +42,13 @@ const ogImage = Astro.site ? new URL(resolvedImagePath, Astro.site).toString() :
         <meta property="twitter:description" content={description} />
         <meta property="twitter:image" content={ogImage} />
         <link
-                href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap"
+                href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;500;700&display=swap"
                 rel="stylesheet"
         />
 
 		<title>{title}</title>
 	</head>
-        <body class="min-h-screen bg-bg pb-28 text-gray-800 overflow-x-hidden">
+        <body class="min-h-screen bg-bg pb-28 text-slate-800 font-medium overflow-x-hidden">
         <main class="max-w-2xl w-full mx-auto min-h-screen bg-bg shadow-2xl shadow-gray-200/50 relative px-4 sm:px-6 overflow-x-hidden">
                     <slot />
             <BottomNav />

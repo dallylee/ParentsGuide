@@ -17,7 +17,7 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
 ---
 
 <section class="space-y-5" data-breathing-root>
-    <div class="flex items-center justify-between text-sm text-gray-700">
+    <div class="flex items-center justify-between text-sm text-slate-800">
         <span data-cycle-display>Cycle 1 of {baseCycles}</span>
         <span data-total-remaining>~{totalCycleSeconds * baseCycles}s total</span>
     </div>
@@ -35,12 +35,12 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
                 <div class="text-5xl font-bold text-gray-900 leading-none" data-phase-count>
                     {phases[0]?.duration ?? 4}
                 </div>
-                <div class="text-sm text-gray-700 mt-2 font-semibold" data-phase-instruction>
+                <div class="text-sm text-slate-800 mt-2 font-semibold" data-phase-instruction>
                     Inhale for {phases[0]?.duration ?? 4}
                 </div>
             </div>
         </div>
-        <p class="text-center text-sm text-gray-600 mt-3 font-medium">
+        <p class="text-center text-sm text-slate-800 mt-3 font-medium">
             Breathe in through your nose, breathe out slowly through your mouth.
         </p>
         <p class="text-center text-xs text-emerald-700 mt-1">Tap the circle for a quick preview before you start.</p>

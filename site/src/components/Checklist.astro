@@ -23,7 +23,7 @@ const glows = [
                         style={`--glow: ${glows[i % glows.length]}`}
                     >
                          <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-item-${i}`} />
-                         <span class="text-gray-700 font-medium">{item}</span>
+                         <span class="text-slate-800 font-medium">{item}</span>
                     </Card>
                 </li>
             ))}
@@ -42,7 +42,7 @@ const glows = [
                             style={`--glow: ${glows[(sIdx + i) % glows.length]}`}
                         >
                             <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-section-${sIdx}-item-${i}`} />
-                            <span class="text-gray-700 font-medium">{item}</span>
+                            <span class="text-slate-800 font-medium">{item}</span>
                         </Card>
                     </li>
                 ))}
