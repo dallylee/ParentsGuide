@@ -6,804 +6,445 @@ interface Props {
 const { tool } = Astro.props;
 ---
 
-<section class="space-y-5 pb-24" data-worry-root>
-    <div class="rounded-xl bg-white border border-black/5 shadow-soft shadow-[0_0_22px_rgba(99,102,241,0.08)] p-4 sm:p-5">
-        <p class="text-gray-900 font-semibold text-lg">“Worry Time” is a well-established CBT technique with strong clinical backing.</p>
-        <p class="text-slate-800 text-base mt-2 font-medium leading-relaxed">It addresses anticipatory anxiety, which complements grounding and breathing rather than replacing them.</p>
+<section class="pb-24" data-worry-root>
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Worry Time</h1>
+        <p class="text-slate-600 text-base mt-2 font-medium" data-subtitle-setup>Contain your worries to a specific time of day.</p>
+        <p class="text-slate-600 text-base mt-2 font-medium hidden" data-subtitle-dashboard>Contain your worries to a specific time of day</p>
     </div>
 
-    <!-- 1. Active Timer (Primary Focus) -->
-    <div class="rounded-lg border border-gray-100 bg-gray-50 p-4 space-y-3">
-        <div class="flex items-center justify-between">
+    <!-- STATE 1: SETUP -->
+    <div class="hidden" data-state="setup">
+        <div class="rounded-xl bg-white border border-black/5 shadow-soft p-5 lg:p-6 space-y-6">
             <div>
-                <p class="text-base text-slate-800 font-medium">Session status</p>
-                <div class="flex items-center gap-2">
-                    <p class="font-semibold text-gray-900" data-session-state>Idle</p>
-                    <button type="button" class="text-xs text-emerald-700 font-medium hover:underline" data-toggle-setup>Change Settings</button>
+                <h2 class="text-xl font-bold text-gray-900 mb-2">Welcome to Worry Time</h2>
+                <p class="text-slate-700 leading-relaxed">
+                    Set your daily worry time to get started. This CBT technique helps reduce constant anxiety by giving worries a designated time slot.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-base font-semibold text-gray-900 mb-2">Daily worry time</label>
+                <div class="relative">
+                    <input type="time" class="w-full rounded-xl border-gray-200 p-4 text-lg font-medium text-gray-900 bg-gray-50 focus:bg-white focus:border-emerald-500 transition-colors shadow-sm" data-time-input />
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-emerald-700 tabular-nums" data-session-time>00:00</p>
+
+            <div>
+                <label class="block text-base font-semibold text-gray-900 mb-2">Duration</label>
+                <div class="grid grid-cols-4 gap-2" data-duration-buttons>
+                    {[10, 15, 20, 30].map((min) => (
+                        <button type="button" class="duration-chip" data-value={min}>{min} min</button>
+                    ))}
+                </div>
+            </div>
+
+            <button type="button" class="w-full btn-primary" data-save-setup>
+                Start Using Worry Time
+            </button>
         </div>
-        <div class="flex flex-wrap gap-2">
-            <button type="button" class="control-btn primary flex-1" data-start-session>Start worry timer</button>
-            <button type="button" class="control-btn ghost flex-1" data-close-session>Reset / End</button>
+
+        <div class="mt-6 rounded-xl bg-white border border-black/5 shadow-soft overflow-hidden">
+            <details class="group">
+                <summary class="flex items-center justify-between p-4 cursor-pointer list-none bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <span class="font-semibold text-emerald-800">How this works</span>
+                    <span class="text-emerald-600 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-5 border-t border-gray-100 text-slate-700 space-y-3 leading-relaxed">
+                    <p>Worry Time helps you manage anxiety by postponing worries to a specific time later in the day.</p>
+                    <p>When a worry pops up, write it down and tell yourself "I'll worry about this later". This helps you stay focused on the present moment.</p>
+                </div>
+            </details>
         </div>
     </div>
 
-    <!-- 2. Notes List (Primary Focus) -->
-    <div class="space-y-3" data-notes-area>
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900">Worry List</h3>
-            <span class="text-base text-slate-800" data-note-count>0 items</span>
+    <!-- STATE 2: DASHBOARD -->
+    <div class="hidden space-y-6" data-state="dashboard">
+        <!-- Countdown Card -->
+        <div class="rounded-xl bg-white border border-black/5 shadow-soft p-6 text-center space-y-1">
+            <p class="text-slate-500 font-medium">Next worry time</p>
+            <p class="text-4xl font-bold text-gray-900 tracking-tight" data-next-time-display>--:--</p>
+            <p class="text-emerald-600 font-medium" data-countdown>in --h --m</p>
         </div>
-        <button type="button" class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 p-3 text-slate-600 font-semibold hover:border-emerald-500 hover:text-emerald-700 transition-colors" data-open-panel>
-            <span>+ Add a worry to the list</span>
+
+        <button type="button" class="w-full btn-primary flex items-center justify-center gap-2" data-open-add-worry>
+            <span>+ Add a worry</span>
         </button>
-        <div class="space-y-3" data-notes-list></div>
-        <p class="text-base text-slate-800 text-center" data-no-notes>Worry list is empty.</p>
+
+        <!-- List Section -->
+        <div>
+            <div class="flex items-center justify-between mb-3 px-1">
+                <h3 class="text-lg font-bold text-gray-900">Your Worry List</h3>
+                <span class="text-slate-500 text-sm font-medium" data-list-count>0 items</span>
+            </div>
+            
+            <div class="space-y-3" data-worry-list>
+                <!-- Items injected here -->
+            </div>
+            
+            <p class="hidden text-center text-slate-500 py-8 italic" data-empty-state>
+                No worries listed yet. Enjoy your day!
+            </p>
+        </div>
+
+        <!-- Hint Card -->
+        <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 relative pl-4 border-l-4 border-l-emerald-400">
+            <p class="text-emerald-900 text-sm leading-relaxed">
+                When worries pop up during the day, add them here instead of dwelling on them now. You'll address them at <span class="font-semibold" data-target-time-hint>--:--</span>.
+            </p>
+        </div>
+
+        <button type="button" class="text-slate-500 font-medium text-sm flex items-center gap-2 hover:text-emerald-700 transition-colors" data-edit-settings>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Change settings
+        </button>
+
+        <div class="rounded-xl bg-white border border-black/5 shadow-soft overflow-hidden">
+            <details class="group">
+                <summary class="flex items-center justify-between p-4 cursor-pointer list-none bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <span class="font-semibold text-emerald-800">How to use this tool</span>
+                    <span class="text-emerald-600 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-5 border-t border-gray-100 text-slate-700 space-y-3 leading-relaxed">
+                    <p><strong>1. Write it down</strong><br/>Postpone the worry by adding it to your list.</p>
+                    <p><strong>2. Refocus</strong><br/>Once written down, turn your attention back to the present moment.</p>
+                    <p><strong>3. Review later</strong><br/>At your designated time, review the list. If it still bothers you, problem-solve it. If not, let it go.</p>
+                </div>
+            </details>
+        </div>
     </div>
 
-    <!-- 3. Setup (Secondary / Collapsible) -->
-    <details class="group rounded-xl bg-white border border-black/5 shadow-soft p-4" data-setup-container>
-        <summary class="flex items-center justify-between cursor-pointer list-none">
-            <span class="font-semibold text-gray-900">Timer Settings</span>
-            <span class="text-emerald-700 text-sm font-medium group-open:hidden" data-setup-summary>Configure time</span>
-            <span class="group-open:rotate-180 transition-transform">▼</span>
-        </summary>
-        
-        <div class="mt-4 space-y-4">
-             <!-- Renamed class to avoid confusion, previously .flex items-center ... -->
-            <div class="relative min-h-[320px]" data-step-wrapper>
-                <div class="step-panel" data-step-panel="0">
-                    <div class="step-body">
-                        <h3 class="text-lg font-semibold text-gray-900">Step 1: Choose your worry time</h3>
-                        <p class="text-base text-slate-800 mb-4 font-medium leading-relaxed">Pick a time you can keep most days.</p>
-                        <label class="block text-base font-medium text-gray-800 mb-2">Time of day</label>
-                        <input type="time" class="w-full rounded-lg border border-gray-200 p-3 text-gray-900 shadow-inner" data-time-input />
-                    </div>
-                    <div class="step-actions">
-                        <button type="button" class="nav-chip w-full justify-center" data-next-step>Next</button>
-                    </div>
-                </div>
-
-                <div class="step-panel hidden" data-step-panel="1">
-                    <div class="step-body">
-                        <h3 class="text-lg font-semibold text-gray-900">Step 2: How long?</h3>
-                        <p class="text-base text-slate-800 mb-4 font-medium leading-relaxed">Set a time box that feels doable.</p>
-                        <div class="flex flex-wrap gap-3" data-duration-buttons>
-                            {[10, 15, 20].map((minutes) => (
-                                <button type="button" class="toggle-chip" data-duration={minutes}>{minutes} minutes</button>
-                            ))}
-                        </div>
-                    </div>
-                    <div class="step-actions">
-                        <div class="flex gap-3">
-                            <button type="button" class="nav-chip ghost flex-1 justify-center" data-prev-step>Back</button>
-                            <button type="button" class="nav-chip flex-1 justify-center" data-next-step>Next</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="step-panel hidden" data-step-panel="2">
-                    <div class="step-body">
-                        <h3 class="text-lg font-semibold text-gray-900">Step 3: What happens when time ends?</h3>
-                        <p class="text-base text-slate-800 mb-4 font-medium leading-relaxed">Pick how you want to close the session.</p>
-                        <div class="space-y-3" data-end-actions>
-                            <label class="action-card">
-                                <input type="radio" name="endAction" value="gentle" class="sr-only" />
-                                <div class="action-body">
-                                    <span class="font-semibold text-gray-900">Gentle notification</span>
-                                    <span class="text-base text-slate-800 font-medium leading-relaxed">Soft reminder to wrap up.</span>
-                                </div>
-                            </label>
-                            <label class="action-card">
-                                <input type="radio" name="endAction" value="reflection" class="sr-only" />
-                                <div class="action-body">
-                                    <span class="font-semibold text-gray-900">Reflection prompt</span>
-                                    <span class="text-base text-slate-800 font-medium leading-relaxed">Nudge to note one insight.</span>
-                                </div>
-                            </label>
-                            <label class="action-card">
-                                <input type="radio" name="endAction" value="close" class="sr-only" />
-                                <div class="action-body">
-                                    <span class="font-semibold text-gray-900">Close and release</span>
-                                    <span class="text-base text-slate-800 font-medium leading-relaxed">Reset the session and let worries rest.</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="step-actions">
-                        <div class="flex gap-3">
-                            <button type="button" class="nav-chip ghost flex-1 justify-center" data-prev-step>Back</button>
-                            <button type="button" class="nav-chip flex-1 justify-center" data-complete-step>Save setup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </details>
-
-    <!-- Hidden components -->
-    <div class="note-panel hidden" data-note-panel aria-hidden="true">
-        <div class="panel-backdrop" data-close-panel></div>
-        <div class="panel-sheet" role="dialog" aria-modal="true" aria-label="Quick note">
-            <div class="flex items-center justify-between mb-3">
-                <p class="font-semibold text-gray-900">Add a worry</p>
-                <button type="button" class="text-sm text-slate-800 font-semibold" data-cancel-note>Cancel</button>
-            </div>
-            <textarea
-                class="w-full rounded-lg border border-gray-200 p-3 text-gray-900 shadow-inner"
-                rows="3"
-                placeholder="Capture the worry to revisit later"
-                data-note-input
+    <!-- ADD WORRY MODAL -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200" data-modal="add-worry">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" data-modal-backdrop></div>
+        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl p-6 transform scale-95 transition-all duration-200" data-modal-content>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Add a worry</h3>
+            <textarea 
+                class="w-full rounded-xl border-gray-200 p-4 text-base bg-gray-50 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all resize-none mb-4" 
+                rows="3" 
+                placeholder="What's on your mind?"
+                data-worry-input
             ></textarea>
-            <div class="mt-4 flex justify-end gap-2">
-                <button type="button" class="nav-chip ghost" data-cancel-note>Cancel</button>
-                <button type="button" class="nav-chip" data-save-note>Save to list</button>
+            <div class="flex gap-3 justify-end">
+                <button type="button" class="px-5 py-2.5 rounded-lg font-bold text-slate-600 hover:bg-gray-100 transition-colors" data-modal-cancel>Cancel</button>
+                <button type="button" class="px-5 py-2.5 rounded-lg font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-200 transition-all" data-modal-save>Save</button>
             </div>
         </div>
-    </div>
-
-    <div class="rounded-xl bg-emerald-50 border border-emerald-100 shadow-soft p-4 space-y-2 hidden" data-session-complete>
-        <p class="text-emerald-900 font-semibold text-lg">You’ve done enough for today. The rest can wait.</p>
-        <p class="text-base text-emerald-800">Tap below when you’re ready to close this session.</p>
-        <button type="button" class="control-btn primary" data-close-session>Close & Reset</button>
     </div>
 </section>
 
 <style>
-    .step-panel {
-        position: absolute;
-        inset: 0;
-        border-radius: 0.75rem;
-        background: white;
-        padding: 0.75rem 0.6rem 0.6rem;
-        transition: opacity 180ms ease-out, transform 180ms ease-out;
-        opacity: 0;
-        transform: translateY(10px);
-        display: grid;
-        grid-template-rows: 1fr auto;
-        gap: 0.75rem;
-        overflow: hidden;
+    .btn-primary {
+        @apply py-3.5 px-6 rounded-xl font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-200/50 transition-all transform active:scale-[0.98];
     }
 
-    .step-panel:not(.hidden) {
-        position: absolute;
-        inset: 0;
+    .duration-chip {
+        @apply py-2 px-1 rounded-lg font-bold text-sm bg-white border border-gray-200 text-slate-600 shadow-sm transition-all hover:border-emerald-300;
     }
 
-    .step-panel.active {
-        opacity: 1;
-        transform: translateY(0);
+    .duration-chip.selected {
+        @apply bg-emerald-50 border-emerald-500 text-emerald-700 ring-1 ring-emerald-500;
     }
 
-    .step-panel.leaving {
-        opacity: 0;
-        transform: translateY(8px);
+    .worry-item {
+        @apply flex items-start gap-3 p-4 bg-white border border-gray-100 rounded-xl shadow-sm transition-all;
+    }
+    
+    .worry-item.animate-out {
+        @apply opacity-0 -translate-y-2 pointer-events-none;
     }
 
-    .step-body {
-        overflow-y: auto;
-        padding-right: 0.35rem;
-        padding-bottom: calc(2rem + env(safe-area-inset-bottom));
-        display: grid;
-        align-content: start;
-        gap: 0.65rem;
+    .checkbox-custom {
+        @apply relative mt-0.5 w-6 h-6 rounded-lg border-2 border-gray-300 bg-white flex items-center justify-center transition-all cursor-pointer hover:border-emerald-400;
+    }
+    
+    .checkbox-custom::after {
+        content: "";
+        @apply w-3 h-2 border-l-2 border-b-2 border-white rotate-[-45deg] opacity-0 transition-opacity translate-y-[-1px];
     }
 
-    .step-actions {
-        position: sticky;
-        bottom: 0;
-        padding: 0.75rem 0.25rem 0.25rem;
-        background: linear-gradient(180deg, rgba(255,255,255,0.45), #fff);
-        border-radius: 1rem;
+    .worry-checkbox:checked + .checkbox-custom {
+        @apply bg-emerald-500 border-emerald-500;
     }
 
-    .toggle-chip {
-        padding: 0.65rem 1rem;
-        border-radius: 999px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        border: 1px solid rgba(0,0,0,0.08);
-        background: white;
-        color: #0f172a;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        transition: transform 120ms ease, background 160ms ease, border-color 160ms ease;
+    .worry-checkbox:checked + .checkbox-custom::after {
+        @apply opacity-100;
     }
 
-    .toggle-chip.active {
-        background: linear-gradient(120deg, #ecfeff, #d1fae5);
-        border-color: rgba(16,185,129,0.35);
-        color: #065f46;
+    [data-state]:not(.hidden) {
+        animation: fadeIn 300ms ease-out forwards;
     }
 
-    .action-card {
-        display: block;
-        border: 1px solid rgba(0,0,0,0.06);
-        background: #f9fafb;
-        border-radius: 0.85rem;
-        padding: 0.85rem 1rem;
-        cursor: pointer;
-        transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    [data-modal].active {
+        @apply opacity-100 pointer-events-auto;
     }
 
-    .action-card input:checked + .action-body,
-    .action-card input:focus-visible + .action-body {
-        outline: 2px solid rgba(16,185,129,0.4);
-        outline-offset: 2px;
+    [data-modal].active [data-modal-content] {
+        @apply scale-100;
     }
 
-    .action-card.active {
-        border-color: rgba(16,185,129,0.35);
-        background: #ecfdf3;
-        box-shadow: 0 8px 20px rgba(16,185,129,0.12);
-    }
-
-    .nav-chip {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.6rem 1.1rem;
-        border-radius: 999px;
-        background: linear-gradient(120deg, #10b981, #22d3ee);
-        color: white;
-        font-weight: 700;
-        border: 1px solid transparent;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-        transition: transform 120ms ease;
-    }
-
-    .nav-chip.ghost {
-        background: white;
-        color: #0f172a;
-        border-color: rgba(0,0,0,0.08);
-    }
-
-    .nav-chip:active {
-        transform: translateY(1px);
-    }
-
-    .control-btn {
-        padding: 0.65rem 1rem;
-        border-radius: 0.9rem;
-        font-weight: 700;
-        font-size: 0.95rem;
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-    }
-
-    .control-btn.primary {
-        background: linear-gradient(120deg, #10b981, #22d3ee);
-        color: white;
-        border: none;
-    }
-
-    .control-btn.ghost {
-        background: white;
-    }
-
-
-
-    .note-panel {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        display: grid;
-        align-items: stretch;
-        justify-content: end;
-        transition: opacity 160ms ease-out;
-        opacity: 0;
-        z-index: 40;
-    }
-
-    .note-panel.open {
-        pointer-events: auto;
-        opacity: 1;
-    }
-
-    .panel-backdrop {
-        position: absolute;
-        inset: 0;
-        background: rgba(15,23,42,0.25);
-        opacity: 0;
-        transition: opacity 160ms ease-out;
-    }
-
-    .note-panel.open .panel-backdrop {
-        opacity: 1;
-    }
-
-    .panel-sheet {
-        position: relative;
-        width: min(420px, 94vw);
-        background: white;
-        border-radius: 1rem 0 0 1rem;
-        padding: 1.1rem;
-        box-shadow: -12px 0 30px rgba(0,0,0,0.14);
-        transform: translateX(110%);
-        transition: transform 180ms ease-out;
-    }
-
-    .note-panel.open .panel-sheet {
-        transform: translateX(0);
-    }
-
-    .note-card {
-        padding: 1rem;
-        border-radius: 0.9rem;
-        border: 1px solid rgba(0,0,0,0.05);
-        background: white;
-        box-shadow: 0 10px 22px rgba(0,0,0,0.04);
-    }
-
-    .note-card-text {
-        color: #0f172a;
-        font-weight: 600;
-        word-break: break-word;
-    }
-
-    .note-card-meta {
-        margin-top: 0.45rem;
-        font-size: 0.8rem;
-        color: #475569;
-    }
-
-    .note-delete {
-        color: #be123c;
-        font-weight: 800;
-        font-size: 0.9rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.75rem;
-        background: #fff1f2;
-        border: 1px solid rgba(190,18,60,0.18);
-        box-shadow: 0 6px 14px rgba(190,18,60,0.08);
-        line-height: 1;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .step-panel,
-        .nav-chip,
-        .toggle-chip,
-        .action-card,
-        .control-btn,
-        .note-panel,
-        .panel-sheet,
-        .panel-backdrop {
-            transition: none !important;
-        }
-    }
-
-    [data-reduced-motion="true"] .step-panel,
-    [data-reduced-motion="true"] .nav-chip,
-    [data-reduced-motion="true"] .toggle-chip,
-    [data-reduced-motion="true"] .action-card,
-    [data-reduced-motion="true"] .control-btn,
-    [data-reduced-motion="true"] .note-panel,
-    [data-reduced-motion="true"] .panel-sheet,
-    [data-reduced-motion="true"] .panel-backdrop {
-        transition: none !important;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 
 <script>
-    const root = document.querySelector('[data-worry-root]');
-    const stepWrapper = document.querySelector('[data-step-wrapper]');
-    const stepPanels = Array.from(document.querySelectorAll('[data-step-panel]'));
-    const stepLabel = document.querySelector('[data-step-label]');
-    const timeInput = document.querySelector('[data-time-input]');
-    const durationButtons = document.querySelectorAll('[data-duration]');
-    const actionCards = document.querySelectorAll('[data-end-actions] input');
-    const setupStatus = document.querySelector('[data-setup-status]');
-    const setupSummary = document.querySelector('[data-setup-summary]');
-    const sessionState = document.querySelector('[data-session-state]');
-    const sessionTime = document.querySelector('[data-session-time]');
-    const startSessionBtn = document.querySelector('[data-start-session]');
-    const closeSessionBtns = document.querySelectorAll('[data-close-session]');
-    const notesList = document.querySelector('[data-notes-list]');
-    const notesCount = document.querySelector('[data-note-count]');
-    const noNotes = document.querySelector('[data-no-notes]');
-    const stickerBtn = document.querySelector('[data-open-panel]');
-    const notePanel = document.querySelector('[data-note-panel]');
-    const panelBackdrop = document.querySelector('[data-close-panel]');
-    const cancelNoteBtns = document.querySelectorAll('[data-cancel-note]');
-    const noteInput = document.querySelector('[data-note-input]');
-    const saveNoteBtn = document.querySelector('[data-save-note]');
-    const sessionComplete = document.querySelector('[data-session-complete]');
-    const setupContainer = document.querySelector('[data-setup-container]');
-    const toggleSetupBtn = document.querySelector('[data-toggle-setup]');
-
-    const storage = {
-        setup: 'parentsGuideWorrySetup_v1',
-        notes: 'pg_worry_notes',
-        session: 'parentsGuideWorrySession_v1'
+    // --- STORAGE KEYS ---
+    const KEYS = {
+        CONFIG: 'pg_worry_config_v2',
+        LIST: 'pg_worry_list_v2'
     };
-    const legacyNotesKey = 'parentsGuideWorryNotes_v1';
 
-    let setupSaved = false;
+    // --- DOM REFERENCES ---
+    const els = {
+        root: document.querySelector('[data-worry-root]'),
+        states: {
+            setup: document.querySelector('[data-state="setup"]'),
+            dashboard: document.querySelector('[data-state="dashboard"]')
+        },
+        setup: {
+            timeInput: document.querySelector('[data-time-input]'),
+            btns: document.querySelectorAll('[data-value]'),
+            save: document.querySelector('[data-save-setup]')
+        },
+        dash: {
+            nextTime: document.querySelector('[data-next-time-display]'),
+            countdown: document.querySelector('[data-countdown]'),
+            hintTime: document.querySelector('[data-target-time-hint]'),
+            list: document.querySelector('[data-worry-list]'),
+            count: document.querySelector('[data-list-count]'),
+            empty: document.querySelector('[data-empty-state]'),
+            addBtn: document.querySelector('[data-open-add-worry]'),
+            editBtn: document.querySelector('[data-edit-settings]')
+        },
+        modal: {
+            el: document.querySelector('[data-modal="add-worry"]'),
+            input: document.querySelector('[data-worry-input]'),
+            cancel: document.querySelector('[data-modal-cancel]'),
+            save: document.querySelector('[data-modal-save]'),
+            backdrop: document.querySelector('[data-modal-backdrop]')
+        }
+    };
 
-    const defaultSetup = {
+    // --- STATE ---
+    let config = {
+        configured: false,
         time: '18:00',
-        duration: 15,
-        endAction: 'gentle'
+        duration: 15
     };
 
-    const readJSON = (key, fallback) => {
+    let worries = [];
+
+    // --- PERSISTENCE ---
+    const loadState = () => {
         try {
-            const raw = localStorage.getItem(key);
-            return raw ? JSON.parse(raw) : fallback;
-        } catch (error) {
-            console.warn('Could not read data', error);
-            return fallback;
+            const savedConfig = localStorage.getItem(KEYS.CONFIG);
+            if (savedConfig) config = JSON.parse(savedConfig);
+
+            const savedList = localStorage.getItem(KEYS.LIST);
+            if (savedList) worries = JSON.parse(savedList);
+        } catch (e) {
+            console.error('Failed to load state', e);
         }
     };
 
-    const normalizeNotes = (raw) => {
-        if (!Array.isArray(raw)) return [];
-        return raw
-            .map((note) => {
-                if (!note || !note.text) return null;
-                const createdAt = typeof note.createdAt === 'number' ? note.createdAt : new Date(note.savedAt ?? Date.now()).getTime();
-                const id = note.id ?? (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
-                return { id, text: note.text, createdAt };
-            })
-            .filter(Boolean);
+    const saveConfig = () => {
+        localStorage.setItem(KEYS.CONFIG, JSON.stringify(config));
     };
 
-    let setup = readJSON(storage.setup, defaultSetup);
-    let notes = normalizeNotes(readJSON(storage.notes, []));
-    let session = readJSON(storage.session, { status: 'idle' });
-    let currentStep = 0;
-    let timerId;
-
-    try {
-        setupSaved = Boolean(localStorage.getItem(storage.setup));
-    } catch (error) {
-        setupSaved = false;
-    }
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    if (!notes.length) {
-        const legacyNotes = normalizeNotes(readJSON(legacyNotesKey, []));
-        if (legacyNotes.length) {
-            notes = legacyNotes;
-            persistNotes();
-        }
-    }
-
-    const persistSetup = () => localStorage.setItem(storage.setup, JSON.stringify(setup));
-    const persistNotes = () => {
-        localStorage.setItem(storage.notes, JSON.stringify(notes));
-        localStorage.removeItem(legacyNotesKey);
-    };
-    const persistSession = () => localStorage.setItem(storage.session, JSON.stringify(session));
-
-    const setReducedMotion = (value) => {
-        root?.setAttribute('data-reduced-motion', value ? 'true' : 'false');
+    const saveList = () => {
+        localStorage.setItem(KEYS.LIST, JSON.stringify(worries));
     };
 
-    const toggleSetupStatus = (visible) => {
-        if (!setupStatus) return;
-        setupStatus.classList.toggle('hidden', !visible);
-    };
-
-    const updateStepLabel = () => {
-        if (!stepLabel) return;
-        stepLabel.textContent = `Step ${Math.min(currentStep + 1, 3)} of 3`;
-    };
-
-    const activatePanel = (index) => {
-        if (index < 0 || index >= stepPanels.length) return;
-        const active = stepPanels[currentStep];
-        const next = stepPanels[index];
-        if (active === next) return;
-
-        active?.classList.remove('active');
-        active?.classList.add('leaving');
-
-        next?.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            next?.classList.add('active');
-        });
-
-        setTimeout(() => {
-            active?.classList.add('hidden');
-            active?.classList.remove('leaving');
-        }, prefersReduced.matches ? 0 : 190);
-
-        currentStep = index;
-        updateStepLabel();
-    };
-
-    const highlightDuration = (value) => {
-        durationButtons.forEach((btn) => {
-            const isActive = Number(btn.getAttribute('data-duration')) === value;
-            btn.classList.toggle('active', isActive);
-        });
-    };
-
-    const highlightAction = (value) => {
-        actionCards.forEach((input) => {
-            input.checked = input.value === value;
-            const card = input.closest('.action-card');
-            card?.classList.toggle('active', input.value === value);
-        });
-    };
-
-    const setPanelOpen = (open) => {
-        if (!notePanel) return;
-        if (open) {
-            notePanel.classList.remove('hidden');
-            requestAnimationFrame(() => notePanel.classList.add('open'));
-            notePanel.setAttribute('aria-hidden', 'false');
-            noteInput?.focus({ preventScroll: true });
+    // --- LOGIC ---
+    const render = () => {
+        // Toggle Views
+        if (config.configured) {
+            els.states.setup.classList.add('hidden');
+            els.states.dashboard.classList.remove('hidden');
+            renderDashboard();
         } else {
-            notePanel.classList.remove('open');
-            notePanel.setAttribute('aria-hidden', 'true');
-            setTimeout(() => notePanel.classList.add('hidden'), 190);
-            if (noteInput) noteInput.value = '';
+            els.states.setup.classList.remove('hidden');
+            els.states.dashboard.classList.add('hidden');
+            renderSetup();
         }
     };
 
-    const showNotes = () => {
-        if (!notesList || !noNotes || !notesCount) return;
-        notesList.innerHTML = '';
+    const renderSetup = () => {
+        if (els.setup.timeInput) els.setup.timeInput.value = config.time;
+        els.setup.btns.forEach(btn => {
+            const val = parseInt(btn.dataset.value);
+            btn.classList.toggle('selected', val === config.duration);
+        });
+    };
 
-        if (!notes.length) {
-            noNotes.classList.remove('hidden');
-            notesCount.textContent = '0 items';
-            return;
-        }
+    const renderDashboard = () => {
+        // Update static time displays
+        els.dash.nextTime.textContent = config.time;
+        els.dash.hintTime.textContent = config.time;
+        
+        // Start countdown loop
+        updateCountdown();
+        
+        // Render List
+        renderList();
+    };
 
-        noNotes.classList.add('hidden');
-        notesCount.textContent = `${notes.length} item${notes.length === 1 ? '' : 's'}`;
-
-        notes
-            .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
-            .forEach((note) => {
-                const card = document.createElement('div');
-                card.className = 'note-card';
-
-                const header = document.createElement('div');
-                header.className = 'flex justify-between items-start gap-3';
-
-                const textEl = document.createElement('p');
-                textEl.className = 'note-card-text';
-                textEl.textContent = note.text;
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.type = 'button';
-                deleteBtn.className = 'note-delete';
-                deleteBtn.setAttribute('aria-label', 'Delete note');
-                deleteBtn.setAttribute('data-delete-note', note.id);
-                deleteBtn.textContent = '✕';
-
-                header.appendChild(textEl);
-                header.appendChild(deleteBtn);
-
-                const stamp = new Date(note.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                const meta = document.createElement('p');
-                meta.className = 'note-card-meta';
-                meta.textContent = `Saved ${stamp}`;
-
-                card.appendChild(header);
-                card.appendChild(meta);
-                notesList.appendChild(card);
+    const renderList = () => {
+        els.dash.list.innerHTML = '';
+        els.dash.count.textContent = `${worries.length} items`;
+        
+        if (worries.length === 0) {
+            els.dash.empty.classList.remove('hidden');
+        } else {
+            els.dash.empty.classList.add('hidden');
+            worries.forEach(worry => {
+                const item = document.createElement('div');
+                item.className = 'worry-item';
+                item.innerHTML = `
+                    <label class="flex items-start gap-4 cursor-pointer w-full group">
+                        <input type="checkbox" class="sr-only worry-checkbox" data-id="${worry.id}">
+                        <div class="checkbox-custom shrink-0"></div>
+                        <span class="text-slate-800 font-medium leading-relaxed pt-0.5 group-hover:text-emerald-900 transition-colors">${escapeHtml(worry.text)}</span>
+                    </label>
+                `;
+                els.dash.list.appendChild(item);
             });
+        }
     };
 
-    const saveNote = () => {
-        if (!noteInput) return;
-        const text = noteInput.value.trim();
+    const updateCountdown = () => {
+        const [targetH, targetM] = config.time.split(':').map(Number);
+        
+        const now = new Date();
+        const target = new Date();
+        target.setHours(targetH, targetM, 0, 0);
+
+        if (target <= now) {
+            // If time passed today, target tomorrow
+            target.setDate(target.getDate() + 1);
+        }
+
+        const diff = target - now;
+        const diffH = Math.floor(diff / (1000 * 60 * 60));
+        const diffM = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        els.dash.countdown.textContent = `in ${diffH}h ${diffM}m`;
+    };
+
+    const escapeHtml = (unsafe) => {
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    };
+
+    // --- ACTIONS ---
+    const handleStart = () => {
+        const timeVal = els.setup.timeInput.value;
+        if (!timeVal) return alert('Please select a time');
+        
+        config.time = timeVal;
+        config.configured = true;
+        saveConfig();
+        render();
+    };
+
+    const handleDurationSelect = (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        config.duration = parseInt(btn.dataset.value);
+        renderSetup();
+    };
+
+    const addWorry = () => {
+        const text = els.modal.input.value.trim();
         if (!text) return;
-        const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`;
-        const newNote = { id, text, createdAt: Date.now() };
-        notes = [newNote, ...notes];
-        persistNotes();
-        setPanelOpen(false);
-        showNotes();
-    };
-
-    const deleteNote = (id) => {
-        notes = notes.filter((note) => note.id !== id);
-        persistNotes();
-        showNotes();
-    };
-
-    const updateSetupSummary = () => {
-        if (!setupSummary) return;
-        const actionText =
-            setup.endAction === 'gentle' ? 'gentle notification' : setup.endAction === 'reflection' ? 'reflection prompt' : 'close and release';
-        setupSummary.textContent = `${setup.time} for ${setup.duration} minutes — ${actionText}`;
-    };
-
-    const showSessionState = () => {
-        if (!sessionState || !sessionTime) return;
-        if (session.status === 'running') {
-            sessionState.textContent = 'In progress';
-            const remainingMs = Math.max(0, session.endsAt - Date.now());
-            const mins = Math.floor(remainingMs / 60000);
-            const secs = Math.floor((remainingMs % 60000) / 1000)
-                .toString()
-                .padStart(2, '0');
-            sessionTime.textContent = `${mins}:${secs}`;
-        } else if (session.status === 'ended') {
-            sessionState.textContent = 'Completed';
-            sessionTime.textContent = '00:00';
-        } else {
-            sessionState.textContent = 'Idle';
-            const timeParts = setup.time?.split(':');
-            if (timeParts?.length === 2) {
-                const [h, m] = timeParts.map(Number);
-                const formatted = new Date().setHours(h, m, 0, 0);
-                sessionTime.textContent = new Date(formatted).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else {
-                sessionTime.textContent = '00:00';
-            }
-        }
-    };
-
-    const endSession = () => {
-        clearInterval(timerId);
-        timerId = null;
-        session.status = 'ended';
-        session.completedAt = Date.now();
-        persistSession();
-        sessionComplete?.classList.remove('hidden');
-        showSessionState();
-    };
-
-    const tickSession = () => {
-        if (session.status !== 'running') return;
-        const remaining = session.endsAt - Date.now();
-        if (remaining <= 0) {
-            endSession();
-            return;
-        }
-        showSessionState();
-    };
-
-    const startSession = () => {
-        clearInterval(timerId);
-        const now = Date.now();
-        session = {
-            status: 'running',
-            startedAt: now,
-            duration: setup.duration,
-            endAction: setup.endAction,
-            endsAt: now + setup.duration * 60000
-        };
-        persistSession();
-        sessionComplete?.classList.add('hidden');
-        showSessionState();
-        timerId = setInterval(tickSession, 1000);
-    };
-
-    const closeSession = () => {
-        clearInterval(timerId);
-        timerId = null;
-        session = { status: 'idle' };
-        persistSession();
-        sessionComplete?.classList.add('hidden');
-        showSessionState();
-    };
-
-    const bootstrap = () => {
-        if (timeInput) timeInput.value = setup.time ?? defaultSetup.time;
-        highlightDuration(setup.duration ?? defaultSetup.duration);
-        highlightAction(setup.endAction ?? defaultSetup.endAction);
-        stepPanels[0]?.classList.add('active');
-        stepPanels[0]?.classList.remove('hidden');
-        updateSetupSummary();
-        toggleSetupStatus(setupSaved);
-        showNotes();
-        showSessionState();
-        setReducedMotion(prefersReduced.matches);
-
-        if (session.status === 'running') {
-            timerId = setInterval(tickSession, 1000);
-        }
-
-        if (session.status === 'ended') {
-            sessionComplete?.classList.remove('hidden');
-        }
-
-        if (setupContainer && setupSaved) {
-            setupContainer.open = false;
-        } else if (setupContainer) {
-            // setupContainer.open = true; // Default is closed or open? If not saved, should probably be open.
-            // HTML default is closed (no open attr). 
-            // If setup is NOT saved, we want it open.
-            setupContainer.open = true;
-        }
-    };
-
-    toggleSetupBtn?.addEventListener('click', () => {
-        if (setupContainer) {
-            setupContainer.open = !setupContainer.open;
-            if (setupContainer.open) {
-                setTimeout(() => setupContainer.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-            }
-        }
-    });
-
-    stepWrapper?.addEventListener('click', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) return;
-
-        if (target.matches('[data-next-step]')) {
-            activatePanel(Math.min(currentStep + 1, stepPanels.length - 1));
-        }
-        if (target.matches('[data-prev-step]')) {
-            activatePanel(Math.max(currentStep - 1, 0));
-        }
-        if (target.matches('[data-complete-step]')) {
-            persistSetup();
-            updateSetupSummary();
-            setupSaved = true;
-            toggleSetupStatus(true);
-            setupStatus?.classList.add('ring-2', 'ring-emerald-200');
-        }
-    });
-
-    timeInput?.addEventListener('change', (event) => {
-        const value = event.target.value || defaultSetup.time;
-        setup.time = value;
-        persistSetup();
-        updateSetupSummary();
-        showSessionState();
-        setupSaved = true;
-        toggleSetupStatus(true);
-    });
-
-    durationButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const value = Number(btn.getAttribute('data-duration'));
-            setup.duration = value;
-            highlightDuration(value);
-            persistSetup();
-            updateSetupSummary();
-            setupSaved = true;
-            toggleSetupStatus(true);
+        
+        worries.unshift({
+            id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+            text: text,
+            createdAt: Date.now()
         });
-    });
+        saveList();
+        renderList();
+        closeModal();
+    };
 
-    actionCards.forEach((input) => {
-        input.addEventListener('change', () => {
-            setup.endAction = input.value;
-            highlightAction(input.value);
-            persistSetup();
-            updateSetupSummary();
-            setupSaved = true;
-            toggleSetupStatus(true);
+    const handleCheckbox = (e) => {
+        if (!e.target.matches('.worry-checkbox')) return;
+        
+        const id = e.target.dataset.id;
+        const root = e.target.closest('.worry-item');
+        
+        // Animate out
+        root.classList.add('animate-out');
+        
+        setTimeout(() => {
+            worries = worries.filter(w => w.id !== id);
+            saveList();
+            renderList();
+        }, 300);
+    };
+
+    const openModal = () => {
+        els.modal.el.classList.add('active');
+        els.modal.input.value = '';
+        setTimeout(() => els.modal.input.focus(), 100);
+    };
+
+    const closeModal = () => {
+        els.modal.el.classList.remove('active');
+    };
+
+    const editSettings = () => {
+        config.configured = false;
+        render();
+    };
+
+    // --- INIT ---
+    const init = () => {
+        loadState();
+        render();
+        
+        // Setup Events
+        els.setup.save.addEventListener('click', handleStart);
+        els.setup.btns.forEach(btn => btn.addEventListener('click', handleDurationSelect));
+        
+        // Dashboard Events
+        els.dash.addBtn.addEventListener('click', openModal);
+        els.dash.editBtn.addEventListener('click', editSettings);
+        els.dash.list.addEventListener('transitionend', (e) => {
+             // clean up handled in animations
         });
-    });
+        els.dash.list.addEventListener('change', handleCheckbox); // Event delegation for checkboxes
 
-    startSessionBtn?.addEventListener('click', startSession);
-    closeSessionBtns.forEach((btn) => btn.addEventListener('click', closeSession));
+        // Modal Events
+        els.modal.cancel.addEventListener('click', closeModal);
+        els.modal.backdrop.addEventListener('click', closeModal);
+        els.modal.save.addEventListener('click', addWorry);
+        els.modal.el.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) addWorry();
+        });
 
-    stickerBtn?.addEventListener('click', () => setPanelOpen(true));
-    panelBackdrop?.addEventListener('click', () => setPanelOpen(false));
-    cancelNoteBtns.forEach((btn) => btn.addEventListener('click', () => setPanelOpen(false)));
-    saveNoteBtn?.addEventListener('click', saveNote);
+        // Interval
+        setInterval(() => {
+            if (config.configured) updateCountdown();
+        }, 60000); // Check every minute
+    };
 
-    notesList?.addEventListener('click', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) return;
-        const noteId = target.getAttribute('data-delete-note');
-        if (noteId) {
-            deleteNote(noteId);
-        }
-    });
-
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') setPanelOpen(false);
-    });
-
-    prefersReduced.addEventListener('change', (event) => {
-        setReducedMotion(event.matches);
-    });
-
-    bootstrap();
-    updateStepLabel();
+    init();
 </script>
