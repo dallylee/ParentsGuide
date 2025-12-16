@@ -58,20 +58,33 @@
   .card-glow,
   .pg-card {
     @apply rounded-2xl border border-black/5 bg-white;
+    position: relative;
+    isolation: isolate;
     --glow: var(--glow-1);
     --shadow-a: 0 10px 30px rgba(31, 41, 55, 0.1), 0 18px 38px rgba(0, 0, 0, 0.08),
       0 10px 28px rgba(31, 41, 55, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
     box-shadow: var(--shadow-a), 0 20px 40px var(--glow);
     transition: transform 300ms ease, box-shadow 900ms ease;
-    overflow: clip;
+    overflow: visible;
     max-width: 100%;
   }
 
-  @supports not (overflow: clip) {
-    .card-glow,
-    .pg-card {
-      overflow: hidden;
-    }
+  .card-glow::before,
+  .pg-card::before,
+  .pg-card-glow::before {
+    content: "";
+    position: absolute;
+    inset: -12px -10px;
+    border-radius: inherit;
+    background:
+      radial-gradient(80% 120% at 0% 50%, color-mix(in srgb, var(--glow) 90%, white 10%) 0%, transparent 52%),
+      radial-gradient(80% 120% at 100% 50%, color-mix(in srgb, var(--glow) 90%, white 10%) 0%, transparent 52%),
+      linear-gradient(90deg, color-mix(in srgb, var(--glow) 55%, white 45%) 0%, transparent 22%, transparent 78%, color-mix(in srgb, var(--glow) 55%, white 45%) 100%);
+    filter: blur(26px) saturate(1.05);
+    opacity: 0.9;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 800ms ease, filter 1200ms ease;
   }
 
   .card-glow:hover,
@@ -101,10 +114,28 @@
   }
 }
 
+@keyframes glowHueShift {
+  0% {
+    filter: blur(26px) saturate(1.05) hue-rotate(0deg);
+  }
+  50% {
+    filter: blur(26px) saturate(1.05) hue-rotate(14deg);
+  }
+  100% {
+    filter: blur(26px) saturate(1.05) hue-rotate(28deg);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .card-glow,
   .pg-card-glow {
     animation: glowPulse 12s ease-in-out infinite;
+  }
+
+  .card-glow::before,
+  .pg-card::before,
+  .pg-card-glow::before {
+    animation: glowHueShift 22s linear infinite;
   }
 }
 
@@ -112,6 +143,12 @@
   .card-glow,
   .pg-card,
   .pg-card-glow {
+    animation: none;
+  }
+
+  .card-glow::before,
+  .pg-card::before,
+  .pg-card-glow::before {
     animation: none;
   }
 }

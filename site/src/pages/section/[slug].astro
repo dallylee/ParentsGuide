@@ -46,6 +46,23 @@ const stripFirstHeadingTag = (html: string) => {
   return cleaned;
 };
 
+const removeInlineNextCta = (html: string) => {
+  let cleaned = html;
+  let headingMatch = cleaned.match(/<h([23])[^>]*>\s*what\s+to\s+do\s+next\b[^<]*<\/h\1>/i);
+
+  while (headingMatch) {
+    const level = headingMatch[1];
+    const blockPattern = new RegExp(
+      `<h${level}[^>]*>\\s*what\\s+to\\s+do\\s+next\\b[^<]*<\\/h${level}>[\\s\\S]*?(?=<h${level}\\b[^>]*>|$)`,
+      'i',
+    );
+    cleaned = cleaned.replace(blockPattern, '');
+    headingMatch = cleaned.match(/<h([23])[^>]*>\s*what\s+to\s+do\s+next\b[^<]*<\/h\1>/i);
+  }
+
+  return cleaned;
+};
+
 const removeCrisisContent = (html: string) => {
   let sanitized = html.replace(
     /<h2[^>]*>\s*For Immediate Crisis\s*<\/h2>[\s\S]*?(?=<h1|<h2|$)/i,
@@ -74,7 +91,8 @@ const removeCrisisContent = (html: string) => {
   return sanitized;
 };
 
-const sanitizeHtml = (html: string) => removeCrisisContent(stripFirstHeadingTag(html));
+const sanitizeHtml = (html: string) =>
+  removeCrisisContent(removeInlineNextCta(stripFirstHeadingTag(html)));
 
 const buildSectionBlocks = (markdown: string): { intro: string; sections: SectionBlock[] } => {
   const lines = markdown.split('\n');
