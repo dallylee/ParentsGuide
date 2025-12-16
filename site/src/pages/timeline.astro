@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
 import siteIndex from '../../../content/index.json';
 import { ArrowLeft } from 'lucide-astro';
 
@@ -43,9 +44,9 @@ const glows = [
         </header>
 
         {phases.length === 0 ? (
-            <div class="card-glow px-4 py-10 text-center text-gray-600" style={`--glow: ${glows[0]}`}>
+            <Card class="px-4 py-10 text-center text-gray-600" style={`--glow: ${glows[0]}`}>
                 No timeline phases available yet.
-            </div>
+            </Card>
         ) : (
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {phases.map((phase, index) => {
@@ -54,9 +55,10 @@ const glows = [
                     const buttonColor = glows[(index + 1) % glows.length];
 
                     return (
-                        <a
+                        <Card
+                            as="a"
                             href={withBase(`section/${phase.slug}/`)}
-                            class="group block card-glow p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transition transform hover:-translate-y-0.5"
+                            class="group p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transform hover:-translate-y-0.5"
                             style={`--glow: ${glow}`}
                         >
                             <div class="flex items-start gap-4">
@@ -90,7 +92,7 @@ const glows = [
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </Card>
                     );
                 })}
             </div>
