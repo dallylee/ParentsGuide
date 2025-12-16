@@ -38,18 +38,25 @@ const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
         </div>
     </main>
 </Layout>
-:global(.hero-reveal.is-on) {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  animation: none !important;
-}
-
-:global(body.hero-intro-paused .hero-reveal.is-on) {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-}
 <style>
     .hero-reveal {
         opacity: 0;
+    }
+
+    :global(body.hero-intro-paused .hero-reveal.is-on) {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    :global(html.hero-text-locked .hero-reveal) {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        animation: none !important;
+    }
+
+    :global(.hero-reveal.is-on) {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        animation: none !important;
     }
 </style>
