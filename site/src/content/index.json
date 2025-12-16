@@ -2,8 +2,8 @@
     "version": 1,
     "home": {
         "hero_image": "images/hero.jpg",
-        "hero_title": "Finding Your Strength",
-        "hero_subtitle": "Why your calm matters and where to begin.",
+        "hero_title": "Parent’s Guide to Child’s Surgery",
+        "hero_subtitle": "Why your calm matters and where to begin",
         "primary_cta": { "label": "Start here", "href": "/section/start/" },
         "secondary_ctas": [
             { "label": "Tools", "href": "/tools/" },
@@ -191,8 +191,8 @@
         {
             "id": "meditations",
             "title": "Meditations for relaxation, stress relief and calm",
-            "type": "media",
             "route": "/tool/meditations",
+            "type": "video",
             "summary": "Guided meditations to help you relax and feel steadier."
         }
     ],

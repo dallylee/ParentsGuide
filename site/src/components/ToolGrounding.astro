@@ -1,0 +1,315 @@
+---
+import Card from './Card.astro';
+
+interface Props {
+    tool: any;
+}
+
+const { tool } = Astro.props;
+const steps = tool.steps ?? [];
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
+---
+
+<section class="space-y-4" data-grounding-root>
+    <div class="flex items-center justify-between text-sm text-gray-700">
+        <span data-grounding-status>Step 1 of {steps.length}</span>
+        <button
+            type="button"
+            class="text-emerald-700 font-semibold text-sm px-3 py-2 rounded-full bg-emerald-50 border border-emerald-100 shadow-sm hover:bg-emerald-100 active:translate-y-[1px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+            data-grounding-reset
+        >
+            Restart
+        </button>
+    </div>
+
+    <div class="space-y-3" data-steps-stack>
+        {steps.map((step, idx) => (
+            <Card
+                as="button"
+                type="button"
+                class="grounding-card p-4 sm:p-5 flex items-start gap-4 text-left bg-white border border-black/5 rounded-xl shadow-soft shadow-[0_0_24px_var(--glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+                data-state={idx === 0 ? 'active' : 'pending'}
+                data-grounding-step
+                data-step-index={idx}
+                style={`--glow: ${glows[idx % glows.length]}; --delay: ${idx * 90}ms;`}
+            >
+                <div class="step-badge" data-step-badge>
+                    <span class="badge-count" data-count>{step.count ?? idx + 1}</span>
+                    <span class="badge-check hidden" data-check aria-hidden="true">✓</span>
+                </div>
+                <div class="flex-1 space-y-1">
+                    <p class="text-lg font-semibold text-gray-900 leading-snug">{step.action || step.text}</p>
+                    <p class="text-sm text-gray-600">Tap to mark it, follow the glow.</p>
+                </div>
+            </Card>
+        ))}
+    </div>
+
+    <div class="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-900 shadow-soft">
+        <p class="font-semibold mb-1">Prefer a calmer pace?</p>
+        <p>Reduced motion will pause pulsing and keep the glow steady.</p>
+        <div class="mt-2 flex items-center gap-3">
+            <label class="inline-flex items-center gap-2 text-emerald-800">
+                <input type="checkbox" class="accent-emerald-600" data-reduced-toggle />
+                <span class="text-sm">Use reduced motion</span>
+            </label>
+        </div>
+    </div>
+</section>
+
+<style>
+    [data-grounding-root] {
+        --badge-size: 2.75rem;
+    }
+
+    .grounding-card {
+        transition: transform 160ms ease, box-shadow 200ms ease, background 200ms ease;
+        animation: fadeRise 360ms ease-out forwards;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    [data-grounding-root].ready .grounding-card {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    [data-grounding-root].ready .grounding-card {
+        animation-delay: var(--delay, 0ms);
+    }
+
+    .grounding-card .step-badge {
+        width: var(--badge-size);
+        height: var(--badge-size);
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        color: #064e3b;
+        background: linear-gradient(135deg, #e6ffd8, #cfe8ff);
+        box-shadow: inset 0 0 0 1px rgba(6, 78, 59, 0.08), 0 6px 16px rgba(0,0,0,0.06);
+        position: relative;
+    }
+
+    .grounding-card[data-state="pending"] {
+        box-shadow: 0 6px 16px rgba(31,41,55,0.08), 0 0 18px var(--glow);
+    }
+
+    .grounding-card[data-state="active"] {
+        box-shadow: 0 6px 16px rgba(31,41,55,0.1), 0 0 28px var(--glow), 0 0 0 1px rgba(16, 185, 129, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .grounding-card[data-state="done"] {
+        box-shadow: 0 4px 12px rgba(31,41,55,0.08), 0 0 14px rgba(0,0,0,0.05), 0 0 16px var(--glow);
+        opacity: 0.96;
+    }
+
+    .grounding-card[data-state="done"] .step-badge {
+        background: linear-gradient(135deg, #ecfdf3, #d1fae5);
+        box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.25), 0 4px 12px rgba(16, 185, 129, 0.18);
+    }
+
+    .grounding-card .badge-check {
+        font-size: 1.25rem;
+        color: #065f46;
+    }
+
+    .grounding-card .badge-count {
+        font-size: 1.1rem;
+    }
+
+    .grounding-card:active,
+    .grounding-card.pressed {
+        transform: scale(0.98);
+    }
+
+    .grounding-card[data-state="active"] .step-badge::after {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: inherit;
+        background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.2), transparent 60%);
+        opacity: 0.9;
+        animation: badgePulse 2.2s ease-in-out infinite;
+        z-index: 0;
+    }
+
+    .grounding-card[data-state="active"] .step-badge {
+        animation: breatheBadge 3s ease-in-out infinite;
+    }
+
+    .grounding-card .step-badge > span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .grounding-card[data-state="done"] .badge-check {
+        display: inline;
+    }
+
+    .grounding-card[data-state="done"] .badge-count {
+        display: none;
+    }
+
+    @keyframes fadeRise {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes breatheBadge {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.06); }
+    }
+
+    @keyframes badgePulse {
+        0% { opacity: 0.6; transform: scale(0.94); }
+        50% { opacity: 1; transform: scale(1.05); }
+        100% { opacity: 0.6; transform: scale(0.94); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .grounding-card,
+        .grounding-card[data-state="active"],
+        .grounding-card:active,
+        .grounding-card.pressed {
+            transform: none !important;
+            animation: none !important;
+        }
+
+        .grounding-card .step-badge,
+        .grounding-card .step-badge::after {
+            animation: none !important;
+        }
+    }
+
+    [data-reduced-motion="true"] .grounding-card,
+    [data-reduced-motion="true"] .grounding-card[data-state="active"],
+    [data-reduced-motion="true"] .grounding-card:active,
+    [data-reduced-motion="true"] .grounding-card.pressed {
+        transform: none !important;
+        animation: none !important;
+    }
+
+    [data-reduced-motion="true"] .step-badge,
+    [data-reduced-motion="true"] .step-badge::after {
+        animation: none !important;
+    }
+</style>
+
+<script define:vars={{ steps }}>
+    const root = document.querySelector('[data-grounding-root]');
+    const cards = Array.from(document.querySelectorAll('[data-grounding-step]'));
+    const statusText = document.querySelector('[data-grounding-status]');
+    const resetBtn = document.querySelector('[data-grounding-reset]');
+    const reducedToggle = document.querySelector('[data-reduced-toggle]');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const state = steps.map((step, idx) => ({ ...step, state: idx === 0 ? 'active' : 'pending' }));
+
+    const applyReducedMotion = (value) => {
+        root?.setAttribute('data-reduced-motion', value ? 'true' : 'false');
+        if (reducedToggle) reducedToggle.checked = value;
+    };
+
+    const updateStatus = () => {
+        const activeIndex = state.findIndex((item) => item.state === 'active');
+        if (!statusText) return;
+        if (activeIndex === -1) {
+            statusText.textContent = 'Complete — breathe easy';
+        } else {
+            statusText.textContent = `Step ${activeIndex + 1} of ${state.length}`;
+        }
+    };
+
+    const syncCards = () => {
+        cards.forEach((card, idx) => {
+            const data = state[idx];
+            const badge = card.querySelector('[data-step-badge]');
+            const check = card.querySelector('[data-check]');
+            const count = card.querySelector('[data-count]');
+
+            card.dataset.state = data.state;
+            card.setAttribute('aria-pressed', data.state === 'active');
+
+            if (data.state === 'done') {
+                check?.classList.remove('hidden');
+                count?.classList.add('hidden');
+            } else {
+                check?.classList.add('hidden');
+                count?.classList.remove('hidden');
+            }
+
+            if (badge) {
+                badge.setAttribute('aria-label', `${data.action ?? 'Step'} (${data.state})`);
+            }
+        });
+
+        updateStatus();
+    };
+
+    const setActive = (index) => {
+        state.forEach((item, idx) => {
+            if (item.state === 'active' && idx !== index) {
+                item.state = 'pending';
+            }
+        });
+        state[index].state = 'active';
+        syncCards();
+    };
+
+    const completeStep = (index) => {
+        state[index].state = 'done';
+        const next = state.findIndex((item, idx) => idx > index && item.state !== 'done');
+        if (next !== -1) {
+            setActive(next);
+        } else {
+            updateStatus();
+        }
+        syncCards();
+    };
+
+    const resetFlow = () => {
+        state.forEach((item, idx) => {
+            item.state = idx === 0 ? 'active' : 'pending';
+        });
+        syncCards();
+    };
+
+    cards.forEach((card, idx) => {
+        card.addEventListener('click', () => {
+            const current = state[idx].state;
+            if (current === 'active') {
+                completeStep(idx);
+            } else if (current === 'pending') {
+                setActive(idx);
+            }
+        });
+
+        card.addEventListener('pointerdown', () => card.classList.add('pressed'));
+        card.addEventListener('pointerup', () => card.classList.remove('pressed'));
+        card.addEventListener('pointerleave', () => card.classList.remove('pressed'));
+    });
+
+    resetBtn?.addEventListener('click', resetFlow);
+
+    reducedToggle?.addEventListener('change', (event) => {
+        applyReducedMotion(event.target.checked);
+    });
+
+    prefersReduced.addEventListener('change', (event) => {
+        applyReducedMotion(event.matches);
+    });
+
+    requestAnimationFrame(() => {
+        root?.classList.add('ready');
+        applyReducedMotion(prefersReduced.matches);
+        syncCards();
+    });
+</script>
