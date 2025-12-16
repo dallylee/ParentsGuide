@@ -58,11 +58,16 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
             .map((selector) => (selector ? document.querySelector(selector) : null))
             .filter((el) => Boolean(el));
 
+        const lockHeroText = () => {
+            document.documentElement.classList.add('hero-text-locked');
+        };
+
         const showStaticText = (forceVisible = false) => {
             if (forceVisible) {
                 heroNodes.forEach((el) => el?.classList.add('is-on'));
             }
             document.body.classList.remove('hero-intro-paused');
+            lockHeroText();
         };
 
         if (skipIntro) {
@@ -108,6 +113,7 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
                         video.style.pointerEvents = 'none';
                         video.style.visibility = 'hidden';
                         document.body.classList.remove('hero-intro-paused');
+                        lockHeroText();
                     }, (fadeStartSeconds + fadeDurationSeconds) * 1000),
                 );
             };
