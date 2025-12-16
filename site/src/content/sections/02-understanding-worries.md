@@ -1,6 +1,7 @@
 ---
 title: "Understanding Your Worries"
 slug: "worries"
+group: "guide"
 order: 2
 menu: "primary"
 summary: "Why you feel this way and how to name it."

@@ -32,15 +32,3 @@ There are many resources available to support you through this challenging time.
 - **Your Personal Network:** Don't be afraid to lean on family and friends. Be specific in your requests: *"Could you come sit with my child for an hour so I can take a nap?"*
 
 - **Other Professional Support:** Your **GP** can be a great first point of contact for referrals. If your employer offers an **Employee Assistance Program (EAP)**, it can provide confidential counseling. **Faith or spiritual support** from hospital chaplains or your own community can also be a source of great comfort.
-
-### For Immediate Crisis
-
-**If you ever feel unable to keep yourself or your child safe, contact emergency services or a crisis hotline immediately.**
-
-- **NHS Mental Health Crisis Line:** Call 111 (select the mental health option)
-
-- **Samaritans:** Call 116 123 (available 24/7)
-
-- **Emergency Services:** Call 999
-
-Reaching out for help is an act of empowerment. Now, let's look beyond the immediate crisis toward long-term healing and growth for your entire family.

@@ -1,6 +1,7 @@
 ---
 title: "Growing Stronger Together"
 slug: "growth"
+group: "timeline"
 order: 10
 menu: "primary"
 summary: "Processing, celebrating, and finding closure."

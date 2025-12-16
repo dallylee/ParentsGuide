@@ -3,7 +3,9 @@ import { defineCollection, z } from 'astro:content';
 const sections = defineCollection({
 	type: 'content',
 	schema: z.object({
+		slug: z.string().optional(),
 		title: z.string(),
+		group: z.enum(['guide', 'timeline']).optional(),
 		summary: z.string(),
 		order: z.number(),
 		menu: z.string().optional(),

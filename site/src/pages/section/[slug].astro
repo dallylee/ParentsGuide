@@ -8,12 +8,13 @@ import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+import siteIndex from '../../../../content/index.json';
 
 export async function getStaticPaths() {
   const sections = await getCollection('sections');
   return sections.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
+    params: { slug: entry.data.slug ?? entry.slug },
+    props: { entry, routeSlug: entry.data.slug ?? entry.slug },
   }));
 }
 
@@ -26,7 +27,8 @@ const glows = [
   'rgba(245, 232, 255, 0.75)',
 ];
 
-const { entry } = Astro.props;
+const { entry, routeSlug } = Astro.props;
+const slug = routeSlug ?? entry.data.slug ?? entry.slug;
 type SectionBlock = {
   title: string;
   content: string;
@@ -34,6 +36,45 @@ type SectionBlock = {
 
 const applyBaseToLinks = (html: string) =>
   html.replace(/href="\/(?!\/)([^"#]*)"/g, (_, path: string) => `href="${withBase(path)}"`);
+
+const stripLeadingHeading = (markdown: string) =>
+  markdown.replace(/^\s*#\s+.*?(?:\r?\n|$)/, '').trimStart();
+
+const stripFirstHeadingTag = (html: string) => {
+  let cleaned = html.replace(/<h1[^>]*>[\s\S]*?<\/h1>/i, '');
+  cleaned = cleaned.replace(/<h1[^>]*>[\s\S]*?<\/h1>/i, '');
+  return cleaned;
+};
+
+const removeCrisisContent = (html: string) => {
+  let sanitized = html.replace(
+    /<h2[^>]*>\s*For Immediate Crisis\s*<\/h2>[\s\S]*?(?=<h1|<h2|$)/i,
+    '',
+  );
+  sanitized = sanitized.replace(
+    /<h3[^>]*>\s*For Immediate Crisis\s*<\/h3>[\s\S]*?(?=<h1|<h2|<h3|$)/i,
+    '',
+  );
+
+  const crisisKeywords = [
+    'Samaritans',
+    '116 123',
+    'Mental Health Crisis Line',
+    'select the mental health option',
+    'Emergency Services:\\s*Call\\s*999',
+  ];
+
+  crisisKeywords.forEach((keyword) => {
+    const paragraphPattern = new RegExp(`<p[^>]*>[\\s\\S]*?${keyword}[\\s\\S]*?<\\/p>`, 'gi');
+    const listPattern = new RegExp(`<li[^>]*>[\\s\\S]*?${keyword}[\\s\\S]*?<\\/li>`, 'gi');
+    sanitized = sanitized.replace(paragraphPattern, '');
+    sanitized = sanitized.replace(listPattern, '');
+  });
+
+  return sanitized;
+};
+
+const sanitizeHtml = (html: string) => removeCrisisContent(stripFirstHeadingTag(html));
 
 const buildSectionBlocks = (markdown: string): { intro: string; sections: SectionBlock[] } => {
   const lines = markdown.split('\n');
@@ -61,20 +102,24 @@ const buildSectionBlocks = (markdown: string): { intro: string; sections: Sectio
 };
 
 const renderMarkdownToHtml = async (markdown: string) =>
-  applyBaseToLinks(
-    String(
-      await unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeStringify, { allowDangerousHtml: true })
-        .process(markdown),
+  sanitizeHtml(
+    applyBaseToLinks(
+      String(
+        await unified()
+          .use(remarkParse)
+          .use(remarkGfm)
+          .use(remarkRehype, { allowDangerousHtml: true })
+          .use(rehypeStringify, { allowDangerousHtml: true })
+          .process(markdown),
+      ),
     ),
   );
 
-const { intro, sections } = buildSectionBlocks(entry.body);
-const introHtml = intro ? await renderMarkdownToHtml(intro) : '';
-const sectionHtml = sections.length
+const cleanedMarkdown = stripLeadingHeading(entry.body);
+const { intro, sections } = buildSectionBlocks(cleanedMarkdown);
+const hasSections = sections.length > 0;
+const introHtml = hasSections && intro ? await renderMarkdownToHtml(intro) : '';
+const sectionHtml = hasSections
   ? await Promise.all(
       sections.map(async (section) => ({
         title: section.title,
@@ -82,7 +127,26 @@ const sectionHtml = sections.length
       })),
     )
   : [];
-const fallbackHtml = !sections.length ? await renderMarkdownToHtml(entry.body) : '';
+const fallbackHtml = !hasSections ? await renderMarkdownToHtml(cleanedMarkdown) : '';
+
+const indexSections = (siteIndex.sections ?? []).map((section) => ({
+  ...section,
+  group: section.group ?? 'guide',
+}));
+const currentIndexSection = indexSections.find((section) => section.slug === slug);
+const currentGroup = currentIndexSection?.group ?? entry.data.group ?? 'guide';
+const groupedSections = indexSections
+  .filter((section) => (section.group ?? 'guide') === currentGroup)
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+const currentGroupIndex = groupedSections.findIndex((section) => section.slug === slug);
+const previousSection = currentGroupIndex > 0 ? groupedSections[currentGroupIndex - 1] : null;
+const nextSection =
+  currentGroupIndex >= 0 && currentGroupIndex < groupedSections.length - 1
+    ? groupedSections[currentGroupIndex + 1]
+    : null;
+const nextCta = nextSection
+  ? { href: withBase(`section/${nextSection.slug}/`), label: 'Next section' }
+  : { href: withBase('/'), label: 'Return to Home' };
 ---
 
 <Layout title={entry.data.title}>
@@ -123,6 +187,38 @@ const fallbackHtml = !sections.length ? await renderMarkdownToHtml(entry.body) :
                     <div class="prose prose-slate mt-3 max-w-none text-base leading-relaxed prose-h3:text-lg prose-p:text-gray-700 prose-li:text-gray-700 prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={section.html} />
                 </Card>
             ))}
+
+            <Card class="p-5 md:p-6" style={`--glow: ${glows[2]}`}>
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="space-y-1">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">What to do next</p>
+                        <h2 class="text-xl font-semibold text-slate-900 md:text-2xl">
+                            {nextSection ? nextSection.title : 'Return to Home'}
+                        </h2>
+                        <p class="text-sm text-slate-700">
+                            {nextSection
+                                ? 'Continue through this part of the guide at your own pace.'
+                                : 'You have reached the end of this path. Head back to the home page for more support.'}
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 justify-end sm:justify-start">
+                        {previousSection && (
+                            <a
+                                href={withBase(`section/${previousSection.slug}/`)}
+                                class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-gray-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                            >
+                                Previous
+                            </a>
+                        )}
+                        <a
+                            href={nextCta.href}
+                            class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        >
+                            {nextCta.label}
+                        </a>
+                    </div>
+                </div>
+            </Card>
         </div>
     </div>
 </Layout>

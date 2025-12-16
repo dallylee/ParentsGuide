@@ -1,6 +1,7 @@
 ---
 title: "Start Here: You're Not Alone"
 slug: "start"
+group: "guide"
 order: 1
 menu: "primary"
 summary: "Reassurance, why your calm matters, where to begin."
