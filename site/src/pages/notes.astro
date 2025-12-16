@@ -1,0 +1,176 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import { ArrowLeft, Save, Trash2 } from 'lucide-astro';
+
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
+---
+
+<Layout title="Notes">
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
+        <a href={withBase('')} class="p-2 -ml-2 text-slate-700 hover:text-gray-900 transition-colors" aria-label="Back to home">
+            <ArrowLeft size={24} />
+        </a>
+        <span class="ml-2 font-semibold text-gray-800">Notes</span>
+    </div>
+
+    <div class="p-6 space-y-6">
+        <Card class="p-5 space-y-4" style={`--glow: ${glows[1]}`}>
+            <div class="space-y-2">
+                <h1 class="text-xl font-normal text-gray-900">Your surgery day notes</h1>
+                <p class="text-sm text-slate-800 font-medium">Keep key details handy. Everything is saved locally on your device.</p>
+            </div>
+
+            <form id="notes-form" class="space-y-4">
+                <div class="space-y-2">
+                    <label for="clinic" class="block text-sm font-semibold text-gray-800">Clinic / Hospital</label>
+                    <input id="clinic" name="clinic" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. St. Mary's" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="ward" class="block text-sm font-semibold text-gray-800">Ward / Department</label>
+                    <input id="ward" name="ward" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Children's surgery ward" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="consultant" class="block text-sm font-semibold text-gray-800">Consultant / Surgeon</label>
+                    <input id="consultant" name="consultant" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Dr. Patel" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="surgeryDate" class="block text-sm font-semibold text-gray-800">Surgery date</label>
+                        <input id="surgeryDate" name="surgeryDate" type="date" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="arrivalTime" class="block text-sm font-semibold text-gray-800">Arrival time</label>
+                        <input id="arrivalTime" name="arrivalTime" type="time" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="mainPhone" class="block text-sm font-semibold text-gray-800">Main phone number</label>
+                    <input id="mainPhone" name="mainPhone" type="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. 01234 567890" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="secondaryPhone" class="block text-sm font-semibold text-gray-800">Secondary phone number</label>
+                    <input id="secondaryPhone" name="secondaryPhone" type="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Optional backup contact" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="questions" class="block text-sm font-semibold text-gray-800">Questions to ask</label>
+                    <textarea id="questions" name="questions" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="List any questions for your care team"></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="parking" class="block text-sm font-semibold text-gray-800">Parking / directions</label>
+                    <textarea id="parking" name="parking" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 shadow-soft focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Notes on where to park, entrances, or transport"></textarea>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button id="save-notes" type="button" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-soft hover:bg-blue-700 transition-colors">
+                        <Save size={18} class="mr-2" />
+                        Save notes
+                    </button>
+                    <button id="clear-notes" type="button" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-gray-100 text-gray-800 font-semibold shadow-soft hover:bg-gray-200 transition-colors">
+                        <Trash2 size={18} class="mr-2" />
+                        Clear notes
+                    </button>
+                </div>
+                <p id="status-message" class="text-sm text-gray-500" role="status" aria-live="polite"></p>
+            </form>
+        </Card>
+    </div>
+</Layout>
+
+<script>
+    const storageKey = 'parentsGuideNotes_v1';
+    const form = document.getElementById('notes-form');
+    const status = document.getElementById('status-message');
+    const fields = ['clinic', 'ward', 'consultant', 'surgeryDate', 'arrivalTime', 'mainPhone', 'secondaryPhone', 'questions', 'parking'];
+
+    const isStorageAvailable = () => {
+        try {
+            const testKey = '__pg_notes_test__';
+            localStorage.setItem(testKey, 'ok');
+            localStorage.removeItem(testKey);
+            return true;
+        } catch (error) {
+            console.error('Storage unavailable', error);
+            return false;
+        }
+    };
+
+    const loadNotes = () => {
+        if (!isStorageAvailable()) {
+            status.textContent = 'Saving notes is unavailable in this browser or mode.';
+            return;
+        }
+
+        try {
+            const saved = localStorage.getItem(storageKey);
+            if (!saved) return;
+
+            const data = JSON.parse(saved);
+            fields.forEach((field) => {
+                if (data[field] !== undefined) {
+                    const input = document.getElementById(field);
+                    if (input) input.value = data[field];
+                }
+            });
+            status.textContent = 'Loaded saved notes from this device.';
+        } catch (error) {
+            console.error('Error loading notes', error);
+            status.textContent = 'Could not load saved notes.';
+        }
+    };
+
+    const saveNotes = () => {
+        if (!isStorageAvailable()) {
+            status.textContent = 'Saving notes is unavailable in this browser or mode.';
+            return;
+        }
+
+        const data = {};
+        fields.forEach((field) => {
+            const input = document.getElementById(field);
+            data[field] = input ? input.value : '';
+        });
+
+        try {
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            status.textContent = 'Notes saved locally.';
+        } catch (error) {
+            console.error('Error saving notes', error);
+            status.textContent = 'Could not save notes. Please check storage permissions.';
+        }
+    };
+
+    const clearNotes = () => {
+        const confirmClear = confirm('Clear all saved notes?');
+        if (!confirmClear) return;
+
+        try {
+            localStorage.removeItem(storageKey);
+            form.reset();
+            status.textContent = 'Notes cleared.';
+        } catch (error) {
+            console.error('Error clearing notes', error);
+            status.textContent = 'Could not clear notes.';
+        }
+    };
+
+    document.getElementById('save-notes')?.addEventListener('click', saveNotes);
+    document.getElementById('clear-notes')?.addEventListener('click', clearNotes);
+
+    loadNotes();
+    status.textContent = status.textContent || 'Notes are stored locally on this device.';
+</script>

@@ -1,42 +1,48 @@
 ---
-import { Home, Briefcase, Calendar, Heart, Search } from 'lucide-astro';
+import { Home, Briefcase, Calendar, FileText, BookOpen } from "lucide-astro";
 
-const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname === '/' ? '/' : pathname.replace(/\/$/, "");
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const stripTrailingSlash = (path) => path.replace(/\/+$/, "");
+
+const currentPath = stripTrailingSlash(Astro.url.pathname);
+const homePath = stripTrailingSlash(withBase("/"));
 
 const navItems = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/tools', label: 'Tools', icon: Briefcase },
-  { href: '/timeline', label: 'Timeline', icon: Calendar },
-  { href: '/support', label: 'Support', icon: Heart },
-  { href: '/search', label: 'Search', icon: Search },
+  { href: withBase("/"), label: "Home", icon: Home },
+  { href: withBase("section/start/"), label: "Your guide", icon: BookOpen },
+  { href: withBase("tools/"), label: "Tools", icon: Briefcase },
+  { href: withBase("section/timeline/"), label: "Timeline", icon: Calendar },
+  { href: withBase("notes/"), label: "Notes", icon: FileText },
 ];
 ---
 
-<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
-  <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+<nav aria-label="Primary" class="site-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100">
+  <!-- Incoming container kept -->
+  <div class="grid h-16 max-w-2xl w-full grid-cols-5 mx-auto">
     {navItems.map(({ href, label, icon: Icon }) => {
-      const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href));
+      const hrefPath = stripTrailingSlash(href);
+      const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
       return (
-        <a 
-            href={href} 
-            class:list={[
-                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
-                isActive ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
-            ]}
-            aria-label={label}
+        <a
+          href={href}
+          class:list={[
+            "flex flex-col items-center justify-center w-full h-full space-y-1 no-underline",
+            isActive ? "text-black" : "text-gray-500 hover:text-gray-700"
+          ]}
+          aria-label={label}
         >
-          <Icon size={24} stroke-width={isActive ? 2.5 : 2} />
-          <span class="text-[10px] font-medium">{label}</span>
+          <span>
+            <Icon class="w-6 h-6" size={24} stroke-width={isActive ? 2.5 : 2} stroke="currentColor" fill="none" />
+          </span>
+          <span class:list={[
+            "text-xs leading-tight font-medium whitespace-nowrap",
+            isActive ? "text-black" : "text-gray-500"
+          ]}>
+            {label}
+          </span>
         </a>
       );
     })}
   </div>
 </nav>
-
-<style>
-    /* Safe area padding for iPhone X+ */
-    .pb-safe {
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-</style>

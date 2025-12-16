@@ -1,33 +1,242 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
 import { ArrowLeft } from 'lucide-astro';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import siteIndex from '../../../../content/index.json';
 
 export async function getStaticPaths() {
   const sections = await getCollection('sections');
   return sections.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
+    params: { slug: entry.data.slug ?? entry.slug },
+    props: { entry, routeSlug: entry.data.slug ?? entry.slug },
   }));
 }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const glows = [
+  'rgba(207, 232, 255, 0.75)',
+  'rgba(255, 227, 216, 0.7)',
+  'rgba(230, 255, 216, 0.7)',
+  'rgba(245, 232, 255, 0.75)',
+];
+
+const { entry, routeSlug } = Astro.props;
+const slug = routeSlug ?? entry.data.slug ?? entry.slug;
+type SectionBlock = {
+  title: string;
+  content: string;
+};
+
+const applyBaseToLinks = (html: string) =>
+  html.replace(/href="\/(?!\/)([^"#]*)"/g, (_, path: string) => `href="${withBase(path)}"`);
+
+const stripLeadingHeading = (markdown: string) =>
+  markdown.replace(/^\s*#\s+.*?(?:\r?\n|$)/, '').trimStart();
+
+const stripFirstHeadingTag = (html: string) => {
+  let cleaned = html.replace(/<h1[^>]*>[\s\S]*?<\/h1>/i, '');
+  cleaned = cleaned.replace(/<h1[^>]*>[\s\S]*?<\/h1>/i, '');
+  return cleaned;
+};
+
+const removeInlineNextCta = (html: string) => {
+  let cleaned = html;
+  let headingMatch = cleaned.match(/<h([23])[^>]*>\s*what\s+to\s+do\s+next\b[^<]*<\/h\1>/i);
+
+  while (headingMatch) {
+    const level = headingMatch[1];
+    const blockPattern = new RegExp(
+      `<h${level}[^>]*>\\s*what\\s+to\\s+do\\s+next\\b[^<]*<\\/h${level}>[\\s\\S]*?(?=<h${level}\\b[^>]*>|$)`,
+      'i',
+    );
+    cleaned = cleaned.replace(blockPattern, '');
+    headingMatch = cleaned.match(/<h([23])[^>]*>\s*what\s+to\s+do\s+next\b[^<]*<\/h\1>/i);
+  }
+
+  return cleaned;
+};
+
+const removeCrisisContent = (html: string) => {
+  let sanitized = html.replace(
+    /<h2[^>]*>\s*For Immediate Crisis\s*<\/h2>[\s\S]*?(?=<h1|<h2|$)/i,
+    '',
+  );
+  sanitized = sanitized.replace(
+    /<h3[^>]*>\s*For Immediate Crisis\s*<\/h3>[\s\S]*?(?=<h1|<h2|<h3|$)/i,
+    '',
+  );
+
+  const crisisKeywords = [
+    'Samaritans',
+    '116 123',
+    'Mental Health Crisis Line',
+    'select the mental health option',
+    'Emergency Services:\\s*Call\\s*999',
+  ];
+
+  crisisKeywords.forEach((keyword) => {
+    const paragraphPattern = new RegExp(`<p[^>]*>[\\s\\S]*?${keyword}[\\s\\S]*?<\\/p>`, 'gi');
+    const listPattern = new RegExp(`<li[^>]*>[\\s\\S]*?${keyword}[\\s\\S]*?<\\/li>`, 'gi');
+    sanitized = sanitized.replace(paragraphPattern, '');
+    sanitized = sanitized.replace(listPattern, '');
+  });
+
+  return sanitized;
+};
+
+const sanitizeHtml = (html: string) =>
+  removeCrisisContent(removeInlineNextCta(stripFirstHeadingTag(html)));
+
+const buildSectionBlocks = (markdown: string): { intro: string; sections: SectionBlock[] } => {
+  const lines = markdown.split('\n');
+  const introLines: string[] = [];
+  const sections: SectionBlock[] = [];
+  let current: SectionBlock | null = null;
+
+  for (const line of lines) {
+    if (line.startsWith('## ')) {
+      if (current) sections.push({ ...current, content: current.content.trim() });
+      current = { title: line.replace(/^##\s+/, '').trim(), content: '' };
+      continue;
+    }
+
+    if (current) {
+      current.content += `${line}\n`;
+    } else {
+      introLines.push(line);
+    }
+  }
+
+  if (current) sections.push({ ...current, content: current.content.trim() });
+
+  return { intro: introLines.join('\n').trim(), sections };
+};
+
+const renderMarkdownToHtml = async (markdown: string) =>
+  sanitizeHtml(
+    applyBaseToLinks(
+      String(
+        await unified()
+          .use(remarkParse)
+          .use(remarkGfm)
+          .use(remarkRehype, { allowDangerousHtml: true })
+          .use(rehypeStringify, { allowDangerousHtml: true })
+          .process(markdown),
+      ),
+    ),
+  );
+
+const cleanedMarkdown = stripLeadingHeading(entry.body);
+const { intro, sections } = buildSectionBlocks(cleanedMarkdown);
+const hasSections = sections.length > 0;
+const introHtml = hasSections && intro ? await renderMarkdownToHtml(intro) : '';
+const sectionHtml = hasSections
+  ? await Promise.all(
+      sections.map(async (section) => ({
+        title: section.title,
+        html: await renderMarkdownToHtml(section.content),
+      })),
+    )
+  : [];
+const fallbackHtml = !hasSections ? await renderMarkdownToHtml(cleanedMarkdown) : '';
+
+const indexSections = (siteIndex.sections ?? []).map((section) => ({
+  ...section,
+  group: section.group ?? 'guide',
+}));
+const currentIndexSection = indexSections.find((section) => section.slug === slug);
+const currentGroup = currentIndexSection?.group ?? entry.data.group ?? 'guide';
+const groupedSections = indexSections
+  .filter((section) => (section.group ?? 'guide') === currentGroup)
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+const currentGroupIndex = groupedSections.findIndex((section) => section.slug === slug);
+const previousSection = currentGroupIndex > 0 ? groupedSections[currentGroupIndex - 1] : null;
+const nextSection =
+  currentGroupIndex >= 0 && currentGroupIndex < groupedSections.length - 1
+    ? groupedSections[currentGroupIndex + 1]
+    : null;
+const nextCta = nextSection
+  ? { href: withBase(`section/${nextSection.slug}/`), label: 'Next section' }
+  : { href: withBase('/'), label: 'Return to Home' };
 ---
 
 <Layout title={entry.data.title}>
     <!-- Top Bar -->
-    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href="/" class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft size={24} />
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-3 flex items-center">
+        <a
+          href={withBase('')}
+          class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        >
+            <ArrowLeft size={20} />
+            <span class="leading-none">Back</span>
         </a>
-        <span class="ml-2 font-semibold text-gray-800 truncate">{entry.data.title}</span>
+        <span class="ml-3 font-semibold text-gray-800 truncate">{entry.data.title}</span>
     </div>
 
-    <!-- Content -->
-    <article class="prose prose-slate prose-lg max-w-none p-6 pb-32 prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-gray-700 prose-li:text-gray-700">
-        <!-- Hero for section if specific image? Or just title -->
-        
-         <Content />
-    </article>
+    <div class="bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 pb-28 pt-6">
+        <div class="mx-auto flex max-w-2xl flex-col gap-4">
+            <Card as="section" class="p-5 md:p-6" style={`--glow: ${glows[0]}`}>
+                <div class="flex flex-col gap-2">
+                    <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Section</p>
+                    <h1 class="text-2xl font-normal text-slate-900 md:text-3xl">{entry.data.title}</h1>
+                    <p class="text-base text-slate-800 md:text-lg font-medium">{entry.data.summary}</p>
+                </div>
+                {introHtml && (
+                    <div class="prose prose-slate guide-content mt-4 max-w-none text-base leading-relaxed prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium pg-link-reset" set:html={introHtml} />
+                )}
+                {!sections.length && fallbackHtml && (
+                    <div class="prose prose-slate guide-content mt-4 max-w-none text-base leading-relaxed prose-h2:text-xl prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={fallbackHtml} />
+                )}
+            </Card>
+
+            {sectionHtml.map((section, idx) => (
+                <Card as="section" class="p-5 md:p-6" style={`--glow: ${glows[idx % glows.length]}`}>
+                    <div class="flex items-start gap-3">
+                        <div class="mt-1 h-2.5 w-2.5 rounded-full bg-gradient-to-br from-indigo-200 via-indigo-300 to-indigo-400 shadow-[0_0_12px_rgba(79,70,229,0.35)]"></div>
+                        <h2 class="text-xl font-semibold text-slate-900 md:text-2xl">{section.title}</h2>
+                    </div>
+                    <div class="prose prose-slate guide-content mt-3 max-w-none text-base leading-relaxed prose-h3:text-lg prose-p:text-slate-800 prose-p:font-medium prose-li:text-slate-800 prose-li:font-medium prose-a:inline-flex prose-a:items-center prose-a:gap-2 prose-a:rounded-lg prose-a:border prose-a:border-indigo-100 prose-a:bg-indigo-50 prose-a:px-3 prose-a:py-2 prose-a:font-semibold prose-a:text-indigo-700 prose-a:underline-offset-4 prose-a:shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:prose-a:border-indigo-200 hover:prose-a:bg-indigo-100 pg-link-reset" set:html={section.html} />
+                </Card>
+            ))}
+
+            <Card class="p-5 md:p-6" style={`--glow: ${glows[2]}`}>
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="space-y-1">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">What to do next</p>
+                        <h2 class="text-xl font-semibold text-slate-900 md:text-2xl">
+                            {nextSection ? nextSection.title : 'Return to Home'}
+                        </h2>
+                        <p class="text-sm text-slate-800 font-medium">
+                            {nextSection
+                                ? 'Continue through this part of the guide at your own pace.'
+                                : 'You have reached the end of this path. Head back to the home page for more support.'}
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 justify-end sm:justify-start">
+                        {previousSection && (
+                            <a
+                                href={withBase(`section/${previousSection.slug}/`)}
+                                class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-gray-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                            >
+                                Previous
+                            </a>
+                        )}
+                        <a
+                            href={nextCta.href}
+                            class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        >
+                            {nextCta.label}
+                        </a>
+                    </div>
+                </div>
+            </Card>
+        </div>
+    </div>
 </Layout>

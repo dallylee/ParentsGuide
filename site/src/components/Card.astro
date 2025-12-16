@@ -1,0 +1,27 @@
+---
+interface Props {
+  as?: keyof HTMLElementTagNameMap | string;
+  class?: string;
+  style?: string;
+}
+
+const {
+  as = "div",
+  class: className = "",
+  style = "",
+  ...attrs
+} = Astro.props as Props & Record<string, any>;
+
+const Tag = as;
+---
+
+<Tag
+  class:list={[
+    "card-glow pg-card w-full max-w-full block relative transition-transform pg-link-reset",
+    className
+  ]}
+  style={style}
+  {...attrs}
+>
+  <slot />
+</Tag>

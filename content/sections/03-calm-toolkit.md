@@ -1,6 +1,7 @@
 ---
 title: "Your Toolkit for Staying Calm"
 slug: "toolkit"
+group: "guide"
 order: 3
 menu: "primary"
 summary: "Practical tools to manage thoughts and body response."
@@ -65,6 +66,3 @@ These strategies help you change your relationship to anxiety rather than trying
 *   **Practice Self-Compassion:** Be kind to yourself. Any parent in this position would feel stress and fear. When you notice self-criticism ("I should be stronger"), replace it with compassion: *"This is really tough. It's understandable that I feel this way. I'm doing my best."*
 
 With these tools, you can begin to manage your own state. This newfound calm is the essential foundation for the next crucial task: talking with your child about what's to come.
-
-### What to do next
-[Learn how to talk to your child](/section/talking)

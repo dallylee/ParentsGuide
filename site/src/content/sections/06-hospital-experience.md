@@ -1,6 +1,7 @@
 ---
 title: "Navigating the Hospital Experience"
 slug: "hospital"
+group: "timeline"
 order: 6
 menu: "primary"
 summary: "Surgery day, coping while waiting, and reunion."
@@ -57,4 +58,4 @@ The first week in the hospital is focused on recovery, pain management, and prev
 You have made it through the most acute phase of the hospital journey. This is a huge accomplishment. The next step is the transition to the more familiar, but still challenging, environment of home.
 
 ### What to do next
-[Prepare for home recovery](/section/recovery)
+[Prepare for home recovery](../recovery)

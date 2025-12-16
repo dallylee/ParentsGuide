@@ -1,6 +1,7 @@
 ---
 title: "Bringing Your Child Home"
 slug: "recovery"
+group: "timeline"
 order: 7
 menu: "primary"
 summary: "Creating a healing space and preventing burnout."
@@ -43,4 +44,4 @@ After the immediate crisis of the hospital passes, it's common to experience a *
 Sustainable self-care is the key to navigating the long haul of recovery. The next section offers a simple daily routine to help make this a consistent habit.
 
 ### What to do next
-[See your daily self-care routine](/section/self-care)
+[See your daily self-care routine](../self-care)

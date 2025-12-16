@@ -2,88 +2,608 @@
 interface Props {
     tool: any;
 }
+
 const { tool } = Astro.props;
-const phases = tool.steps; // [{phase, duration, text}]
+const phases = tool.steps ?? [];
+const baseCycles = tool.repeat ?? 4;
+
+const phaseCopy = {
+    inhale: 'Inhale',
+    hold: 'Hold',
+    exhale: 'Exhale'
+};
+
+const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duration ?? 0), 0);
 ---
 
-<div class="breathing-container text-center py-8">
-    <div id="circle" class="w-64 h-64 rounded-full bg-pastel-1 mx-auto flex items-center justify-center relative shadow-glow transition-all duration-[4000ms] ease-in-out" style="--glow: var(--pastel-1)">
-        <div class="z-10 relative">
-             <div id="phase-text" class="text-2xl font-bold text-blue-900 mb-2">Ready?</div>
-             <div id="timer-text" class="text-6xl font-light text-blue-800">0</div>
+<section class="space-y-5" data-breathing-root>
+    <div class="flex items-center justify-between text-sm text-slate-800">
+        <span data-cycle-display>Cycle 1 of {baseCycles}</span>
+        <span data-total-remaining>~{totalCycleSeconds * baseCycles}s total</span>
+    </div>
+
+    <div class="breathing-stage" data-phase={phases[0]?.phase ?? 'inhale'}>
+        <div
+            class="breathing-ring"
+            data-preview-area
+            role="button"
+            tabindex="0"
+            aria-label="Preview the inhale and exhale animation"
+        >
+            <svg class="ring" viewBox="0 0 200 200" role="presentation">
+                <circle cx="100" cy="100" r="88" class="ring-track" />
+                <circle cx="100" cy="100" r="88" class="ring-progress" data-progress-ring />
+            </svg>
+            <div class="breathing-core" data-breath-circle>
+                <div class="text-[13px] uppercase tracking-wide font-semibold" data-phase-label>
+                    {phaseCopy[phases[0]?.phase] ?? 'Inhale'}
+                </div>
+                <div class="text-5xl font-bold text-gray-900 leading-none" data-phase-count>
+                    {phases[0]?.duration ?? 4}
+                </div>
+                <div class="text-sm text-slate-800 mt-2 font-semibold" data-phase-instruction>
+                    Inhale for {phases[0]?.duration ?? 4}
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-sm text-slate-800 mt-3 font-medium">
+            Breathe in through your nose, breathe out slowly through your mouth.
+        </p>
+        <p class="text-center text-xs text-emerald-700 mt-1">Tap the circle for a quick preview before you start.</p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3">
+        <button
+            type="button"
+            class="control-btn primary"
+            data-start-btn
+        >
+            Start
+        </button>
+        <button
+            type="button"
+            class="control-btn muted"
+            data-pause-btn
+            aria-disabled="true"
+        >
+            Pause
+        </button>
+        <button
+            type="button"
+            class="control-btn ghost"
+            data-restart-btn
+        >
+            Restart
+        </button>
+    </div>
+
+    <div class="space-y-4">
+        <div>
+            <p class="text-sm font-semibold text-gray-800 mb-2">Cycles</p>
+            <div class="flex flex-wrap gap-2" data-cycle-selector>
+                {[3,4,5,6].map((count) => (
+                    <button
+                        type="button"
+                        class={`toggle-chip ${count === baseCycles ? 'active' : ''}`}
+                        data-cycle-value={count}
+                        aria-pressed={count === baseCycles}
+                    >
+                        {count} cycles
+                    </button>
+                ))}
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="mt-12 flex justify-center space-x-4">
-        <button id="start-btn" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold shadow-soft hover:bg-blue-700 transition">Start</button>
-        <button id="stop-btn" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold shadow-soft hidden">Stop</button>
-    </div>
-</div>
+<style>
+    .breathing-stage {
+        --phase-color: #10b981;
+        --phase-soft: rgba(16,185,129,0.14);
+        --phase-core: #e0f2fe;
+        background: linear-gradient(180deg, #ffffff, #f7faf9);
+        border-radius: 1rem;
+        padding: 1rem;
+        border: 1px solid rgba(0,0,0,0.04);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.06), 0 0 24px rgba(99, 102, 241, 0.06);
+        transition: box-shadow 240ms ease, border-color 240ms ease;
+    }
 
-<script define:vars={{phases}}>
-    const circle = document.getElementById('circle');
-    const phaseText = document.getElementById('phase-text');
-    const timerText = document.getElementById('timer-text');
-    const startBtn = document.getElementById('start-btn');
-    const stopBtn = document.getElementById('stop-btn');
+    .breathing-ring {
+        position: relative;
+        width: min(82vw, 280px);
+        height: min(82vw, 280px);
+        margin: 0 auto;
+        outline: none;
+        border-radius: 9999px;
+    }
 
-    let isRunning = false;
-    let currentPhaseIndex = 0;
-    let timeLeft = 0;
-    let animationFrame;
-    let lastTime;
+    .breathing-ring:focus {
+        outline: none;
+    }
 
-    function updatePhaseDisplay(phase) {
-        phaseText.textContent = phase.text;
-        if(phase.phase === 'inhale') {
-            circle.style.transform = 'scale(1.2)';
-        } else if (phase.phase === 'exhale') {
-             circle.style.transform = 'scale(1.0)';
-        } else {
-            // hold
+    .breathing-ring:focus-visible {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--phase-color) 60%, transparent);
+    }
+
+    .ring {
+        position: absolute;
+        inset: 0;
+        transform: rotate(-90deg);
+    }
+
+    .ring-track {
+        fill: none;
+        stroke: color-mix(in srgb, var(--phase-color) 20%, white);
+        stroke-width: 10;
+        stroke-linecap: round;
+    }
+
+    .ring-progress {
+        fill: none;
+        stroke: var(--phase-color);
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-dasharray: 553;
+        stroke-dashoffset: 553;
+        transition: stroke 200ms ease;
+    }
+
+    .breathing-core {
+        position: absolute;
+        inset: 14%;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 40% 30%, var(--phase-soft), rgba(255,255,255,0.96)), var(--phase-core);
+        box-shadow: 0 0 0 12px var(--phase-soft), 0 20px 44px rgba(59,130,246,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        transition: box-shadow 360ms ease, background 360ms ease;
+        transform: scale(var(--scale, 1));
+    }
+
+    [data-phase="ready"] {
+        --phase-color: #0ea5e9;
+        --phase-soft: rgba(14, 165, 233, 0.14);
+        --phase-core: #e0f2fe;
+    }
+
+    [data-phase="countdown"] {
+        --phase-color: #8b5cf6;
+        --phase-soft: rgba(139, 92, 246, 0.16);
+        --phase-core: #f1eafe;
+    }
+
+    [data-phase="inhale"] {
+        --phase-color: #10b981;
+        --phase-soft: rgba(16, 185, 129, 0.2);
+        --phase-core: #ecfdf3;
+    }
+
+    [data-phase="hold"] {
+        --phase-color: #f59e0b;
+        --phase-soft: rgba(245, 158, 11, 0.18);
+        --phase-core: #fffbeb;
+    }
+
+    [data-phase="exhale"] {
+        --phase-color: #0ea5e9;
+        --phase-soft: rgba(14, 165, 233, 0.18);
+        --phase-core: #e0f2fe;
+    }
+
+    .control-btn {
+        min-width: 96px;
+        border-radius: 999px;
+        padding: 0.7rem 1.2rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+        border: 1px solid transparent;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        transition: transform 140ms ease, box-shadow 160ms ease, background 180ms ease;
+    }
+
+    .control-btn.primary {
+        background: linear-gradient(120deg, #10b981, #22d3ee);
+        color: white;
+    }
+
+    .control-btn.muted {
+        background: #eef2ff;
+        color: #4338ca;
+        border-color: rgba(67,56,202,0.16);
+    }
+
+    .control-btn.ghost {
+        background: white;
+        color: #0f172a;
+        border: 1px solid rgba(0,0,0,0.07);
+    }
+
+    .control-btn[aria-disabled="true"] {
+        opacity: 0.6;
+        box-shadow: none;
+    }
+
+    .control-btn:not([aria-disabled="true"]):active {
+        transform: translateY(1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .toggle-chip {
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: 1px solid rgba(0,0,0,0.08);
+        background: white;
+        color: #0f172a;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        transition: transform 120ms ease, background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .toggle-chip.active,
+    .toggle-chip[aria-pressed="true"] {
+        background: linear-gradient(120deg, #ecfeff, #d1fae5);
+        border-color: rgba(16,185,129,0.35);
+        color: #065f46;
+        box-shadow: 0 8px 20px rgba(16,185,129,0.12);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .breathing-core,
+        .control-btn,
+        .toggle-chip,
+        .ring-progress {
+            transition: none !important;
         }
     }
 
-    function runTimer(timestamp) {
-        if (!isRunning) return;
-        if (!lastTime) lastTime = timestamp;
-        const elapsed = timestamp - lastTime;
-        
-        if (elapsed >= 1000) {
-            timeLeft--;
-            timerText.textContent = timeLeft;
-            lastTime = timestamp;
+    [data-running="true"] [data-phase-label] {
+        animation: phasePulse 1.4s ease-in-out infinite;
+        color: var(--phase-color);
+    }
 
-            if (timeLeft <= 0) {
-                currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
-                const nextPhase = phases[currentPhaseIndex];
-                timeLeft = nextPhase.duration;
-                updatePhaseDisplay(nextPhase);
+    [data-running="false"] [data-phase-label] {
+        animation: none;
+        color: #0f172a;
+    }
+
+    @keyframes phasePulse {
+        0%, 100% { opacity: 1; transform: translateY(0); }
+        50% { opacity: 0.72; transform: translateY(-2px); }
+    }
+</style>
+
+<script define:vars={{ phases, baseCycles, phaseCopy, totalCycleSeconds }}>
+    const ring = document.querySelector('[data-progress-ring]');
+    const circle = document.querySelector('[data-breath-circle]');
+    const phaseLabel = document.querySelector('[data-phase-label]');
+    const phaseInstruction = document.querySelector('[data-phase-instruction]');
+    const phaseCount = document.querySelector('[data-phase-count]');
+    const stage = document.querySelector('.breathing-stage');
+    const cycleDisplay = document.querySelector('[data-cycle-display]');
+    const remainingDisplay = document.querySelector('[data-total-remaining]');
+    const startBtn = document.querySelector('[data-start-btn]');
+    const pauseBtn = document.querySelector('[data-pause-btn]');
+    const restartBtn = document.querySelector('[data-restart-btn]');
+    const cycleButtons = document.querySelectorAll('[data-cycle-value]');
+    const previewArea = document.querySelector('[data-preview-area]');
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const settings = {
+        targetCycles: baseCycles,
+        reduceMotion: prefersReduced.matches
+    };
+
+    const state = {
+        // Basic state machine: idle → preroll → running ↔ paused → finished. Preview is a separate branch.
+        status: 'idle',
+        currentCycle: 1,
+        phaseIndex: 0,
+        elapsed: 0,
+        raf: null,
+        lastTick: null,
+        preRollTimers: [],
+    };
+
+    const circumference = 2 * Math.PI * 88;
+    ring?.setAttribute('stroke-dasharray', `${circumference}`);
+    ring?.setAttribute('stroke-dashoffset', `${circumference}`);
+
+    const updateRing = (progress) => {
+        if (!ring) return;
+        const clamped = Math.min(Math.max(progress, 0), 1);
+        ring.style.strokeDashoffset = `${circumference - clamped * circumference}`;
+    };
+
+    const clearPreRollTimers = () => {
+        state.preRollTimers.forEach((timerId) => clearTimeout(timerId));
+        state.preRollTimers = [];
+    };
+
+    const formatRemaining = (seconds) => {
+        const rounded = Math.max(0, Math.round(seconds));
+        return `~${rounded}s left`;
+    };
+
+    const getRemainingSeconds = () => {
+        const currentPhase = phases[state.phaseIndex];
+        const elapsedSeconds = state.elapsed / 1000;
+        const currentRemaining = Math.max(0, (currentPhase?.duration ?? 0) - elapsedSeconds);
+
+        const upcoming = phases.slice(state.phaseIndex + 1).reduce((total, phase) => total + (phase.duration ?? 0), 0);
+        const fullCyclesLeft = Math.max(0, settings.targetCycles - state.currentCycle);
+        return currentRemaining + upcoming + fullCyclesLeft * totalCycleSeconds;
+    };
+
+    const setPhaseUI = (options = {}) => {
+        const currentPhase = phases[state.phaseIndex] ?? phases[0];
+        const phaseKey = options.phaseOverride ?? currentPhase?.phase ?? 'inhale';
+        stage?.setAttribute('data-phase', phaseKey);
+        stage?.setAttribute('data-running', state.status === 'running' ? 'true' : 'false');
+
+        if (phaseLabel && !options.skipLabel) phaseLabel.textContent = phaseCopy[phaseKey] ?? 'Breathe';
+        if (phaseInstruction && !options.skipInstruction) phaseInstruction.textContent = `${phaseCopy[phaseKey] ?? 'Breathe'} for ${currentPhase?.duration ?? 0}`;
+        if (phaseCount && !options.skipCount) phaseCount.textContent = `${Math.max(1, Math.round((currentPhase?.duration ?? 0) - state.elapsed / 1000))}`;
+
+        if (cycleDisplay) cycleDisplay.textContent = `Cycle ${state.currentCycle} of ${settings.targetCycles}`;
+        if (remainingDisplay) remainingDisplay.textContent = formatRemaining(getRemainingSeconds());
+    };
+
+    const setControls = () => {
+        if (!startBtn || !pauseBtn) return;
+        let label = 'Start';
+        if (state.status === 'paused') label = 'Resume';
+        if (state.status === 'finished') label = 'Start';
+        if (state.status === 'preroll') label = 'Starting';
+        startBtn.textContent = label;
+        const startDisabled = state.status === 'running' || state.status === 'preroll';
+        startBtn.setAttribute('aria-disabled', startDisabled ? 'true' : 'false');
+        startBtn.disabled = startDisabled;
+
+        const pauseDisabled = state.status !== 'running';
+        pauseBtn.setAttribute('aria-disabled', pauseDisabled ? 'true' : 'false');
+        pauseBtn.disabled = pauseDisabled;
+    };
+
+    const adjustBreathScale = (progress) => {
+        if (!circle) return;
+        const currentPhase = phases[state.phaseIndex] ?? phases[0];
+        const phaseKey = currentPhase?.phase ?? 'inhale';
+        let scale = 1;
+
+        if (settings.reduceMotion) {
+            scale = 1;
+        } else if (phaseKey === 'inhale') {
+            scale = 1 + 0.14 * progress;
+        } else if (phaseKey === 'hold') {
+            scale = 1.14 + Math.sin(progress * Math.PI * 2) * 0.015;
+        } else if (phaseKey === 'exhale') {
+            scale = 1.14 - 0.18 * progress;
+        }
+
+        circle.style.setProperty('--scale', scale.toFixed(3));
+    };
+
+    const advancePhase = () => {
+        state.phaseIndex += 1;
+        state.elapsed = 0;
+
+        if (state.phaseIndex >= phases.length) {
+            state.phaseIndex = 0;
+            state.currentCycle += 1;
+        }
+
+        if (state.currentCycle > settings.targetCycles) {
+            completeSession();
+            return;
+        }
+
+        setPhaseUI();
+    };
+
+    const tick = (timestamp) => {
+        if (state.status !== 'running') return;
+        if (!state.lastTick) state.lastTick = timestamp;
+        const delta = timestamp - state.lastTick;
+        state.lastTick = timestamp;
+        state.elapsed += delta;
+
+        const currentPhase = phases[state.phaseIndex] ?? phases[0];
+        const durationMs = (currentPhase?.duration ?? 0) * 1000;
+        const progress = Math.min(state.elapsed / durationMs, 1);
+        const countdown = Math.max(0, Math.ceil((durationMs - state.elapsed) / 1000));
+
+        updateRing(progress);
+        adjustBreathScale(progress);
+        if (phaseCount) phaseCount.textContent = `${countdown}`;
+        if (remainingDisplay) remainingDisplay.textContent = formatRemaining(getRemainingSeconds());
+
+        if (state.elapsed >= durationMs) {
+            advancePhase();
+        }
+
+        if (state.status === 'running') {
+            state.raf = requestAnimationFrame(tick);
+        }
+    };
+
+    const beginBreathing = () => {
+        state.status = 'running';
+        state.lastTick = null;
+        setPhaseUI();
+        updateRing(0);
+        adjustBreathScale(0);
+        state.raf = requestAnimationFrame(tick);
+        setControls();
+    };
+
+    const runPreRoll = () => {
+        state.status = 'preroll';
+        state.currentCycle = 1;
+        state.phaseIndex = 0;
+        state.elapsed = 0;
+        state.lastTick = null;
+        stage?.setAttribute('data-running', 'false');
+        stage?.setAttribute('data-phase', 'ready');
+        updateRing(0);
+        adjustBreathScale(0);
+
+        if (phaseLabel) phaseLabel.textContent = 'Ready?';
+        if (phaseInstruction) phaseInstruction.textContent = 'Settle your shoulders and sit comfortably.';
+        if (phaseCount) phaseCount.textContent = ' ';
+        if (cycleDisplay) cycleDisplay.textContent = `Cycle ${state.currentCycle} of ${settings.targetCycles}`;
+        if (remainingDisplay) remainingDisplay.textContent = formatRemaining(totalCycleSeconds * settings.targetCycles);
+        setControls();
+
+        state.preRollTimers.push(setTimeout(() => {
+            stage?.setAttribute('data-phase', 'countdown');
+            if (phaseLabel) phaseLabel.textContent = 'Inhale in';
+            let step = 0;
+            const countdown = [3, 2, 1];
+
+            const nextNumber = () => {
+                if (step >= countdown.length) {
+                    clearPreRollTimers();
+                    beginBreathing();
+                    return;
+                }
+
+                const current = countdown[step];
+                if (phaseInstruction) phaseInstruction.textContent = `Inhale in ${current}...`;
+                if (phaseCount) phaseCount.textContent = `${current}`;
+                updateRing((countdown.length - step) / countdown.length);
+                step += 1;
+                state.preRollTimers.push(setTimeout(nextNumber, 1000));
+            };
+
+            nextNumber();
+        }, 900));
+    };
+
+    const startSession = () => {
+        if (state.status === 'running' || state.status === 'preroll') return;
+        if (state.status === 'paused') {
+            state.status = 'running';
+            state.lastTick = null;
+            setPhaseUI();
+            state.raf = requestAnimationFrame(tick);
+            setControls();
+            return;
+        }
+
+        clearPreRollTimers();
+        cancelAnimationFrame(state.raf);
+        runPreRoll();
+    };
+
+    const pauseSession = () => {
+        if (state.status !== 'running') return;
+        state.status = 'paused';
+        cancelAnimationFrame(state.raf);
+        state.raf = null;
+        stage?.setAttribute('data-running', 'false');
+        setControls();
+    };
+
+    const completeSession = () => {
+        cancelAnimationFrame(state.raf);
+        clearPreRollTimers();
+        state.status = 'finished';
+        state.raf = null;
+        state.lastTick = null;
+        stage?.setAttribute('data-running', 'false');
+        updateRing(1);
+        adjustBreathScale(0);
+        if (phaseLabel) phaseLabel.textContent = 'Completed';
+        if (phaseInstruction) phaseInstruction.textContent = 'Tap restart for another round';
+        if (phaseCount) phaseCount.textContent = '0';
+        if (cycleDisplay) cycleDisplay.textContent = `Cycle ${settings.targetCycles} of ${settings.targetCycles}`;
+        setControls();
+    };
+
+    const restartSession = () => {
+        cancelAnimationFrame(state.raf);
+        clearPreRollTimers();
+        state.status = 'idle';
+        state.currentCycle = 1;
+        state.phaseIndex = 0;
+        state.elapsed = 0;
+        state.lastTick = null;
+        stage?.setAttribute('data-running', 'false');
+        updateRing(0);
+        adjustBreathScale(0);
+        setPhaseUI();
+        setControls();
+    };
+
+    const runPreview = () => {
+        if (state.status !== 'idle' && state.status !== 'finished') return;
+        state.status = 'preview';
+        let previewStep = 0;
+
+        const doPreview = () => {
+            previewStep += 1;
+            if (previewStep === 1) {
+                stage?.setAttribute('data-phase', 'inhale');
+                if (phaseLabel) phaseLabel.textContent = 'Preview inhale';
+                if (phaseInstruction) phaseInstruction.textContent = 'Quick inhale';
+                updateRing(0.5);
+                adjustBreathScale(0.6);
+                setTimeout(doPreview, settings.reduceMotion ? 200 : 700);
+            } else if (previewStep === 2) {
+                stage?.setAttribute('data-phase', 'exhale');
+                if (phaseLabel) phaseLabel.textContent = 'Preview exhale';
+                if (phaseInstruction) phaseInstruction.textContent = 'Quick release';
+                updateRing(1);
+                adjustBreathScale(0.2);
+                setTimeout(doPreview, settings.reduceMotion ? 200 : 700);
+            } else {
+                state.status = 'idle';
+                restartSession();
             }
+        };
+
+        doPreview();
+    };
+
+    startBtn?.addEventListener('click', startSession);
+    pauseBtn?.addEventListener('click', pauseSession);
+    restartBtn?.addEventListener('click', restartSession);
+    previewArea?.addEventListener('click', runPreview);
+    previewArea?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            runPreview();
         }
-        animationFrame = requestAnimationFrame(runTimer);
-    }
-
-    startBtn.addEventListener('click', () => {
-        isRunning = true;
-        startBtn.classList.add('hidden');
-        stopBtn.classList.remove('hidden');
-        
-        currentPhaseIndex = 0;
-        timeLeft = phases[0].duration;
-        updatePhaseDisplay(phases[0]);
-        timerText.textContent = timeLeft;
-        lastTime = null;
-        animationFrame = requestAnimationFrame(runTimer);
     });
 
-    stopBtn.addEventListener('click', () => {
-        isRunning = false;
-        cancelAnimationFrame(animationFrame);
-        startBtn.classList.remove('hidden');
-        stopBtn.classList.add('hidden');
-        phaseText.textContent = "Ready?";
-        timerText.textContent = "0";
-        circle.style.transform = 'scale(1)';
+    cycleButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const value = Number(btn.getAttribute('data-cycle-value'));
+            settings.targetCycles = value;
+            cycleButtons.forEach((b) => {
+                b.classList.toggle('active', Number(b.getAttribute('data-cycle-value')) === value);
+                b.setAttribute('aria-pressed', Number(b.getAttribute('data-cycle-value')) === value ? 'true' : 'false');
+            });
+            state.currentCycle = 1;
+            setPhaseUI();
+        });
     });
+
+    prefersReduced.addEventListener('change', (event) => {
+        settings.reduceMotion = event.matches;
+        if (settings.reduceMotion) {
+            circle?.style.setProperty('--scale', '1');
+        }
+    });
+
+    setPhaseUI();
+    setControls();
+    updateRing(0);
+    adjustBreathScale(0);
 </script>

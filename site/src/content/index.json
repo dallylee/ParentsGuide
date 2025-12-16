@@ -1,10 +1,21 @@
 {
     "version": 1,
+    "home": {
+        "hero_image": "images/hero.jpg",
+        "hero_title": "Parent’s Guide to Child’s Surgery",
+        "hero_subtitle": "Why your calm matters and where to begin",
+        "primary_cta": { "label": "Start here", "href": "/section/start/" },
+        "secondary_ctas": [
+            { "label": "Tools", "href": "/tools/" },
+            { "label": "Timeline", "href": "/section/timeline/" }
+        ]
+    },
     "sections": [
         {
             "id": "start",
             "title": "Start Here",
             "slug": "start",
+            "group": "guide",
             "order": 1,
             "summary": "Reassurance, why your calm matters, where to begin.",
             "tags": [
@@ -19,6 +30,7 @@
             "id": "worries",
             "title": "Understanding Your Worries",
             "slug": "worries",
+            "group": "guide",
             "order": 2,
             "summary": "Why you feel this way and how to name it.",
             "tags": [
@@ -33,6 +45,7 @@
             "id": "toolkit",
             "title": "Your Calm Toolkit",
             "slug": "toolkit",
+            "group": "guide",
             "order": 3,
             "summary": "Practical tools to manage thoughts and body response.",
             "tags": [
@@ -47,6 +60,7 @@
             "id": "talking",
             "title": "Talking with Your Child",
             "slug": "talking",
+            "group": "guide",
             "order": 4,
             "summary": "Warm honesty and age-appropriate language.",
             "tags": [
@@ -61,6 +75,7 @@
             "id": "timeline",
             "title": "Timeline: Before Hospital",
             "slug": "timeline",
+            "group": "timeline",
             "order": 5,
             "summary": "Countdown, week of surgery, and the night before.",
             "tags": [
@@ -75,6 +90,7 @@
             "id": "hospital",
             "title": "Hospital Experience",
             "slug": "hospital",
+            "group": "timeline",
             "order": 6,
             "summary": "Surgery day, coping while waiting, and reunion.",
             "tags": [
@@ -89,6 +105,7 @@
             "id": "recovery",
             "title": "Bringing Your Child Home",
             "slug": "recovery",
+            "group": "timeline",
             "order": 7,
             "summary": "Creating a healing space and preventing burnout.",
             "tags": [
@@ -103,6 +120,7 @@
             "id": "self-care",
             "title": "Daily Self-Care",
             "slug": "self-care",
+            "group": "timeline",
             "order": 8,
             "summary": "Simple, non-negotiable actions for your wellbeing.",
             "tags": [
@@ -117,6 +135,7 @@
             "id": "support",
             "title": "When You Need Extra Support",
             "slug": "support",
+            "group": "timeline",
             "order": 9,
             "summary": "Red flags and avenues for professional help.",
             "tags": [
@@ -131,6 +150,7 @@
             "id": "growth",
             "title": "Growing Stronger",
             "slug": "growth",
+            "group": "timeline",
             "order": 10,
             "summary": "Processing, celebrating, and finding closure.",
             "tags": [
@@ -161,6 +181,19 @@
             "title": "Worry Time",
             "data": "tools/worry-time.json",
             "summary": "Scheduled worry"
+        },
+        {
+            "id": "podcast-episode-01",
+            "title": "Podcast episode",
+            "data": "tools/podcast-episode-01.json",
+            "image": "images/calm.jpg"
+        },
+        {
+            "id": "meditations",
+            "title": "Meditations for relaxation, stress relief and calm",
+            "route": "/tool/meditations",
+            "type": "video",
+            "summary": "Guided meditations to help you relax and feel steadier."
         }
     ],
     "checklists": [

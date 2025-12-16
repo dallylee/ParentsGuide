@@ -1,3 +1,110 @@
 ---
-return Astro.redirect('/section/timeline');
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import siteIndex from '../../../content/index.json';
+import { ArrowLeft } from 'lucide-astro';
+
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\/+/, "")}`;
+
+const preferredSlugs = ['timeline', 'hospital-day', 'home-recovery', 'discharge'];
+const sections = (siteIndex.sections ?? []).map((section) => ({
+    ...section,
+    group: section.group ?? 'guide'
+}));
+
+const timelineSections = sections
+    .filter((section) => section.group === 'timeline')
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+const preferredPhases = preferredSlugs
+    .map((slug) => timelineSections.find((section) => section.slug === slug))
+    .filter(Boolean);
+
+const fallbackPhases = sections.filter((section) => {
+    const tags = section.tags?.map((tag) => tag.toLowerCase()) ?? [];
+    const title = section.title?.toLowerCase() ?? '';
+    return tags.includes('timeline') || title.includes('timeline') || title.includes('hospital');
+});
+
+const phases = timelineSections.length > 0
+    ? (preferredPhases.length > 0 ? preferredPhases : timelineSections)
+    : fallbackPhases;
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 ---
+
+<Layout title="Timeline">
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
+        <a href={withBase('')} class="p-2 -ml-2 text-slate-700 hover:text-slate-900 transition-colors">
+            <ArrowLeft size={24} />
+        </a>
+        <span class="ml-2 font-semibold text-gray-800">Timeline overview</span>
+    </div>
+
+    <div class="px-4 sm:px-6 py-6 space-y-6 pb-28">
+        <header class="space-y-2">
+            <h1 class="text-3xl font-semibold text-gray-900">Timeline</h1>
+            <p class="text-slate-800 text-base font-medium">Quickly browse each phase before, during, and after hospital care.</p>
+        </header>
+
+        {phases.length === 0 ? (
+            <Card class="px-4 py-10 text-center text-slate-800 font-medium" style={`--glow: ${glows[0]}`}>
+                No timeline phases available yet.
+            </Card>
+        ) : (
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {phases.map((phase, index) => {
+                    const imagePath = phase.hero_image ? withBase(phase.hero_image) : null;
+                    const glow = glows[index % glows.length];
+                    const buttonColor = glows[(index + 1) % glows.length];
+
+                    return (
+                        <Card
+                            as="a"
+                            href={withBase(`section/${phase.slug}/`)}
+                            class="group timeline-content p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-sky-400 transform hover:-translate-y-0.5"
+                            style={`--glow: ${glow}`}
+                        >
+                            <div class="flex items-start gap-4">
+                                {imagePath && (
+                                    <img
+                                        src={imagePath}
+                                        alt=""
+                                        class="h-14 w-14 rounded-lg object-cover border border-gray-100"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                )}
+                                <div class="flex-1 space-y-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <h2 class="text-xl font-semibold text-gray-900 leading-tight">{phase.title}</h2>
+                                        {phase.tags?.length > 0 && (
+                                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200">
+                                                {phase.tags[0]}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p class="text-slate-800 text-sm leading-relaxed font-medium">{phase.summary}</p>
+                                    <div class="flex items-center justify-between pt-2">
+                                        <span class="text-sm font-medium text-slate-800">{phase.est_read} min read</span>
+                                        <span
+                                            class="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-gray-900 shadow-soft"
+                                            style={`background-color: ${buttonColor}`}
+                                        >
+                                            Open
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+                    );
+                })}
+            </div>
+        )}
+    </div>
+</Layout>

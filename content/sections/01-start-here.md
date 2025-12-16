@@ -1,6 +1,7 @@
 ---
 title: "Start Here: You're Not Alone"
 slug: "start"
+group: "guide"
 order: 1
 menu: "primary"
 summary: "Reassurance, why your calm matters, where to begin."
@@ -20,6 +21,3 @@ Children are remarkably perceptive; they look to you as their **barometer of saf
 Some parents feel that focusing on their own stress is selfish, but the opposite is true. Managing your own anxiety is one of the most direct and powerful ways you can help your child. Think of the oxygen mask instruction on an aeroplane: you must secure your own mask before you can effectively help others. A parent who is overwhelmed and running on empty cannot provide the steady, comforting presence their child needs most.
 
 You can learn to handle your fear and be the calm anchor your child needs. Let’s begin by understanding the nature of the worries you're facing.
-
-### What to do next
-[Understand your worries](/section/worries)

@@ -1,0 +1,599 @@
+---
+import Card from './Card.astro';
+
+interface Props {
+    tool: any;
+}
+
+const { tool } = Astro.props;
+const steps = tool.steps ?? [];
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
+---
+
+<section class="space-y-4" data-grounding-root>
+    <!-- Start Button -->
+    <div class="start-container" data-start-container>
+        <button
+            type="button"
+            class="start-button"
+            data-start-button
+        >
+            <span class="start-icon">🌊</span>
+            <span class="start-text">Start Grounding Exercise</span>
+        </button>
+        <p class="start-subtitle">Take a moment to reconnect with your senses</p>
+    </div>
+
+    <!-- Complete Banner Overlay -->
+    <div class="complete-banner hidden" data-complete-banner aria-live="assertive">
+        <div class="complete-card">
+            <div class="complete-icon">✓</div>
+            <p class="complete-title">Complete — breathe easy</p>
+            <p class="complete-subtitle">Tap to dismiss</p>
+        </div>
+    </div>
+
+    <!-- Exercise Content (Initially Hidden) -->
+    <div class="exercise-content hidden" data-exercise-content>
+        <div class="flex items-center justify-between text-sm text-slate-800 mb-4">
+            <span data-grounding-status class="font-medium">Step 1 of {steps.length}</span>
+            <button
+                type="button"
+                class="reset-button"
+                data-grounding-reset
+            >
+                Restart
+            </button>
+        </div>
+
+        <div class="step-bars" aria-hidden="true">
+            {steps.map((step, idx) => (
+                <div
+                    class="step-bar"
+                    data-progress-bar
+                    data-state="pending"
+                    style={`--glow: ${glows[idx % glows.length]};`}
+                ></div>
+            ))}
+        </div>
+
+        <div class="space-y-3" data-steps-stack>
+            {steps.map((step, idx) => (
+                <Card
+                    as="button"
+                    type="button"
+                    class="grounding-card"
+                    data-state="pending"
+                    data-grounding-step
+                    data-step-index={idx}
+                    style={`--glow: ${glows[idx % glows.length]}; --delay: ${idx * 90}ms;`}
+                >
+                    <div class="step-badge" data-step-badge>
+                        <span class="badge-count" data-count>{step.count ?? idx + 1}</span>
+                        <span class="badge-check hidden" data-check aria-hidden="true">✓</span>
+                    </div>
+                    <div class="step-rail" aria-hidden="true"></div>
+                    <div class="flex-1 space-y-1">
+                        <p class="text-lg font-semibold text-gray-900 leading-snug">{step.action || step.text}</p>
+                        <p class="text-sm text-slate-600 font-medium">Tap when complete</p>
+                    </div>
+                </Card>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    [data-grounding-root] {
+        --badge-size: 3rem;
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+
+    /* Start Button Styles */
+    .start-container {
+        text-align: center;
+        padding: 3rem 1rem;
+        animation: fadeIn 600ms ease-out;
+    }
+
+    .start-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 2rem 3rem;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        border-radius: 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 12px 32px rgba(16, 185, 129, 0.3);
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .start-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 40px rgba(16, 185, 129, 0.4);
+    }
+
+    .start-button:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+
+    .start-icon {
+        font-size: 2.5rem;
+        animation: gentleFloat 3s ease-in-out infinite;
+    }
+
+    .start-text {
+        font-size: 1.125rem;
+    }
+
+    .start-subtitle {
+        margin-top: 1rem;
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    /* Complete Banner Overlay */
+    .complete-banner {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 50;
+        cursor: pointer;
+        animation: fadeIn 300ms ease-out;
+    }
+
+    .complete-banner.hidden {
+        display: none;
+    }
+
+    .complete-banner.fade-out {
+        animation: fadeOut 500ms ease-out forwards;
+    }
+
+    .complete-card {
+        background: linear-gradient(135deg, #ecfdf3, #d1fae5);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+        text-align: center;
+        animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-width: 340px;
+        width: 100%;
+    }
+
+    .complete-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #065f46;
+        animation: checkPop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms backwards;
+    }
+
+    .complete-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #065f46;
+        margin-bottom: 0.5rem;
+    }
+
+    .complete-subtitle {
+        font-size: 0.9375rem;
+        color: #059669;
+        font-weight: 500;
+    }
+
+    /* Exercise Content */
+    .exercise-content {
+        animation: slideIn 400ms ease-out;
+    }
+
+    .exercise-content.hidden {
+        display: none;
+    }
+
+    .reset-button {
+        color: #059669;
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.625rem 1.25rem;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        cursor: pointer;
+        transition: all 200ms ease;
+    }
+
+    .reset-button:hover {
+        background: rgba(16, 185, 129, 0.15);
+    }
+
+    .reset-button:active {
+        transform: scale(0.96);
+    }
+
+    /* Step Cards */
+    .grounding-card {
+        padding: 1.25rem;
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+        text-align: left;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: all 200ms ease;
+        width: 100%;
+    }
+
+    .grounding-card[data-state="pending"] {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .grounding-card[data-state="active"] {
+        box-shadow: 0 8px 24px rgba(31, 41, 55, 0.12), 0 0 32px var(--glow);
+        transform: translateY(-2px);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .grounding-card[data-state="done"] {
+        opacity: 0.5;
+        pointer-events: none;
+        background: #f9fafb;
+    }
+
+    .grounding-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Step Badge */
+    .step-badge {
+        width: var(--badge-size);
+        height: var(--badge-size);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: #064e3b;
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    /* Active Badge Pulsating Animation */
+    .grounding-card[data-state="active"] .step-badge {
+        animation: pulsateColorShift 2s ease-in-out infinite;
+    }
+
+    .grounding-card[data-state="active"] .step-badge::after {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.3), transparent 70%);
+        animation: pulseRing 2s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    .grounding-card[data-state="done"] .step-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .badge-check {
+        font-size: 1.5rem;
+    }
+
+    /* Step Rail */
+    .step-rail {
+        width: 6px;
+        align-self: stretch;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.15);
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .grounding-card[data-state="active"] .step-rail {
+        background: linear-gradient(180deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.15));
+    }
+
+    /* Progress Bars */
+    .step-bars {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .step-bar {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.15);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .step-bar[data-state="active"]::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.5), rgba(52, 211, 153, 0.5));
+        animation: barShimmer 1.5s ease-in-out infinite;
+    }
+
+    .step-bar[data-state="done"] {
+        background: linear-gradient(90deg, #10b981, #059669);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes checkPop {
+        from { opacity: 0; transform: scale(0) rotate(-45deg); }
+        to { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes gentleFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    @keyframes pulsateColorShift {
+        0%, 100% {
+            transform: scale(1);
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        25% {
+            transform: scale(1.15);
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            box-shadow: inset 0 0 0 2px rgba(239, 68, 68, 0.4), 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+        50% {
+            transform: scale(1);
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        75% {
+            transform: scale(1.15);
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            box-shadow: inset 0 0 0 2px rgba(239, 68, 68, 0.4), 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+    }
+
+    @keyframes pulseRing {
+        0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.6;
+            transform: scale(1.2);
+        }
+    }
+
+    @keyframes barShimmer {
+        0%, 100% {
+            opacity: 0.5;
+            transform: translateX(-10%);
+        }
+        50% {
+            opacity: 1;
+            transform: translateX(10%);
+        }
+    }
+
+    /* Responsive Design */
+    @media (min-width: 640px) {
+        [data-grounding-root] {
+            --badge-size: 3.25rem;
+        }
+
+        .grounding-card {
+            padding: 1.5rem;
+        }
+
+        .complete-title {
+            font-size: 2rem;
+        }
+
+        .start-button {
+            max-width: 380px;
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    [data-reduced-motion="true"] * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+</style>
+
+<script define:vars={{ steps }}>
+    const root = document.querySelector('[data-grounding-root]');
+    const startContainer = document.querySelector('[data-start-container]');
+    const startButton = document.querySelector('[data-start-button]');
+    const exerciseContent = document.querySelector('[data-exercise-content]');
+    const cards = Array.from(document.querySelectorAll('[data-grounding-step]'));
+    const bars = Array.from(document.querySelectorAll('[data-progress-bar]'));
+    const statusText = document.querySelector('[data-grounding-status]');
+    const resetBtn = document.querySelector('[data-grounding-reset]');
+    const completeBanner = document.querySelector('[data-complete-banner]');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let completionTimeout = null;
+    const state = steps.map(() => ({ state: 'pending' }));
+
+    const applyReducedMotion = (value) => {
+        root?.setAttribute('data-reduced-motion', value ? 'true' : 'false');
+    };
+
+    const updateStatus = () => {
+        const activeIndex = state.findIndex((item) => item.state === 'active');
+        if (!statusText) return;
+        if (activeIndex === -1) {
+            statusText.textContent = 'All steps complete!';
+        } else {
+            statusText.textContent = `Step ${activeIndex + 1} of ${state.length}`;
+        }
+    };
+
+    const syncCards = () => {
+        cards.forEach((card, idx) => {
+            const data = state[idx];
+            const check = card.querySelector('[data-check]');
+            const count = card.querySelector('[data-count]');
+
+            card.dataset.state = data.state;
+            card.setAttribute('aria-pressed', data.state === 'active');
+
+            if (data.state === 'done') {
+                check?.classList.remove('hidden');
+                count?.classList.add('hidden');
+            } else {
+                check?.classList.add('hidden');
+                count?.classList.remove('hidden');
+            }
+        });
+
+        bars.forEach((bar, idx) => {
+            bar.dataset.state = state[idx]?.state ?? 'pending';
+        });
+
+        updateStatus();
+    };
+
+    const hideCompletion = () => {
+        if (!completeBanner) return;
+        if (completionTimeout) {
+            clearTimeout(completionTimeout);
+            completionTimeout = null;
+        }
+        completeBanner.classList.add('fade-out');
+        setTimeout(() => {
+            completeBanner.classList.add('hidden');
+            completeBanner.classList.remove('fade-out');
+        }, 500);
+    };
+
+    const showCompletion = () => {
+        if (!completeBanner) return;
+        completeBanner.classList.remove('hidden');
+        completeBanner.focus?.();
+        
+        // Auto-hide after 5 seconds
+        completionTimeout = setTimeout(() => {
+            hideCompletion();
+        }, 5000);
+    };
+
+    const completeStep = (index) => {
+        state[index].state = 'done';
+        const next = state.findIndex((item, idx) => idx > index && item.state !== 'done');
+        if (next !== -1) {
+            state[next].state = 'active';
+        } else {
+            showCompletion();
+        }
+        syncCards();
+    };
+
+    const startExercise = () => {
+        startContainer?.classList.add('hidden');
+        exerciseContent?.classList.remove('hidden');
+        state[0].state = 'active';
+        syncCards();
+    };
+
+    const resetFlow = () => {
+        state.forEach((item) => {
+            item.state = 'pending';
+        });
+        state[0].state = 'active';
+        hideCompletion();
+        syncCards();
+    };
+
+    // Start button
+    startButton?.addEventListener('click', startExercise);
+
+    // Step cards
+    cards.forEach((card, idx) => {
+        card.addEventListener('click', () => {
+            if (state[idx].state === 'active') {
+                completeStep(idx);
+            }
+        });
+    });
+
+    // Reset button
+    resetBtn?.addEventListener('click', resetFlow);
+
+    // Complete banner (dismiss on click)
+    completeBanner?.addEventListener('click', hideCompletion);
+
+    // Reduced motion support
+    prefersReduced.addEventListener('change', (event) => {
+        applyReducedMotion(event.matches);
+    });
+
+    // Initialize
+    requestAnimationFrame(() => {
+        applyReducedMotion(prefersReduced.matches);
+    });
+</script>

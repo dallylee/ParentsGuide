@@ -1,18 +1,30 @@
 ---
+import Card from './Card.astro';
+
 interface Props {
     checklist: any;
 }
 const { checklist } = Astro.props;
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
+];
 ---
 <div class="checklist-container space-y-6">
     {checklist.items && (
         <ul class="space-y-3">
             {checklist.items.map((item, i) => (
                 <li class="flex items-start">
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white border border-gray-100 rounded-xl shadow-sm w-full hover:bg-gray-50 transition">
+                    <Card
+                        as="label"
+                        class="flex items-center space-x-3 cursor-pointer p-3 w-full transition"
+                        style={`--glow: ${glows[i % glows.length]}`}
+                    >
                          <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-item-${i}`} />
-                         <span class="text-gray-700 font-medium">{item}</span>
-                    </label>
+                         <span class="text-slate-800 font-medium">{item}</span>
+                    </Card>
                 </li>
             ))}
         </ul>
@@ -20,14 +32,18 @@ const { checklist } = Astro.props;
 
     {checklist.sections && checklist.sections.map((section, sIdx) => (
         <div>
-            <h3 class="font-bold text-gray-800 mb-3 ml-1">{section.title}</h3>
+            <h3 class="font-normal text-gray-800 mb-3 ml-1">{section.title}</h3>
             <ul class="space-y-3">
                 {section.items.map((item, i) => (
                     <li class="flex items-start">
-                        <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white border border-gray-100 rounded-xl shadow-sm w-full hover:bg-gray-50 transition">
+                        <Card
+                            as="label"
+                            class="flex items-center space-x-3 cursor-pointer p-3 w-full transition"
+                            style={`--glow: ${glows[(sIdx + i) % glows.length]}`}
+                        >
                             <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" data-id={`${checklist.id}-section-${sIdx}-item-${i}`} />
-                            <span class="text-gray-700 font-medium">{item}</span>
-                        </label>
+                            <span class="text-slate-800 font-medium">{item}</span>
+                        </Card>
                     </li>
                 ))}
             </ul>

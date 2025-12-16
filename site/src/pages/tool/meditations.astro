@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { ArrowLeft } from 'lucide-astro';
+
+const title = 'Meditations for relaxation, stress relief and calm';
+const description = 'A calming playlist to help you slow down, breathe, and feel steadier.';
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+---
+
+<Layout title={title} description={description}>
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-3 flex items-center">
+        <a
+          href={withBase('tools/')}
+          class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        >
+            <ArrowLeft size={20} />
+            <span class="leading-none">Back</span>
+        </a>
+        <span class="ml-3 font-semibold text-gray-800">{title}</span>
+    </div>
+
+    <div class="px-4 pt-6 pb-28">
+        <div class="mx-auto max-w-2xl space-y-6 pb-2">
+            <p class="text-slate-800 text-lg leading-relaxed font-medium">
+                Press play for a gentle series of meditations that invite you to slow down and settle your breathing.
+            </p>
+
+            <div class="video-shell">
+                <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/videoseries?si=WDpzcz28s3eaUEkx&amp;list=PLMMX_6k4HIULGScttzcVR89lkzppsqWxU"
+                    title="YouTube video player"
+                    class="video-frame"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                ></iframe>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .video-shell {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .video-frame {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (max-width: 640px) {
+        .video-shell {
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
+        }
+    }
+</style>
+
+<script>
+    const storageKey = 'parentsGuideUsedTools_v1';
+    const toolId = 'meditations';
+
+    const markToolUsed = () => {
+        if (!toolId) return;
+
+        try {
+            const existing = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            existing[toolId] = new Date().toISOString();
+            localStorage.setItem(storageKey, JSON.stringify(existing));
+        } catch (error) {
+            console.warn('Could not save tool usage', error);
+        }
+    };
+
+    markToolUsed();
+</script>

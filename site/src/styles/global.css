@@ -3,7 +3,182 @@
 @tailwind utilities;
 
 @layer base {
+  html,
   body {
-    @apply antialiased text-gray-800 bg-bg;
+    font-family: 'Lato', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: #1f2937;
+  }
+
+  body {
+    @apply antialiased bg-bg overflow-x-hidden;
+  }
+
+  html {
+    @apply overflow-x-hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+  }
+
+  .prose {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1f2937;
+    --tw-prose-body: #1f2937;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+  }
+}
+
+:root {
+  --pastel-1: #cfe8ff;
+  --pastel-2: #ffe3d8;
+  --pastel-3: #e6ffd8;
+  --pastel-4: #f5e8ff;
+  --glow-1: rgba(207, 232, 255, 0.6);
+  --glow-2: rgba(255, 227, 216, 0.56);
+  --glow-3: rgba(230, 255, 216, 0.54);
+  --glow-4: rgba(245, 232, 255, 0.6);
+}
+
+@layer components {
+  .card-glow,
+  .pg-card,
+  .pg-card-glow {
+    @apply rounded-2xl border border-black/5 bg-white;
+    position: relative;
+    isolation: isolate;
+    --glow: var(--glow-1);
+    --shadow-ambient: 0 8px 20px rgba(31, 41, 55, 0.08);
+    box-shadow: var(--shadow-ambient), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    transition: transform 200ms ease, box-shadow 240ms ease;
+    overflow: visible;
+    max-width: 100%;
+  }
+
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: inherit;
+    background:
+      radial-gradient(75% 110% at 16% 22%, color-mix(in srgb, var(--glow) 90%, white 10%) 0%, transparent 62%),
+      radial-gradient(80% 110% at 84% 78%, color-mix(in srgb, var(--glow) 88%, white 12%) 0%, transparent 66%);
+    filter: blur(12px);
+    opacity: 0.18;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 200ms ease, filter 220ms ease;
+  }
+
+  .pg-link-reset :where(a) {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .pg-link-reset :where(a:hover) {
+    text-decoration: underline;
+  }
+}
+
+/* Typographic alignment: keep headings left while justifying long-form body copy in cards, guide content, and timeline details */
+.pg-card :where(p, li, blockquote),
+.guide-content :where(p, li, blockquote),
+.timeline-content :where(p, li, blockquote) {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  text-wrap: pretty;
+  line-height: 1.65;
+}
+
+/* Maintain justified body copy on mobile; only relax for ultra-narrow screens to avoid rivers */
+@media (max-width: 360px) {
+  .pg-card :where(p, li, blockquote),
+  .guide-content :where(p, li, blockquote),
+  .timeline-content :where(p, li, blockquote) {
+    text-align: left;
+  }
+}
+
+/* Mobile glow intensity: boost colour/opacity without altering blur, inset, or spread */
+@media (max-width: 639px) {
+  :root {
+    --glow-1: rgba(207, 232, 255, 0.78);
+    --glow-2: rgba(255, 227, 216, 0.74);
+    --glow-3: rgba(230, 255, 216, 0.7);
+    --glow-4: rgba(245, 232, 255, 0.78);
+  }
+
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    opacity: 0.24;
+    background:
+      radial-gradient(75% 110% at 16% 22%, color-mix(in srgb, var(--glow) 94%, white 6%) 0%, transparent 62%),
+      radial-gradient(80% 110% at 84% 78%, color-mix(in srgb, var(--glow) 92%, white 8%) 0%, transparent 66%);
+  }
+}
+
+@media (min-width: 640px) {
+  .card-glow,
+  .pg-card,
+  .pg-card-glow {
+    --shadow-ambient: 0 12px 28px rgba(31, 41, 55, 0.1);
+    box-shadow: var(--shadow-ambient), 0 0 0 1px rgba(0, 0, 0, 0.04), 0 14px 32px color-mix(in srgb, var(--glow) 88%, transparent 12%);
+  }
+
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    inset: -6px;
+    filter: blur(18px);
+    opacity: 0.3;
+  }
+}
+
+@media (hover: hover) {
+  .card-glow:hover,
+  .pg-card:hover,
+  .pg-card-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(31, 41, 55, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04),
+      0 16px 34px color-mix(in srgb, var(--glow) 94%, transparent 6%);
+  }
+
+  .card-glow:hover::after,
+  .pg-card:hover::after,
+  .pg-card-glow:hover::after {
+    opacity: 0.38;
+    filter: blur(20px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-glow,
+  .pg-card,
+  .pg-card-glow,
+  .card-glow::after,
+  .pg-card::after,
+  .pg-card-glow::after {
+    transition: none;
   }
 }

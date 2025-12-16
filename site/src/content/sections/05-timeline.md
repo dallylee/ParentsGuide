@@ -1,6 +1,7 @@
 ---
 title: "Timeline: Before the Hospital"
 slug: "timeline"
+group: "timeline"
 order: 5
 menu: "primary"
 summary: "Countdown, week of surgery, and the night before."
@@ -46,4 +47,4 @@ The final 24 hours are about completing preparations, spending quality time toge
 You have done the work to prepare logistically for what's ahead. Now, let's move our focus to surgery day itself and navigating the hospital experience.
 
 ### What to do next
-[Navigate the hospital experience](/section/hospital)
+[Navigate the hospital experience](../hospital)

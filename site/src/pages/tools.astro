@@ -1,58 +1,174 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
 import { ArrowLeft } from 'lucide-astro';
+import siteIndex from '../../../content/index.json';
 
-const tools = await getCollection('tools');
+const toolEntries = await getCollection('tools');
 const checklists = await getCollection('checklists');
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const quickTools = siteIndex.quick_tools ?? [];
 
-const pastelColors = [
-    'var(--pastel-1)', 'var(--pastel-2)', 'var(--pastel-3)', 'var(--pastel-4)'
+const buildHref = (route = "") => {
+    const cleanedRoute = route.replace(/^\//, "");
+    const normalizedRoute = cleanedRoute.endsWith('/') ? cleanedRoute : `${cleanedRoute}/`;
+    return withBase(normalizedRoute);
+};
+
+const glows = [
+    'rgba(207, 232, 255, 0.75)',
+    'rgba(255, 227, 216, 0.7)',
+    'rgba(230, 255, 216, 0.7)',
+    'rgba(245, 232, 255, 0.75)'
 ];
 ---
 <Layout title="Calm Tools">
-    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href="/" class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft size={24} />
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-3 flex items-center">
+        <a
+          href={withBase('')}
+          class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        >
+            <ArrowLeft size={20} />
+            <span class="leading-none">Back</span>
         </a>
-        <span class="ml-2 font-semibold text-gray-800">Your Calm Toolkit</span>
+        <span class="ml-3 font-semibold text-gray-800">Your Calm Toolkit</span>
     </div>
 
-    <div class="p-4 space-y-8 pb-32">
+    <div class="px-4 pt-6 pb-28">
+        <div class="mx-auto max-w-2xl space-y-8">
         <!-- Tools Section -->
         <div>
-            <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
+            <h2 class="text-lg font-normal text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
-                {tools.map((tool, index) => (
-                    <a href={`/tool/${tool.id}`} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[index % 4]}80`}>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl" style={`background-color: ${pastelColors[index % 4]}`}>
+                {quickTools.map((tool, index) => {
+                    const matchingTool = toolEntries.find(({ id }) => id === tool.id);
+                    const title = tool.title ?? matchingTool?.data.name ?? tool.id;
+                    const summary = tool.summary ?? matchingTool?.data.summary ?? '';
+                    const type = tool.type ?? matchingTool?.data.type;
+                    const href = buildHref(tool.route ?? `tool/${tool.id}`);
+
+                    return (
+                    <Card
+                        as="a"
+                        href={href}
+                        class="p-6 flex items-center"
+                        style={`--glow: ${glows[index % glows.length]}`}
+                        data-tool-card={tool.id}
+                    >
+                        <span class="tool-indicator" aria-hidden="true" data-indicator></span>
+
+                        <div
+                            class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 font-bold text-xl"
+                            style={`background-color: ${glows[index % glows.length]}`}
+                        >
                             {index + 1}
                         </div>
-                        <div>
-                            <h2 class="text-xl font-bold text-gray-900">{tool.data.name}</h2>
-                            <p class="text-gray-600 text-sm">{tool.data.summary}</p>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-normal text-gray-900">{title}</h2>
+                                {type === 'embed' && (
+                                    <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Audio</span>
+                                )}
+                                {type === 'video' && (
+                                    <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Video</span>
+                                )}
+                            </div>
+                            <p class="text-slate-800 text-sm font-medium">{summary}</p>
                         </div>
-                    </a>
-                ))}
+                    </Card>
+                    );
+                })}
             </div>
         </div>
 
         <!-- Checklists Section -->
         <div>
-            <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Preparation Checklists</h2>
+            <h2 class="text-lg font-normal text-gray-900 mb-4 px-2">Preparation Checklists</h2>
             <div class="space-y-4">
                 {checklists.map((list, index) => (
-                    <a href={`/checklist/${list.id}`} class="block bg-white rounded-xl p-6 shadow-soft border border-black/5 flex items-center shadow-glow hover:scale-[1.02] transition-transform" style={`--glow: ${pastelColors[(index + 2) % 4]}80`}>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 text-2xl" style={`background-color: ${pastelColors[(index + 2) % 4]}`}>
+                    <Card
+                        as="a"
+                        href={withBase(`checklist/${list.id}`)}
+                        class="p-6 flex items-center"
+                        style={`--glow: ${glows[(index + 2) % glows.length]}`}
+                    >
+                        <div
+                            class="w-16 h-16 rounded-full flex items-center justify-center mr-4 text-gray-700 text-2xl"
+                            style={`background-color: ${glows[(index + 2) % glows.length]}`}
+                        >
                             ✓
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">{list.data.title}</h2>
-                            <p class="text-gray-600 text-sm">Interactive checklist</p>
+                            <h2 class="text-xl font-normal text-gray-900">{list.data.title}</h2>
+                            <p class="text-slate-800 text-sm font-medium">Interactive checklist</p>
                         </div>
-                    </a>
+                    </Card>
                 ))}
             </div>
         </div>
+        </div>
     </div>
 </Layout>
+
+<style>
+    .tool-indicator {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 12px;
+        height: 12px;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.9));
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
+        animation: indicatorPulse 3.8s ease-in-out infinite;
+    }
+
+    @keyframes indicatorPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.12);
+            transform: scale(1.05);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.06);
+            transform: scale(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .tool-indicator {
+            animation: none;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        }
+    }
+</style>
+
+<script>
+    const storageKey = 'parentsGuideUsedTools_v1';
+
+    const parseUsedTools = () => {
+        try {
+            return JSON.parse(localStorage.getItem(storageKey) || '{}');
+        } catch (error) {
+            console.warn('Could not read used tools', error);
+            return {};
+        }
+    };
+
+    const usedTools = parseUsedTools();
+    const cards = document.querySelectorAll('[data-tool-card]');
+
+    cards.forEach((card) => {
+        const toolId = card.getAttribute('data-tool-card');
+        const indicator = card.querySelector('[data-indicator]');
+
+        if (toolId && usedTools[toolId]) {
+            indicator?.classList.add('hidden');
+        }
+    });
+</script>
