@@ -99,6 +99,25 @@
   }
 }
 
+/* Typographic alignment: keep headings left while justifying long-form body copy in cards, guide content, and timeline details */
+.pg-card :where(p, li, blockquote),
+.guide-content :where(p, li, blockquote),
+.timeline-content :where(p, li, blockquote) {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  text-wrap: pretty;
+  line-height: 1.65;
+}
+
+@media (max-width: 420px) {
+  .pg-card :where(p, li, blockquote),
+  .guide-content :where(p, li, blockquote),
+  .timeline-content :where(p, li, blockquote) {
+    text-align: left;
+  }
+}
+
 @media (min-width: 640px) {
   .card-glow,
   .pg-card,
