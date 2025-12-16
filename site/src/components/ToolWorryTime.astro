@@ -6,7 +6,7 @@ interface Props {
 const { tool } = Astro.props;
 ---
 
-<section class="space-y-5" data-worry-root>
+<section class="space-y-5 pb-24" data-worry-root>
     <div class="rounded-xl bg-white border border-black/5 shadow-soft shadow-[0_0_22px_rgba(99,102,241,0.08)] p-4 sm:p-5">
         <p class="text-gray-900 font-semibold">“Worry Time” is a well-established CBT technique with strong clinical backing.</p>
         <p class="text-slate-800 text-sm mt-2 font-medium">It addresses anticipatory anxiety, which complements grounding and breathing rather than replacing them.</p>
@@ -18,60 +18,70 @@ const { tool } = Astro.props;
             <span class="text-emerald-700" data-step-label>Step 1 of 3</span>
         </div>
 
-        <div class="relative min-h-[260px]" data-step-wrapper>
+        <div class="relative min-h-[320px]" data-step-wrapper>
             <div class="step-panel" data-step-panel="0">
-                <h3 class="text-lg font-semibold text-gray-900">Step 1: Choose your worry time</h3>
-                <p class="text-sm text-slate-800 mb-4 font-medium">Pick a time you can keep most days.</p>
-                <label class="block text-sm font-medium text-gray-800 mb-2">Time of day</label>
-                <input type="time" class="w-full rounded-lg border border-gray-200 p-3 text-gray-900 shadow-inner" data-time-input />
-                <div class="mt-6 flex justify-end">
-                    <button type="button" class="nav-chip" data-next-step>Next</button>
+                <div class="step-body">
+                    <h3 class="text-lg font-semibold text-gray-900">Step 1: Choose your worry time</h3>
+                    <p class="text-sm text-slate-800 mb-4 font-medium">Pick a time you can keep most days.</p>
+                    <label class="block text-sm font-medium text-gray-800 mb-2">Time of day</label>
+                    <input type="time" class="w-full rounded-lg border border-gray-200 p-3 text-gray-900 shadow-inner" data-time-input />
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="nav-chip w-full justify-center" data-next-step>Next</button>
                 </div>
             </div>
 
             <div class="step-panel hidden" data-step-panel="1">
-                <h3 class="text-lg font-semibold text-gray-900">Step 2: How long?</h3>
-                <p class="text-sm text-slate-800 mb-4 font-medium">Set a time box that feels doable.</p>
-                <div class="flex flex-wrap gap-3" data-duration-buttons>
-                    {[10, 15, 20].map((minutes) => (
-                        <button type="button" class="toggle-chip" data-duration={minutes}>{minutes} minutes</button>
-                    ))}
+                <div class="step-body">
+                    <h3 class="text-lg font-semibold text-gray-900">Step 2: How long?</h3>
+                    <p class="text-sm text-slate-800 mb-4 font-medium">Set a time box that feels doable.</p>
+                    <div class="flex flex-wrap gap-3" data-duration-buttons>
+                        {[10, 15, 20].map((minutes) => (
+                            <button type="button" class="toggle-chip" data-duration={minutes}>{minutes} minutes</button>
+                        ))}
+                    </div>
                 </div>
-                <div class="mt-6 flex justify-between">
-                    <button type="button" class="nav-chip ghost" data-prev-step>Back</button>
-                    <button type="button" class="nav-chip" data-next-step>Next</button>
+                <div class="step-actions">
+                    <div class="flex gap-3">
+                        <button type="button" class="nav-chip ghost flex-1 justify-center" data-prev-step>Back</button>
+                        <button type="button" class="nav-chip flex-1 justify-center" data-next-step>Next</button>
+                    </div>
                 </div>
             </div>
 
             <div class="step-panel hidden" data-step-panel="2">
-                <h3 class="text-lg font-semibold text-gray-900">Step 3: What happens when time ends?</h3>
-                <p class="text-sm text-slate-800 mb-4 font-medium">Pick how you want to close the session.</p>
-                <div class="space-y-3" data-end-actions>
-                    <label class="action-card">
-                        <input type="radio" name="endAction" value="gentle" class="sr-only" />
-                        <div class="action-body">
-                            <span class="font-semibold text-gray-900">Gentle notification</span>
-                            <span class="text-sm text-slate-800 font-medium">Soft reminder to wrap up.</span>
-                        </div>
-                    </label>
-                    <label class="action-card">
-                        <input type="radio" name="endAction" value="reflection" class="sr-only" />
-                        <div class="action-body">
-                            <span class="font-semibold text-gray-900">Reflection prompt</span>
-                            <span class="text-sm text-slate-800 font-medium">Nudge to note one insight.</span>
-                        </div>
-                    </label>
-                    <label class="action-card">
-                        <input type="radio" name="endAction" value="close" class="sr-only" />
-                        <div class="action-body">
-                            <span class="font-semibold text-gray-900">Close and release</span>
-                            <span class="text-sm text-slate-800 font-medium">Reset the session and let worries rest.</span>
-                        </div>
-                    </label>
+                <div class="step-body">
+                    <h3 class="text-lg font-semibold text-gray-900">Step 3: What happens when time ends?</h3>
+                    <p class="text-sm text-slate-800 mb-4 font-medium">Pick how you want to close the session.</p>
+                    <div class="space-y-3" data-end-actions>
+                        <label class="action-card">
+                            <input type="radio" name="endAction" value="gentle" class="sr-only" />
+                            <div class="action-body">
+                                <span class="font-semibold text-gray-900">Gentle notification</span>
+                                <span class="text-sm text-slate-800 font-medium">Soft reminder to wrap up.</span>
+                            </div>
+                        </label>
+                        <label class="action-card">
+                            <input type="radio" name="endAction" value="reflection" class="sr-only" />
+                            <div class="action-body">
+                                <span class="font-semibold text-gray-900">Reflection prompt</span>
+                                <span class="text-sm text-slate-800 font-medium">Nudge to note one insight.</span>
+                            </div>
+                        </label>
+                        <label class="action-card">
+                            <input type="radio" name="endAction" value="close" class="sr-only" />
+                            <div class="action-body">
+                                <span class="font-semibold text-gray-900">Close and release</span>
+                                <span class="text-sm text-slate-800 font-medium">Reset the session and let worries rest.</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
-                <div class="mt-6 flex justify-between">
-                    <button type="button" class="nav-chip ghost" data-prev-step>Back</button>
-                    <button type="button" class="nav-chip" data-complete-step>Save setup</button>
+                <div class="step-actions">
+                    <div class="flex gap-3">
+                        <button type="button" class="nav-chip ghost flex-1 justify-center" data-prev-step>Back</button>
+                        <button type="button" class="nav-chip flex-1 justify-center" data-complete-step>Save setup</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,10 +155,14 @@ const { tool } = Astro.props;
         inset: 0;
         border-radius: 0.75rem;
         background: white;
-        padding: 0.5rem;
+        padding: 0.75rem 0.6rem 0.6rem;
         transition: opacity 180ms ease-out, transform 180ms ease-out;
         opacity: 0;
         transform: translateY(10px);
+        display: grid;
+        grid-template-rows: 1fr auto;
+        gap: 0.75rem;
+        overflow: hidden;
     }
 
     .step-panel:not(.hidden) {
@@ -164,6 +178,23 @@ const { tool } = Astro.props;
     .step-panel.leaving {
         opacity: 0;
         transform: translateY(8px);
+    }
+
+    .step-body {
+        overflow-y: auto;
+        padding-right: 0.35rem;
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+        display: grid;
+        align-content: start;
+        gap: 0.65rem;
+    }
+
+    .step-actions {
+        position: sticky;
+        bottom: 0;
+        padding: 0.75rem 0.25rem 0.25rem;
+        background: linear-gradient(180deg, rgba(255,255,255,0.45), #fff);
+        border-radius: 1rem;
     }
 
     .toggle-chip {
@@ -207,6 +238,9 @@ const { tool } = Astro.props;
     }
 
     .nav-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 0.6rem 1.1rem;
         border-radius: 999px;
         background: linear-gradient(120deg, #10b981, #22d3ee);
