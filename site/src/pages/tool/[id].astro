@@ -2,7 +2,9 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ToolBreathing from '../../components/ToolBreathing.astro';
+import ToolGrounding from '../../components/ToolGrounding.astro';
 import ToolSteps from '../../components/ToolSteps.astro';
+import ToolWorryTime from '../../components/ToolWorryTime.astro';
 import { ArrowLeft } from 'lucide-astro';
 
 export async function getStaticPaths() {
@@ -37,7 +39,11 @@ const { entry } = Astro.props;
                 <p class="text-gray-700 text-lg leading-relaxed">{entry.data.summary}</p>
             </div>
 
-        {entry.data.type === 'embed' && entry.data.embed ? (
+        {entry.id === 'grounding-54321' ? (
+            <ToolGrounding tool={entry.data} />
+        ) : entry.id === 'worry-time' ? (
+            <ToolWorryTime tool={entry.data} />
+        ) : entry.data.type === 'embed' && entry.data.embed ? (
             <div class="space-y-4 pg-link-reset">
                 <div class="mt-4 w-full max-w-xl">
                     <iframe
