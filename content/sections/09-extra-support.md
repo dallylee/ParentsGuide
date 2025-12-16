@@ -32,6 +32,3 @@ There are many resources available to support you through this challenging time.
 *   **Peer Networks:** Talking to other parents who truly "get it" can be incredibly validating. Ask about hospital-facilitated support groups or search for reputable online communities.
 *   **Your Personal Network:** Don't be afraid to lean on family and friends. Be specific in your requests: *"Could you come sit with my child for an hour so I can take a nap?"*
 *   **Other Professional Support:** Your **GP** can be a great first point of contact for referrals. If your employer offers an **Employee Assistance Program (EAP)**, it can provide confidential counseling. **Faith or spiritual support** from hospital chaplains or your own community can also be a source of great comfort.
-
-### What to do next
-[Growing stronger together](/section/growth)

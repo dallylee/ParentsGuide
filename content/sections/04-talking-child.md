@@ -46,6 +46,3 @@ Create an atmosphere where your child feels safe to ask anything. You can start 
 Children learn how to handle difficult situations by watching you. You can model healthy coping skills by verbalizing your own feelings and demonstrating a solution. For example: *"I'm feeling a little nervous too, so I'm going to take some deep breaths to help my body feel calm."* Then, take those breaths with them. This shows them a concrete action they can take when they feel the same way.
 
 By communicating with warm honesty and projecting confidence, you can significantly reduce your child's fear of the unknown. You've prepared yourself; now let's prepare for the journey itself.
-
-### What to do next
-[Return to Home](/)

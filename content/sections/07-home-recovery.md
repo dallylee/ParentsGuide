@@ -42,6 +42,3 @@ Home recovery is not a sprint; it's a marathon. Your self-care is not a luxuryâ€
 After the immediate crisis of the hospital passes, it's common to experience a **"post-hospital letdown."** The adrenaline fades, and exhaustion can set in. Be aware of the signs of burnout, such as persistent exhaustion, irritability, or feelings of withdrawal. If these feelings persist, it's a sign that you may need additional support.
 
 Sustainable self-care is the key to navigating the long haul of recovery. The next section offers a simple daily routine to help make this a consistent habit.
-
-### What to do next
-[See your daily self-care routine](/section/self-care)
