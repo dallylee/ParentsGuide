@@ -168,8 +168,8 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
 
 :global(.hero-reveal.is-on),
 :global(body.hero-intro-paused .hero-reveal.is-on) {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1 !important;
+        transform: translateY(0) !important;
     }
 
     @media (prefers-reduced-motion: reduce) {

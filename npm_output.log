@@ -1,0 +1,23 @@
+
+> site@0.0.1 dev
+> astro dev
+
+12:17:32 [WARN] Unsupported file type /app/site/src/pages/desktop.ini found. Prefix filename with an underscore (`_`) to ignore.
+12:17:32 [WARN] Unsupported file type /app/site/src/pages/guide/desktop.ini found. Prefix filename with an underscore (`_`) to ignore.
+12:17:32 [types] Generated 3ms
+
+Auto-generating collections for folders in "src/content/" that are not defined as collections.
+This is deprecated, so you should define these collections yourself in "src/content.config.ts".
+The following collections have been auto-generated: data, guide
+
+12:17:33 [content] Syncing content
+12:17:33 [WARN] [glob-loader] No files found matching "**/*.md,!**/_*/**/*.md,!**/_*.md" in directory "src/content/data"
+12:17:33 [content] Synced content
+
+ astro  v5.16.5 ready in 1779 ms
+
+┃ Local    http://localhost:4321/ParentsGuide/
+┃ Network  use --host to expose
+
+12:17:33 watching for file changes...
+12:18:30 [200] / 6019ms
