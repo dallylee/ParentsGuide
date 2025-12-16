@@ -53,7 +53,7 @@ const { entry } = Astro.props;
                 </ul>
             </div>
 
-        {entry.id === 'grounding-54321' ? (
+        {entry.id === 'grounding-54321' || entry.data.type === 'steps' ? (
             <ToolGrounding tool={entry.data} />
         ) : entry.id === 'worry-time' ? (
             <ToolWorryTime tool={entry.data} />
