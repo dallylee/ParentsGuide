@@ -34,13 +34,13 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
 <script>
     const container = document.querySelector('[data-hero-intro]');
     const typingSelectors = JSON.parse(container?.getAttribute('data-typing-targets') ?? '[]');
-    // These timings align the typing to finish with the 15s animation.
-    const typingStarts = [11.5, 12.8, 14.0];
+    // These timings align the staggered fade-ins to finish with the 15s animation.
+    const textFadeSeconds = [11.5, 12.8, 14.0];
     const videoDurationSeconds = 15.0;
-    const fadeStartSeconds = 14.7; // Fade begins here to hide the video before/at the end.
-    const fadeDurationSeconds = 0.7;
+    const fadeStartSeconds = 14.3; // Fade the video into the static image near the end.
+    const fadeDurationSeconds = 0.7; // 700ms crossfade duration.
 
-    const introKey = 'pg_hero_intro_seen';
+    const introKey = 'pg_hero_intro_seen'; // Remove with localStorage.removeItem('pg_hero_intro_seen') to replay.
 
     const video = container?.querySelector('video');
 
@@ -54,80 +54,96 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
         }
 
         const skipIntro = prefersReduced || introSeen;
+        const heroNodes = typingSelectors
+            .map((selector) => (selector ? document.querySelector(selector) : null))
+            .filter((el) => Boolean(el));
+
+        const showStaticText = (forceVisible = false) => {
+            if (forceVisible) {
+                heroNodes.forEach((el) => el?.classList.add('is-on'));
+            }
+            document.body.classList.remove('hero-intro-paused');
+        };
 
         if (skipIntro) {
             video.style.display = 'none';
+            showStaticText(false);
         } else {
-            // Mark as seen immediately; remove via localStorage.removeItem('pg_hero_intro_seen') to replay.
-            try {
-                localStorage.setItem(introKey, '1');
-            } catch (error) {
-                // Non-blocking.
-            }
-
             document.body.classList.add('hero-intro-paused');
 
-            const typedNodes = typingSelectors
-                .map((selector, index) => {
-                    const el = selector ? document.querySelector(selector) : null;
-                    if (!el) return null;
-                    const fullText = el.textContent ?? '';
-                    el.textContent = '';
-                    el.setAttribute('aria-live', 'polite');
-                    el.style.opacity = '1';
-                    el.style.transform = 'none';
-                    const start = typingStarts[index] ?? typingStarts[typingStarts.length - 1] ?? 0;
-                    return { el, fullText, start };
-                })
-                .filter(Boolean);
+            const timers = [];
+            let playbackStarted = false;
+            const cleanupTimers = () => timers.forEach((id) => clearTimeout(id));
 
-            const typeText = (node) => {
-                const { el, fullText, start } = node;
-                if (!el) return;
-                const safeLength = Math.max(1, fullText.length);
-                // Adjust typing speed by changing videoDurationSeconds or these per-target start times.
-                const duration = Math.max(0, videoDurationSeconds - start);
-                const step = duration / safeLength;
+            const startSequence = () => {
+                // Mark as seen when playback succeeds.
+                try {
+                    localStorage.setItem(introKey, '1');
+                } catch (error) {
+                    // Non-blocking.
+                }
 
-                setTimeout(() => {
-                    fullText.split('').forEach((char, idx) => {
-                        setTimeout(() => {
-                            el.textContent = fullText.slice(0, idx + 1);
-                        }, step * 1000 * (idx + 1));
-                    });
-                    setTimeout(() => {
-                        el.textContent = fullText;
-                    }, duration * 1000);
-                }, start * 1000);
-            };
+                heroNodes.forEach((el) => el?.classList.remove('is-on'));
 
-            typedNodes.forEach(typeText);
-
-            const startVideo = () => {
-                video.currentTime = 0;
-                video.play().catch(() => {
-                    // Autoplay might be blocked; fall back to showing the final frame.
-                    video.style.opacity = '0';
+                textFadeSeconds.forEach((delaySeconds, index) => {
+                    const delay = delaySeconds ?? textFadeSeconds[textFadeSeconds.length - 1] ?? 0;
+                    timers.push(
+                        window.setTimeout(() => {
+                            heroNodes[index]?.classList.add('is-on');
+                        }, delay * 1000),
+                    );
                 });
+
+                timers.push(
+                    window.setTimeout(() => {
+                        video.classList.add('hero-intro-video--fade');
+                    }, fadeStartSeconds * 1000),
+                );
+
+                timers.push(
+                    window.setTimeout(() => {
+                        heroNodes.forEach((el) => el?.classList.add('is-on'));
+                        video.pause();
+                        video.currentTime = 0;
+                        video.style.pointerEvents = 'none';
+                        video.style.visibility = 'hidden';
+                        document.body.classList.remove('hero-intro-paused');
+                    }, (fadeStartSeconds + fadeDurationSeconds) * 1000),
+                );
             };
 
-            startVideo();
-
-            setTimeout(() => {
+            const failToStatic = () => {
+                if (playbackStarted) return;
+                cleanupTimers();
+                showStaticText(true);
                 video.classList.add('hero-intro-video--fade');
-            }, fadeStartSeconds * 1000);
+            };
 
-            setTimeout(() => {
-                video.pause();
-                video.currentTime = 0;
-                video.style.pointerEvents = 'none';
-                video.style.visibility = 'hidden';
-                document.body.classList.remove('hero-intro-paused');
-            }, (fadeStartSeconds + fadeDurationSeconds) * 1000);
+            video.addEventListener(
+                'playing',
+                () => {
+                    playbackStarted = true;
+                    startSequence();
+                },
+                { once: true },
+            );
 
-            setTimeout(() => {
-                document.body.classList.remove('hero-intro-paused');
-            }, videoDurationSeconds * 1000);
+            video.addEventListener('error', failToStatic, { once: true });
+
+            const playPromise = video.play();
+            if (playPromise) {
+                playPromise.catch(failToStatic);
+            } else {
+                failToStatic();
+            }
+
+            timers.push(
+                window.setTimeout(() => {
+                    if (!playbackStarted) {
+                        failToStatic();
+                    }
+                }, 2000),
+            );
         }
     }
 </script>
@@ -146,6 +162,18 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
     :global(body.hero-intro-paused .hero-reveal) {
         animation: none !important;
         opacity: 0;
-        transform: none;
+        transform: translateY(6px);
+        transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    :global(.hero-reveal.is-on) {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :global(.hero-reveal) {
+            transition: none !important;
+        }
     }
 </style>
