@@ -16,8 +16,8 @@ const pastelColors = [
     <div class="relative h-64 md:h-72 w-full overflow-hidden rounded-b-3xl shadow-soft mb-8 bg-gray-200">
         <img src="/images/hero.jpg" alt="Parent holding child's hand" class="w-full h-full object-cover" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
-            <h1 class="text-white text-3xl font-bold mb-2 leading-tight">Finding Your Strength</h1>
-            <p class="text-white/90 text-lg">{startSection?.summary}</p>
+            <h1 class="hero-reveal hero-reveal-1 text-white text-3xl font-bold mb-2 leading-tight">Finding Your Strength</h1>
+            <p class="hero-reveal hero-reveal-2 text-white/90 text-lg">{startSection?.summary}</p>
         </div>
     </div>
 
@@ -84,3 +84,57 @@ const pastelColors = [
         </div>
     </div>
 </Layout>
+
+<style>
+  .hero-reveal {
+    opacity: 0;
+  }
+
+  @keyframes heroReveal {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-reveal {
+      animation: heroReveal 700ms ease-out forwards;
+    }
+    .hero-reveal-1 { animation-delay: 0ms; }
+    .hero-reveal-2 { animation-delay: 220ms; }
+    .hero-reveal-3 { animation-delay: 440ms; }
+  }
+
+  body.hero-intro-paused .hero-reveal {
+    animation: none !important;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 840ms ease, transform 840ms ease;
+  }
+
+  .hero-reveal.is-on,
+  body.hero-intro-paused .hero-reveal.is-on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-reveal {
+      opacity: 1;
+      transform: none;
+      animation: none;
+      transition: none !important;
+    }
+  }
+
+  /* Ensure .is-on always wins against Astro-scoped opacity:0 rules */
+  :global(.hero-reveal.is-on) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    animation: none !important;
+  }
+
+  :global(body.hero-intro-paused .hero-reveal.is-on) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+</style>
