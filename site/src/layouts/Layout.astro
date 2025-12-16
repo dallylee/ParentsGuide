@@ -66,7 +66,12 @@ const ogImage = Astro.site
     <title>{title}</title>
   </head>
 
-  <body class="min-h-screen bg-bg pb-28 text-slate-800 font-medium overflow-x-hidden">
+  <body
+    class:list={[
+      "min-h-screen bg-bg pb-28 text-slate-800 font-medium overflow-x-hidden",
+      { "pg-soft-bg": Astro.url.pathname.replace(/\/$/, "") !== import.meta.env.BASE_URL.replace(/\/$/, "") }
+    ]}
+  >
     <main
       class="max-w-2xl w-full mx-auto min-h-screen bg-bg shadow-2xl shadow-gray-200/50 relative px-4 sm:px-6 overflow-x-hidden"
     >

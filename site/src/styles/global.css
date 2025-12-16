@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   html,
   body {
     font-family: 'Lato', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -58,6 +59,7 @@
 }
 
 @layer components {
+
   .card-glow,
   .pg-card,
   .pg-card-glow {
@@ -97,6 +99,40 @@
   .pg-link-reset :where(a:hover) {
     text-decoration: underline;
   }
+
+  /* Soft animated pastel background for non-home pages */
+  .pg-soft-bg {
+    position: relative;
+    z-index: 0;
+  }
+
+  .pg-soft-bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    pointer-events: none;
+    background: linear-gradient(135deg, #fdfbf7 0%, #fff0f5 50%, #f0f8ff 100%);
+    background-size: 150% 150%;
+    filter: hue-rotate(0deg);
+    animation: softBgShift 60s ease-in-out infinite alternate;
+  }
+
+  @keyframes softBgShift {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+
+    100% {
+      filter: hue-rotate(20deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pg-soft-bg::before {
+      animation: none;
+    }
+  }
 }
 
 /* Typographic alignment: keep headings left while justifying long-form body copy in cards, guide content, and timeline details */
@@ -112,6 +148,7 @@
 
 /* Maintain justified body copy on mobile; only relax for ultra-narrow screens to avoid rivers */
 @media (max-width: 360px) {
+
   .pg-card :where(p, li, blockquote),
   .guide-content :where(p, li, blockquote),
   .timeline-content :where(p, li, blockquote) {
@@ -141,11 +178,19 @@
 }
 
 @keyframes glowPulse {
-  0% { transform: scale(0.98); opacity: 0.55; }
-  100% { transform: scale(1.02); opacity: 0.7; }
+  0% {
+    transform: scale(0.98);
+    opacity: 0.55;
+  }
+
+  100% {
+    transform: scale(1.02);
+    opacity: 0.7;
+  }
 }
 
 @media (min-width: 640px) {
+
   .card-glow,
   .pg-card,
   .pg-card-glow {
@@ -163,6 +208,7 @@
 }
 
 @media (hover: hover) {
+
   .card-glow:hover,
   .pg-card:hover,
   .pg-card-glow:hover {
@@ -180,6 +226,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .card-glow,
   .pg-card,
   .pg-card-glow,
