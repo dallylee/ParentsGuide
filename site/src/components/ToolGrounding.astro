@@ -16,6 +16,13 @@ const glows = [
 ---
 
 <section class="space-y-4" data-grounding-root>
+    <div class="complete-banner hidden" data-complete-banner aria-live="assertive" tabindex="-1">
+        <div class="complete-card">
+            <p class="text-2xl sm:text-3xl font-extrabold text-emerald-900">Complete — breathe easy</p>
+            <p class="text-sm text-emerald-800 mt-1 font-medium">Tap to dismiss and return to the steps.</p>
+        </div>
+    </div>
+
     <div class="flex items-center justify-between text-sm text-slate-800">
         <span data-grounding-status>Step 1 of {steps.length}</span>
         <button
@@ -25,6 +32,17 @@ const glows = [
         >
             Restart
         </button>
+    </div>
+
+    <div class="step-bars" aria-hidden="true">
+        {steps.map((step, idx) => (
+            <div
+                class="step-bar"
+                data-progress-bar
+                data-state={idx === 0 ? 'active' : 'pending'}
+                style={`--glow: ${glows[idx % glows.length]};`}
+            ></div>
+        ))}
     </div>
 
     <div class="space-y-3" data-steps-stack>
@@ -42,9 +60,10 @@ const glows = [
                     <span class="badge-count" data-count>{step.count ?? idx + 1}</span>
                     <span class="badge-check hidden" data-check aria-hidden="true">✓</span>
                 </div>
+                <div class="step-rail" aria-hidden="true"></div>
                 <div class="flex-1 space-y-1">
                     <p class="text-lg font-semibold text-gray-900 leading-snug">{step.action || step.text}</p>
-                    <p class="text-sm text-slate-800 font-medium">Tap to mark it, follow the glow.</p>
+                    <p class="text-sm text-slate-800 font-medium">Tap to complete this step and follow the glow to the next.</p>
                 </div>
             </Card>
         ))}
@@ -54,6 +73,30 @@ const glows = [
 <style>
     [data-grounding-root] {
         --badge-size: 2.75rem;
+    }
+
+    .complete-banner {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: start center;
+        padding: 1.5rem;
+        background: radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.1), transparent 60%);
+        z-index: 30;
+        cursor: pointer;
+    }
+
+    .complete-banner:not(.hidden) .complete-card {
+        animation: floatDown 320ms ease-out forwards;
+    }
+
+    .complete-card {
+        margin-top: 1rem;
+        background: #ecfdf3;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 1.1rem;
+        padding: 1.25rem 1.5rem;
+        box-shadow: 0 12px 28px rgba(16, 185, 129, 0.18);
     }
 
     .grounding-card {
@@ -90,6 +133,27 @@ const glows = [
         box-shadow: 0 6px 16px rgba(31,41,55,0.08), 0 0 18px var(--glow);
     }
 
+    .step-rail {
+        width: 7px;
+        align-self: stretch;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(16,185,129,0.14), rgba(16,185,129,0.07));
+        position: relative;
+        overflow: hidden;
+    }
+
+    .grounding-card[data-state="active"] .step-rail::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(16,185,129,0.28), rgba(16,185,129,0.1));
+        animation: barPulse 1.8s ease-in-out infinite;
+    }
+
+    .grounding-card[data-state="pending"] .step-rail {
+        opacity: 0.7;
+    }
+
     .grounding-card[data-state="active"] {
         box-shadow: 0 6px 16px rgba(31,41,55,0.1), 0 0 28px var(--glow), 0 0 0 1px rgba(16, 185, 129, 0.25);
         transform: translateY(-2px);
@@ -112,6 +176,39 @@ const glows = [
 
     .grounding-card .badge-count {
         font-size: 1.1rem;
+    }
+
+    .step-bars {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+        gap: 0.65rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .step-bar {
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(16,185,129,0.14), rgba(16,185,129,0.1));
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .step-bar[data-state="active"]::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(16,185,129,0.3), rgba(52,211,153,0.35));
+        animation: barPulse 1.8s ease-in-out infinite;
+    }
+
+    .step-bar[data-state="done"] {
+        background: linear-gradient(90deg, rgba(52,211,153,0.3), rgba(16,185,129,0.22));
+        box-shadow: inset 0 0 0 1px rgba(16,185,129,0.2);
+    }
+
+    .step-bar[data-state="done"]::after {
+        display: none;
     }
 
     .grounding-card:active,
@@ -152,6 +249,11 @@ const glows = [
         to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes floatDown {
+        from { opacity: 0; transform: translateY(-24px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @keyframes breatheBadge {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.06); }
@@ -163,6 +265,11 @@ const glows = [
         100% { opacity: 0.6; transform: scale(0.94); }
     }
 
+    @keyframes barPulse {
+        0%, 100% { opacity: 0.5; transform: scaleX(1); }
+        50% { opacity: 1; transform: scaleX(1.05); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .grounding-card,
         .grounding-card[data-state="active"],
@@ -172,8 +279,17 @@ const glows = [
             animation: none !important;
         }
 
+        .complete-banner:not(.hidden) .complete-card {
+            animation: none !important;
+        }
+
         .grounding-card .step-badge,
         .grounding-card .step-badge::after {
+            animation: none !important;
+        }
+
+        .step-bar[data-state="active"]::after,
+        .grounding-card[data-state="active"] .step-rail::after {
             animation: none !important;
         }
     }
@@ -190,13 +306,20 @@ const glows = [
     [data-reduced-motion="true"] .step-badge::after {
         animation: none !important;
     }
+
+    [data-reduced-motion="true"] .step-bar[data-state="active"]::after,
+    [data-reduced-motion="true"] .grounding-card[data-state="active"] .step-rail::after {
+        animation: none !important;
+    }
 </style>
 
 <script define:vars={{ steps }}>
     const root = document.querySelector('[data-grounding-root]');
     const cards = Array.from(document.querySelectorAll('[data-grounding-step]'));
+    const bars = Array.from(document.querySelectorAll('[data-progress-bar]'));
     const statusText = document.querySelector('[data-grounding-status]');
     const resetBtn = document.querySelector('[data-grounding-reset]');
+    const completeBanner = document.querySelector('[data-complete-banner]');
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const state = steps.map((step, idx) => ({ ...step, state: idx === 0 ? 'active' : 'pending' }));
@@ -238,17 +361,35 @@ const glows = [
             }
         });
 
+        bars.forEach((bar, idx) => {
+            bar.dataset.state = state[idx]?.state ?? 'pending';
+        });
+
         updateStatus();
     };
 
     const setActive = (index) => {
         state.forEach((item, idx) => {
-            if (item.state === 'active' && idx !== index) {
+            if (idx === index) return;
+            if (item.state === 'active') {
                 item.state = 'pending';
             }
         });
         state[index].state = 'active';
         syncCards();
+    };
+
+    const hideCompletion = () => {
+        if (!completeBanner) return;
+        completeBanner.classList.add('hidden');
+        completeBanner.setAttribute('aria-hidden', 'true');
+    };
+
+    const showCompletion = () => {
+        if (!completeBanner) return;
+        completeBanner.classList.remove('hidden');
+        completeBanner.setAttribute('aria-hidden', 'false');
+        completeBanner.focus?.();
     };
 
     const completeStep = (index) => {
@@ -258,6 +399,7 @@ const glows = [
             setActive(next);
         } else {
             updateStatus();
+            showCompletion();
         }
         syncCards();
     };
@@ -266,6 +408,7 @@ const glows = [
         state.forEach((item, idx) => {
             item.state = idx === 0 ? 'active' : 'pending';
         });
+        hideCompletion();
         syncCards();
     };
 
@@ -274,8 +417,6 @@ const glows = [
             const current = state[idx].state;
             if (current === 'active') {
                 completeStep(idx);
-            } else if (current === 'pending') {
-                setActive(idx);
             }
         });
 
@@ -285,6 +426,7 @@ const glows = [
     });
 
     resetBtn?.addEventListener('click', resetFlow);
+    completeBanner?.addEventListener('click', hideCompletion);
 
     prefersReduced.addEventListener('change', (event) => {
         applyReducedMotion(event.matches);
