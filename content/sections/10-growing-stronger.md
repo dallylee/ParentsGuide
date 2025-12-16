@@ -43,6 +43,3 @@ You have just absorbed a great deal of information. Please don't feel you need t
 Take it one moment, one breath, and one day at a time.
 
 **You've got this.**
-
-### What to do next
-[Return to Home](/)

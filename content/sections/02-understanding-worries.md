@@ -34,6 +34,3 @@ Certain things can intensify your distress, while others can buffer it. Knowing 
 *   **Protective Factors (What Can Help You Cope):** Your ability to cope is strengthened by having accurate information, open communication with your medical team, a strong support network of friends and family, and pre-existing coping skills (like exercise or mindfulness).
 
 You're not at the mercy of your fear. You can learn to handle it. The rest of this guide will give you concrete, proven techniques to stay grounded for your own wellbeing and your child’s benefit.
-
-### What to do next
-[Build your calm toolkit](/section/toolkit)
