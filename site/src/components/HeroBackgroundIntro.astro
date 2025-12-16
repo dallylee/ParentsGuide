@@ -35,7 +35,7 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
     const container = document.querySelector('[data-hero-intro]');
     const typingSelectors = JSON.parse(container?.getAttribute('data-typing-targets') ?? '[]');
     // These timings align the staggered fade-ins to finish with the 15s animation.
-    const textFadeSeconds = [11.5, 12.8, 14.0];
+    const textFadeSeconds = [2, 6, 9];
     const videoDurationSeconds = 15.0;
     const fadeStartSeconds = 14.3; // Fade the video into the static image near the end.
     const fadeDurationSeconds = 0.7; // 700ms crossfade duration.
@@ -163,7 +163,7 @@ const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
         animation: none !important;
     opacity: 0;
         transform: translateY(6px);
-        transition: opacity 420ms ease, transform 420ms ease;
+        transition: opacity 840ms ease, transform 840ms ease;
     }
 
 :global(.hero-reveal.is-on),
