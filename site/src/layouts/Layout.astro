@@ -1,6 +1,7 @@
 ---
 import BottomNav from '../components/BottomNav.astro';
 import '../styles/global.css';
+import InstallPrompt from '../components/InstallPrompt.astro';
 
 interface Props {
   title: string;
@@ -71,6 +72,19 @@ const ogImage = Astro.site
     >
       <slot />
       <BottomNav />
+      <InstallPrompt />
     </main>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          const swUrl = `${import.meta.env.BASE_URL}sw.js`;
+          navigator.serviceWorker
+            .register(swUrl, { scope: import.meta.env.BASE_URL })
+            .catch((error) => {
+              console.error('Service worker registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

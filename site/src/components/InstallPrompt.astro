@@ -1,0 +1,55 @@
+<div
+  class="fixed bottom-28 right-4 z-40 hidden max-w-[85vw] md:max-w-xs"
+  data-install-container
+  aria-live="polite"
+>
+  <button
+    type="button"
+    class="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-700/30 transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-500"
+  >
+    <span>Install app</span>
+  </button>
+</div>
+
+<script>
+  const container = document.querySelector('[data-install-container]');
+  const button = container?.querySelector('button');
+  let deferredPrompt = null;
+
+  const hide = () => {
+    container?.classList.add('hidden');
+  };
+
+  const show = () => {
+    container?.classList.remove('hidden');
+  };
+
+  const alreadyInstalled = () =>
+    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  if (alreadyInstalled()) {
+    hide();
+  }
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    if (alreadyInstalled()) return;
+    event.preventDefault();
+    deferredPrompt = event;
+    show();
+  });
+
+  button?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    button.disabled = true;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    hide();
+    button.disabled = false;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    hide();
+  });
+</script>
