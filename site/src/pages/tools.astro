@@ -32,7 +32,7 @@ const glows = [
         <div class="mx-auto max-w-2xl space-y-8">
         <!-- Tools Section -->
         <div>
-            <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Calming Exercises</h2>
+            <h2 class="text-lg font-normal text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
                 {tools.map((tool, index) => (
                     <Card
@@ -52,7 +52,7 @@ const glows = [
                         </div>
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
-                                <h2 class="text-xl font-bold text-gray-900">{tool.data.name}</h2>
+                                <h2 class="text-xl font-normal text-gray-900">{tool.data.name}</h2>
                                 {tool.data.type === 'embed' && (
                                     <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Audio</span>
                                 )}
@@ -66,7 +66,7 @@ const glows = [
 
         <!-- Checklists Section -->
         <div>
-            <h2 class="text-lg font-bold text-gray-900 mb-4 px-2">Preparation Checklists</h2>
+            <h2 class="text-lg font-normal text-gray-900 mb-4 px-2">Preparation Checklists</h2>
             <div class="space-y-4">
                 {checklists.map((list, index) => (
                     <Card
@@ -82,7 +82,7 @@ const glows = [
                             ✓
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">{list.data.title}</h2>
+                            <h2 class="text-xl font-normal text-gray-900">{list.data.title}</h2>
                             <p class="text-gray-600 text-sm">Interactive checklist</p>
                         </div>
                     </Card>

@@ -19,8 +19,34 @@ export default {
                 'glow': '0 0 24px var(--glow)',
             },
             fontFamily: {
-                sans: ['system-ui', 'sans-serif'],
-            }
+                sans: ['Lato', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+                serif: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
+            },
+            typography: (theme) => ({
+                DEFAULT: {
+                    css: {
+                        fontFamily: theme('fontFamily.sans').join(', '),
+                        fontSize: '15px',
+                        fontWeight: '300',
+                        h1: {
+                            fontFamily: theme('fontFamily.serif').join(', '),
+                            fontWeight: '400',
+                        },
+                        h2: {
+                            fontFamily: theme('fontFamily.serif').join(', '),
+                            fontWeight: '400',
+                        },
+                        h3: {
+                            fontFamily: theme('fontFamily.serif').join(', '),
+                            fontWeight: '400',
+                        },
+                        h4: {
+                            fontFamily: theme('fontFamily.serif').join(', '),
+                            fontWeight: '400',
+                        },
+                    },
+                },
+            }),
         },
     },
     plugins: [
