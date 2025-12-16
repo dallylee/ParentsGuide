@@ -1,0 +1,28 @@
+{
+    "id": "grounding-54321",
+    "name": "5-4-3-2-1 Grounding",
+    "summary": "Engage your senses to bring your mind back to the present.",
+    "type": "steps",
+    "steps": [
+        {
+            "count": 5,
+            "action": "Acknowledge 5 things you can see around you."
+        },
+        {
+            "count": 4,
+            "action": "Acknowledge 4 things you can touch or feel."
+        },
+        {
+            "count": 3,
+            "action": "Acknowledge 3 things you can hear."
+        },
+        {
+            "count": 2,
+            "action": "Acknowledge 2 things you can smell."
+        },
+        {
+            "count": 1,
+            "action": "Acknowledge 1 thing you can taste."
+        }
+    ]
+}

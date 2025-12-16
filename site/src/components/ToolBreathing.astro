@@ -17,7 +17,7 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
 ---
 
 <section class="space-y-5" data-breathing-root>
-    <div class="flex items-center justify-between text-sm text-slate-800">
+    <div class="flex items-center justify-between text-base text-slate-800 font-medium">
         <span data-cycle-display>Cycle 1 of {baseCycles}</span>
         <span data-total-remaining>~{totalCycleSeconds * baseCycles}s total</span>
     </div>
@@ -41,15 +41,15 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
                 <div class="text-5xl font-bold text-gray-900 leading-none" data-phase-count>
                     {phases[0]?.duration ?? 4}
                 </div>
-                <div class="text-sm text-slate-800 mt-2 font-semibold" data-phase-instruction>
+                <div class="text-base text-slate-800 mt-2 font-semibold" data-phase-instruction>
                     Inhale for {phases[0]?.duration ?? 4}
                 </div>
             </div>
         </div>
-        <p class="text-center text-sm text-slate-800 mt-3 font-medium">
+        <p class="text-center text-base text-slate-800 mt-3 font-medium leading-relaxed">
             Breathe in through your nose, breathe out slowly through your mouth.
         </p>
-        <p class="text-center text-xs text-emerald-700 mt-1">Tap the circle for a quick preview before you start.</p>
+        <p class="text-center text-base text-emerald-700 mt-1 font-medium">Tap the circle for a quick preview before you start.</p>
     </div>
 
     <div class="flex flex-wrap justify-center gap-3">
@@ -79,7 +79,7 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
 
     <div class="space-y-4">
         <div>
-            <p class="text-sm font-semibold text-gray-800 mb-2">Cycles</p>
+            <p class="text-base font-semibold text-gray-800 mb-2">Cycles</p>
             <div class="flex flex-wrap gap-2" data-cycle-selector>
                 {[3,4,5,6].map((count) => (
                     <button
@@ -116,6 +116,7 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
         margin: 0 auto;
         outline: none;
         border-radius: 9999px;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .breathing-ring:focus {
@@ -123,7 +124,7 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
     }
 
     .breathing-ring:focus-visible {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--phase-color) 60%, transparent);
+        box-shadow: 0 0 0 3px transparent;
     }
 
     .ring {

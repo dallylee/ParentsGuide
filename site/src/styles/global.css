@@ -131,11 +131,18 @@
   .card-glow::after,
   .pg-card::after,
   .pg-card-glow::after {
-    opacity: 0.24;
+    opacity: 0.6;
+    inset: -4px;
     background:
       radial-gradient(75% 110% at 16% 22%, color-mix(in srgb, var(--glow) 94%, white 6%) 0%, transparent 62%),
       radial-gradient(80% 110% at 84% 78%, color-mix(in srgb, var(--glow) 92%, white 8%) 0%, transparent 66%);
+    animation: glowPulse 4s ease-in-out infinite alternate;
   }
+}
+
+@keyframes glowPulse {
+  0% { transform: scale(0.98); opacity: 0.55; }
+  100% { transform: scale(1.02); opacity: 0.7; }
 }
 
 @media (min-width: 640px) {
