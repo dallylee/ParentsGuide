@@ -87,14 +87,6 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
                 ))}
             </div>
         </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <button type="button" class="toggle-chip" data-toggle="sound" aria-pressed="false">Sound off</button>
-            <button type="button" class="toggle-chip" data-toggle="vibration" aria-pressed="false">Vibration off</button>
-            <button type="button" class="toggle-chip" data-toggle="voice" aria-pressed="false">Voice off</button>
-            <button type="button" class="toggle-chip" data-toggle="contrast" aria-pressed="false">High contrast</button>
-            <button type="button" class="toggle-chip" data-toggle="reduce" aria-pressed="false">Reduced motion</button>
-        </div>
     </div>
 </section>
 
@@ -112,6 +104,7 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
         width: min(82vw, 280px);
         height: min(82vw, 280px);
         margin: 0 auto;
+        outline: none;
     }
 
     .ring {
@@ -225,19 +218,6 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
         box-shadow: 0 8px 20px rgba(16,185,129,0.12);
     }
 
-    [data-high-contrast="true"] .breathing-stage {
-        border-color: rgba(0,0,0,0.12);
-        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-    }
-
-    [data-high-contrast="true"] .ring-track {
-        stroke: rgba(0,0,0,0.45);
-    }
-
-    [data-high-contrast="true"] .ring-progress {
-        stroke: #0f172a;
-    }
-
     @media (prefers-reduced-motion: reduce) {
         .breathing-core,
         .control-btn,
@@ -249,7 +229,6 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
 </style>
 
 <script define:vars={{ phases, baseCycles, phaseCopy, totalCycleSeconds }}>
-    const root = document.querySelector('[data-breathing-root]');
     const ring = document.querySelector('[data-progress-ring]');
     const circle = document.querySelector('[data-breath-circle]');
     const phaseLabel = document.querySelector('[data-phase-label]');
@@ -262,17 +241,12 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
     const pauseBtn = document.querySelector('[data-pause-btn]');
     const restartBtn = document.querySelector('[data-restart-btn]');
     const cycleButtons = document.querySelectorAll('[data-cycle-value]');
-    const toggleChips = document.querySelectorAll('[data-toggle]');
     const previewArea = document.querySelector('[data-preview-area]');
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const settings = {
         targetCycles: baseCycles,
-        sound: false,
-        vibration: false,
-        voice: false,
-        highContrast: false,
         reduceMotion: prefersReduced.matches
     };
 
@@ -288,37 +262,6 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
     const circumference = 2 * Math.PI * 88;
     ring?.setAttribute('stroke-dasharray', `${circumference}`);
     ring?.setAttribute('stroke-dashoffset', `${circumference}`);
-
-    const playTone = () => {
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = ctx.createOscillator();
-            const gainNode = ctx.createGain();
-            oscillator.type = 'sine';
-            oscillator.frequency.value = 520;
-            gainNode.gain.value = 0.02;
-            oscillator.connect(gainNode);
-            gainNode.connect(ctx.destination);
-            oscillator.start();
-            oscillator.stop(ctx.currentTime + 0.18);
-        } catch (error) {
-            console.warn('Sound unavailable', error);
-        }
-    };
-
-    const speakPhase = (text) => {
-        if (!('speechSynthesis' in window)) return;
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.rate = 1.05;
-        msg.pitch = 1.1;
-        msg.lang = 'en-GB';
-        window.speechSynthesis.speak(msg);
-    };
-
-    const vibratePhase = () => {
-        if (!('vibrate' in navigator)) return;
-        navigator.vibrate(60);
-    };
 
     const updateRing = (progress) => {
         if (!ring) return;
@@ -386,16 +329,6 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
         circle.style.setProperty('--scale', scale.toFixed(3));
     };
 
-    const onPhaseTransition = () => {
-        if (settings.sound) playTone();
-        if (settings.vibration) vibratePhase();
-        if (settings.voice) {
-            const currentPhase = phases[state.phaseIndex] ?? phases[0];
-            const phaseKey = currentPhase?.phase ?? 'Breathe';
-            speakPhase(phaseCopy[phaseKey] ?? 'Breathe');
-        }
-    };
-
     const advancePhase = () => {
         state.phaseIndex += 1;
         state.elapsed = 0;
@@ -410,7 +343,6 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
             return;
         }
 
-        onPhaseTransition();
         setPhaseUI();
     };
 
@@ -545,42 +477,12 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
         });
     });
 
-    toggleChips.forEach((chip) => {
-        chip.addEventListener('click', () => {
-            const key = chip.getAttribute('data-toggle');
-            if (!key) return;
-            const newValue = !(chip.getAttribute('aria-pressed') === 'true');
-            chip.setAttribute('aria-pressed', newValue ? 'true' : 'false');
-            chip.classList.toggle('active', newValue);
-
-            if (key === 'sound') settings.sound = newValue;
-            if (key === 'vibration') settings.vibration = newValue;
-            if (key === 'voice') settings.voice = newValue;
-            if (key === 'contrast') {
-                settings.highContrast = newValue;
-                root?.setAttribute('data-high-contrast', newValue ? 'true' : 'false');
-            }
-            if (key === 'reduce') {
-                settings.reduceMotion = newValue || prefersReduced.matches;
-                circle?.style.setProperty('--scale', '1');
-            }
-        });
-    });
-
     prefersReduced.addEventListener('change', (event) => {
         settings.reduceMotion = event.matches;
-        const reduceChip = document.querySelector('[data-toggle="reduce"]');
-        if (reduceChip) {
-            reduceChip.setAttribute('aria-pressed', settings.reduceMotion ? 'true' : 'false');
-            reduceChip.classList.toggle('active', settings.reduceMotion);
+        if (settings.reduceMotion) {
+            circle?.style.setProperty('--scale', '1');
         }
     });
-
-    const reduceChip = document.querySelector('[data-toggle="reduce"]');
-    if (reduceChip && settings.reduceMotion) {
-        reduceChip.classList.add('active');
-        reduceChip.setAttribute('aria-pressed', 'true');
-    }
 
     setPhaseUI();
     setControls();

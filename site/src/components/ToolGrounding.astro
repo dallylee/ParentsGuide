@@ -49,17 +49,6 @@ const glows = [
             </Card>
         ))}
     </div>
-
-    <div class="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-900 shadow-soft">
-        <p class="font-semibold mb-1">Prefer a calmer pace?</p>
-        <p>Reduced motion will pause pulsing and keep the glow steady.</p>
-        <div class="mt-2 flex items-center gap-3">
-            <label class="inline-flex items-center gap-2 text-emerald-800">
-                <input type="checkbox" class="accent-emerald-600" data-reduced-toggle />
-                <span class="text-sm">Use reduced motion</span>
-            </label>
-        </div>
-    </div>
 </section>
 
 <style>
@@ -208,14 +197,12 @@ const glows = [
     const cards = Array.from(document.querySelectorAll('[data-grounding-step]'));
     const statusText = document.querySelector('[data-grounding-status]');
     const resetBtn = document.querySelector('[data-grounding-reset]');
-    const reducedToggle = document.querySelector('[data-reduced-toggle]');
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const state = steps.map((step, idx) => ({ ...step, state: idx === 0 ? 'active' : 'pending' }));
 
     const applyReducedMotion = (value) => {
         root?.setAttribute('data-reduced-motion', value ? 'true' : 'false');
-        if (reducedToggle) reducedToggle.checked = value;
     };
 
     const updateStatus = () => {
@@ -298,10 +285,6 @@ const glows = [
     });
 
     resetBtn?.addEventListener('click', resetFlow);
-
-    reducedToggle?.addEventListener('change', (event) => {
-        applyReducedMotion(event.target.checked);
-    });
 
     prefersReduced.addEventListener('change', (event) => {
         applyReducedMotion(event.matches);
