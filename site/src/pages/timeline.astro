@@ -40,7 +40,7 @@ const glows = [
 
 <Layout title="Timeline">
     <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
-        <a href={withBase('')} class="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors">
+        <a href={withBase('')} class="p-2 -ml-2 text-slate-700 hover:text-slate-900 transition-colors">
             <ArrowLeft size={24} />
         </a>
         <span class="ml-2 font-semibold text-gray-800">Timeline overview</span>
@@ -49,11 +49,11 @@ const glows = [
     <div class="px-4 sm:px-6 py-6 space-y-6 pb-28">
         <header class="space-y-2">
             <h1 class="text-3xl font-semibold text-gray-900">Timeline</h1>
-            <p class="text-gray-600 text-base">Quickly browse each phase before, during, and after hospital care.</p>
+            <p class="text-slate-800 text-base font-medium">Quickly browse each phase before, during, and after hospital care.</p>
         </header>
 
         {phases.length === 0 ? (
-            <Card class="px-4 py-10 text-center text-gray-600" style={`--glow: ${glows[0]}`}>
+            <Card class="px-4 py-10 text-center text-slate-800 font-medium" style={`--glow: ${glows[0]}`}>
                 No timeline phases available yet.
             </Card>
         ) : (
@@ -89,9 +89,9 @@ const glows = [
                                             </span>
                                         )}
                                     </div>
-                                    <p class="text-gray-600 text-sm leading-relaxed">{phase.summary}</p>
+                                    <p class="text-slate-800 text-sm leading-relaxed font-medium">{phase.summary}</p>
                                     <div class="flex items-center justify-between pt-2">
-                                        <span class="text-sm font-medium text-gray-700">{phase.est_read} min read</span>
+                                        <span class="text-sm font-medium text-slate-800">{phase.est_read} min read</span>
                                         <span
                                             class="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-gray-900 shadow-soft"
                                             style={`background-color: ${buttonColor}`}
