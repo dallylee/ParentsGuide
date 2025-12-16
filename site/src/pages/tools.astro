@@ -3,11 +3,19 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import { ArrowLeft } from 'lucide-astro';
+import siteIndex from '../../../content/index.json';
 
-const tools = await getCollection('tools');
+const toolEntries = await getCollection('tools');
 const checklists = await getCollection('checklists');
 const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const quickTools = siteIndex.quick_tools ?? [];
+
+const buildHref = (route = "") => {
+    const cleanedRoute = route.replace(/^\//, "");
+    const normalizedRoute = cleanedRoute.endsWith('/') ? cleanedRoute : `${cleanedRoute}/`;
+    return withBase(normalizedRoute);
+};
 
 const glows = [
     'rgba(207, 232, 255, 0.75)',
@@ -34,10 +42,17 @@ const glows = [
         <div>
             <h2 class="text-lg font-normal text-gray-900 mb-4 px-2">Calming Exercises</h2>
             <div class="space-y-4">
-                {tools.map((tool, index) => (
+                {quickTools.map((tool, index) => {
+                    const matchingTool = toolEntries.find(({ id }) => id === tool.id);
+                    const title = tool.title ?? matchingTool?.data.name ?? tool.id;
+                    const summary = tool.summary ?? matchingTool?.data.summary ?? '';
+                    const type = tool.type ?? matchingTool?.data.type;
+                    const href = buildHref(tool.route ?? `tool/${tool.id}`);
+
+                    return (
                     <Card
                         as="a"
-                        href={withBase(`tool/${tool.id}/`)}
+                        href={href}
                         class="p-6 flex items-center"
                         style={`--glow: ${glows[index % glows.length]}`}
                         data-tool-card={tool.id}
@@ -52,15 +67,16 @@ const glows = [
                         </div>
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
-                                <h2 class="text-xl font-normal text-gray-900">{tool.data.name}</h2>
-                                {tool.data.type === 'embed' && (
+                                <h2 class="text-xl font-normal text-gray-900">{title}</h2>
+                                {type === 'embed' && (
                                     <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Audio</span>
                                 )}
                             </div>
-                            <p class="text-gray-600 text-sm">{tool.data.summary}</p>
+                            <p class="text-gray-600 text-sm">{summary}</p>
                         </div>
                     </Card>
-                ))}
+                    );
+                })}
             </div>
         </div>
 

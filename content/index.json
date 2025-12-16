@@ -188,6 +188,13 @@
             "title": "Podcast episode",
             "data": "tools/podcast-episode-01.json",
             "image": "images/calm.jpg"
+        },
+        {
+            "id": "meditations",
+            "title": "Meditations for relaxation, stress relief and calm",
+            "type": "media",
+            "route": "/tool/meditations",
+            "summary": "Guided meditations to help you relax and feel steadier."
         }
     ],
     "checklists": [
