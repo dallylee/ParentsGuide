@@ -43,27 +43,4 @@ const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
     .hero-reveal {
         opacity: 0;
     }
-
-    @keyframes heroReveal {
-        0% { opacity: 0; transform: translateY(10px); }
-        100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-        .hero-reveal {
-            animation: heroReveal 700ms ease-out forwards;
-        }
-
-        .hero-reveal-1 { animation-delay: 0ms; }
-        .hero-reveal-2 { animation-delay: 220ms; }
-        .hero-reveal-3 { animation-delay: 440ms; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .hero-reveal {
-            opacity: 1;
-            transform: none;
-            animation: none;
-        }
-    }
 </style>
