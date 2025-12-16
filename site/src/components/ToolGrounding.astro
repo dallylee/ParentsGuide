@@ -16,305 +16,459 @@ const glows = [
 ---
 
 <section class="space-y-4" data-grounding-root>
-    <div class="complete-banner hidden" data-complete-banner aria-live="assertive" tabindex="-1">
+    <!-- Start Button -->
+    <div class="start-container" data-start-container>
+        <button
+            type="button"
+            class="start-button"
+            data-start-button
+        >
+            <span class="start-icon">🌊</span>
+            <span class="start-text">Start Grounding Exercise</span>
+        </button>
+        <p class="start-subtitle">Take a moment to reconnect with your senses</p>
+    </div>
+
+    <!-- Complete Banner Overlay -->
+    <div class="complete-banner hidden" data-complete-banner aria-live="assertive">
         <div class="complete-card">
-            <p class="text-2xl sm:text-3xl font-extrabold text-emerald-900">Complete — breathe easy</p>
-            <p class="text-sm text-emerald-800 mt-1 font-medium">Tap to dismiss and return to the steps.</p>
+            <div class="complete-icon">✓</div>
+            <p class="complete-title">Complete — breathe easy</p>
+            <p class="complete-subtitle">Tap to dismiss</p>
         </div>
     </div>
 
-    <div class="flex items-center justify-between text-sm text-slate-800">
-        <span data-grounding-status>Step 1 of {steps.length}</span>
-        <button
-            type="button"
-            class="text-emerald-700 font-semibold text-sm px-3 py-2 rounded-full bg-emerald-50 border border-emerald-100 shadow-sm hover:bg-emerald-100 active:translate-y-[1px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
-            data-grounding-reset
-        >
-            Restart
-        </button>
-    </div>
-
-    <div class="step-bars" aria-hidden="true">
-        {steps.map((step, idx) => (
-            <div
-                class="step-bar"
-                data-progress-bar
-                data-state={idx === 0 ? 'active' : 'pending'}
-                style={`--glow: ${glows[idx % glows.length]};`}
-            ></div>
-        ))}
-    </div>
-
-    <div class="space-y-3" data-steps-stack>
-        {steps.map((step, idx) => (
-            <Card
-                as="button"
+    <!-- Exercise Content (Initially Hidden) -->
+    <div class="exercise-content hidden" data-exercise-content>
+        <div class="flex items-center justify-between text-sm text-slate-800 mb-4">
+            <span data-grounding-status class="font-medium">Step 1 of {steps.length}</span>
+            <button
                 type="button"
-                class="grounding-card p-4 sm:p-5 flex items-start gap-4 text-left bg-white border border-black/5 rounded-xl shadow-soft shadow-[0_0_24px_var(--glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
-                data-state={idx === 0 ? 'active' : 'pending'}
-                data-grounding-step
-                data-step-index={idx}
-                style={`--glow: ${glows[idx % glows.length]}; --delay: ${idx * 90}ms;`}
+                class="reset-button"
+                data-grounding-reset
             >
-                <div class="step-badge" data-step-badge>
-                    <span class="badge-count" data-count>{step.count ?? idx + 1}</span>
-                    <span class="badge-check hidden" data-check aria-hidden="true">✓</span>
-                </div>
-                <div class="step-rail" aria-hidden="true"></div>
-                <div class="flex-1 space-y-1">
-                    <p class="text-lg font-semibold text-gray-900 leading-snug">{step.action || step.text}</p>
-                    <p class="text-sm text-slate-800 font-medium">Tap to complete this step and follow the glow to the next.</p>
-                </div>
-            </Card>
-        ))}
+                Restart
+            </button>
+        </div>
+
+        <div class="step-bars" aria-hidden="true">
+            {steps.map((step, idx) => (
+                <div
+                    class="step-bar"
+                    data-progress-bar
+                    data-state="pending"
+                    style={`--glow: ${glows[idx % glows.length]};`}
+                ></div>
+            ))}
+        </div>
+
+        <div class="space-y-3" data-steps-stack>
+            {steps.map((step, idx) => (
+                <Card
+                    as="button"
+                    type="button"
+                    class="grounding-card"
+                    data-state="pending"
+                    data-grounding-step
+                    data-step-index={idx}
+                    style={`--glow: ${glows[idx % glows.length]}; --delay: ${idx * 90}ms;`}
+                >
+                    <div class="step-badge" data-step-badge>
+                        <span class="badge-count" data-count>{step.count ?? idx + 1}</span>
+                        <span class="badge-check hidden" data-check aria-hidden="true">✓</span>
+                    </div>
+                    <div class="step-rail" aria-hidden="true"></div>
+                    <div class="flex-1 space-y-1">
+                        <p class="text-lg font-semibold text-gray-900 leading-snug">{step.action || step.text}</p>
+                        <p class="text-sm text-slate-600 font-medium">Tap when complete</p>
+                    </div>
+                </Card>
+            ))}
+        </div>
     </div>
 </section>
 
 <style>
     [data-grounding-root] {
-        --badge-size: 2.75rem;
+        --badge-size: 3rem;
+        max-width: 100%;
+        padding: 0 1rem;
     }
 
+    /* Start Button Styles */
+    .start-container {
+        text-align: center;
+        padding: 3rem 1rem;
+        animation: fadeIn 600ms ease-out;
+    }
+
+    .start-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 2rem 3rem;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        border-radius: 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 12px 32px rgba(16, 185, 129, 0.3);
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .start-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 40px rgba(16, 185, 129, 0.4);
+    }
+
+    .start-button:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+
+    .start-icon {
+        font-size: 2.5rem;
+        animation: gentleFloat 3s ease-in-out infinite;
+    }
+
+    .start-text {
+        font-size: 1.125rem;
+    }
+
+    .start-subtitle {
+        margin-top: 1rem;
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    /* Complete Banner Overlay */
     .complete-banner {
         position: fixed;
         inset: 0;
-        display: grid;
-        place-items: start center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 1.5rem;
-        background: radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.1), transparent 60%);
-        z-index: 30;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 50;
         cursor: pointer;
+        animation: fadeIn 300ms ease-out;
     }
 
-    .complete-banner:not(.hidden) .complete-card {
-        animation: floatDown 320ms ease-out forwards;
+    .complete-banner.hidden {
+        display: none;
+    }
+
+    .complete-banner.fade-out {
+        animation: fadeOut 500ms ease-out forwards;
     }
 
     .complete-card {
-        margin-top: 1rem;
-        background: #ecfdf3;
-        border: 1px solid rgba(16, 185, 129, 0.2);
-        border-radius: 1.1rem;
-        padding: 1.25rem 1.5rem;
-        box-shadow: 0 12px 28px rgba(16, 185, 129, 0.18);
+        background: linear-gradient(135deg, #ecfdf3, #d1fae5);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+        text-align: center;
+        animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-width: 340px;
+        width: 100%;
     }
 
-    .grounding-card {
-        transition: transform 160ms ease, box-shadow 200ms ease, background 200ms ease;
-        animation: fadeRise 360ms ease-out forwards;
-        opacity: 0;
-        transform: translateY(10px);
+    .complete-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #065f46;
+        animation: checkPop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms backwards;
     }
 
-    [data-grounding-root].ready .grounding-card {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    [data-grounding-root].ready .grounding-card {
-        animation-delay: var(--delay, 0ms);
-    }
-
-    .grounding-card .step-badge {
-        width: var(--badge-size);
-        height: var(--badge-size);
-        border-radius: 9999px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+    .complete-title {
+        font-size: 1.75rem;
         font-weight: 800;
-        color: #064e3b;
-        background: linear-gradient(135deg, #e6ffd8, #cfe8ff);
-        box-shadow: inset 0 0 0 1px rgba(6, 78, 59, 0.08), 0 6px 16px rgba(0,0,0,0.06);
-        position: relative;
+        color: #065f46;
+        margin-bottom: 0.5rem;
+    }
+
+    .complete-subtitle {
+        font-size: 0.9375rem;
+        color: #059669;
+        font-weight: 500;
+    }
+
+    /* Exercise Content */
+    .exercise-content {
+        animation: slideIn 400ms ease-out;
+    }
+
+    .exercise-content.hidden {
+        display: none;
+    }
+
+    .reset-button {
+        color: #059669;
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.625rem 1.25rem;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        cursor: pointer;
+        transition: all 200ms ease;
+    }
+
+    .reset-button:hover {
+        background: rgba(16, 185, 129, 0.15);
+    }
+
+    .reset-button:active {
+        transform: scale(0.96);
+    }
+
+    /* Step Cards */
+    .grounding-card {
+        padding: 1.25rem;
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+        text-align: left;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: all 200ms ease;
+        width: 100%;
     }
 
     .grounding-card[data-state="pending"] {
-        box-shadow: 0 6px 16px rgba(31,41,55,0.08), 0 0 18px var(--glow);
-    }
-
-    .step-rail {
-        width: 7px;
-        align-self: stretch;
-        border-radius: 999px;
-        background: linear-gradient(180deg, rgba(16,185,129,0.14), rgba(16,185,129,0.07));
-        position: relative;
-        overflow: hidden;
-    }
-
-    .grounding-card[data-state="active"] .step-rail::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(16,185,129,0.28), rgba(16,185,129,0.1));
-        animation: barPulse 1.8s ease-in-out infinite;
-    }
-
-    .grounding-card[data-state="pending"] .step-rail {
-        opacity: 0.7;
+        opacity: 0.6;
+        pointer-events: none;
     }
 
     .grounding-card[data-state="active"] {
-        box-shadow: 0 6px 16px rgba(31,41,55,0.1), 0 0 28px var(--glow), 0 0 0 1px rgba(16, 185, 129, 0.25);
+        box-shadow: 0 8px 24px rgba(31, 41, 55, 0.12), 0 0 32px var(--glow);
         transform: translateY(-2px);
+        border-color: rgba(16, 185, 129, 0.3);
     }
 
     .grounding-card[data-state="done"] {
-        box-shadow: 0 4px 12px rgba(31,41,55,0.08), 0 0 14px rgba(0,0,0,0.05), 0 0 16px var(--glow);
-        opacity: 0.96;
+        opacity: 0.5;
+        pointer-events: none;
+        background: #f9fafb;
+    }
+
+    .grounding-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Step Badge */
+    .step-badge {
+        width: var(--badge-size);
+        height: var(--badge-size);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: #064e3b;
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    /* Active Badge Pulsating Animation */
+    .grounding-card[data-state="active"] .step-badge {
+        animation: pulsateColorShift 2s ease-in-out infinite;
+    }
+
+    .grounding-card[data-state="active"] .step-badge::after {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.3), transparent 70%);
+        animation: pulseRing 2s ease-in-out infinite;
+        z-index: -1;
     }
 
     .grounding-card[data-state="done"] .step-badge {
-        background: linear-gradient(135deg, #ecfdf3, #d1fae5);
-        box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.25), 0 4px 12px rgba(16, 185, 129, 0.18);
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
     }
 
-    .grounding-card .badge-check {
-        font-size: 1.25rem;
-        color: #065f46;
+    .badge-check {
+        font-size: 1.5rem;
     }
 
-    .grounding-card .badge-count {
-        font-size: 1.1rem;
+    /* Step Rail */
+    .step-rail {
+        width: 6px;
+        align-self: stretch;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.15);
+        position: relative;
+        flex-shrink: 0;
     }
 
+    .grounding-card[data-state="active"] .step-rail {
+        background: linear-gradient(180deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.15));
+    }
+
+    /* Progress Bars */
     .step-bars {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
-        gap: 0.65rem;
-        margin-bottom: 0.25rem;
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 1rem;
     }
 
     .step-bar {
         height: 10px;
         border-radius: 999px;
-        background: linear-gradient(90deg, rgba(16,185,129,0.14), rgba(16,185,129,0.1));
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+        background: rgba(16, 185, 129, 0.15);
         position: relative;
         overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .step-bar[data-state="active"]::after {
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(90deg, rgba(16,185,129,0.3), rgba(52,211,153,0.35));
-        animation: barPulse 1.8s ease-in-out infinite;
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.5), rgba(52, 211, 153, 0.5));
+        animation: barShimmer 1.5s ease-in-out infinite;
     }
 
     .step-bar[data-state="done"] {
-        background: linear-gradient(90deg, rgba(52,211,153,0.3), rgba(16,185,129,0.22));
-        box-shadow: inset 0 0 0 1px rgba(16,185,129,0.2);
+        background: linear-gradient(90deg, #10b981, #059669);
+        border-color: rgba(16, 185, 129, 0.3);
     }
 
-    .step-bar[data-state="done"]::after {
-        display: none;
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    .grounding-card:active,
-    .grounding-card.pressed {
-        transform: scale(0.98);
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
     }
 
-    .grounding-card[data-state="active"] .step-badge::after {
-        content: "";
-        position: absolute;
-        inset: -6px;
-        border-radius: inherit;
-        background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.2), transparent 60%);
-        opacity: 0.9;
-        animation: badgePulse 2.2s ease-in-out infinite;
-        z-index: 0;
-    }
-
-    .grounding-card[data-state="active"] .step-badge {
-        animation: breatheBadge 3s ease-in-out infinite;
-    }
-
-    .grounding-card .step-badge > span {
-        position: relative;
-        z-index: 1;
-    }
-
-    .grounding-card[data-state="done"] .badge-check {
-        display: inline;
-    }
-
-    .grounding-card[data-state="done"] .badge-count {
-        display: none;
-    }
-
-    @keyframes fadeRise {
-        from { opacity: 0; transform: translateY(10px); }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes floatDown {
-        from { opacity: 0; transform: translateY(-24px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
     }
 
-    @keyframes breatheBadge {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.06); }
+    @keyframes checkPop {
+        from { opacity: 0; transform: scale(0) rotate(-45deg); }
+        to { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
-    @keyframes badgePulse {
-        0% { opacity: 0.6; transform: scale(0.94); }
-        50% { opacity: 1; transform: scale(1.05); }
-        100% { opacity: 0.6; transform: scale(0.94); }
+    @keyframes gentleFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
     }
 
-    @keyframes barPulse {
-        0%, 100% { opacity: 0.5; transform: scaleX(1); }
-        50% { opacity: 1; transform: scaleX(1.05); }
+    @keyframes pulsateColorShift {
+        0%, 100% {
+            transform: scale(1);
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        25% {
+            transform: scale(1.15);
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            box-shadow: inset 0 0 0 2px rgba(239, 68, 68, 0.4), 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+        50% {
+            transform: scale(1);
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        75% {
+            transform: scale(1.15);
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            box-shadow: inset 0 0 0 2px rgba(239, 68, 68, 0.4), 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
     }
 
+    @keyframes pulseRing {
+        0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.6;
+            transform: scale(1.2);
+        }
+    }
+
+    @keyframes barShimmer {
+        0%, 100% {
+            opacity: 0.5;
+            transform: translateX(-10%);
+        }
+        50% {
+            opacity: 1;
+            transform: translateX(10%);
+        }
+    }
+
+    /* Responsive Design */
+    @media (min-width: 640px) {
+        [data-grounding-root] {
+            --badge-size: 3.25rem;
+        }
+
+        .grounding-card {
+            padding: 1.5rem;
+        }
+
+        .complete-title {
+            font-size: 2rem;
+        }
+
+        .start-button {
+            max-width: 380px;
+        }
+    }
+
+    /* Reduced Motion Support */
     @media (prefers-reduced-motion: reduce) {
-        .grounding-card,
-        .grounding-card[data-state="active"],
-        .grounding-card:active,
-        .grounding-card.pressed {
-            transform: none !important;
-            animation: none !important;
-        }
-
-        .complete-banner:not(.hidden) .complete-card {
-            animation: none !important;
-        }
-
-        .grounding-card .step-badge,
-        .grounding-card .step-badge::after {
-            animation: none !important;
-        }
-
-        .step-bar[data-state="active"]::after,
-        .grounding-card[data-state="active"] .step-rail::after {
-            animation: none !important;
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
     }
 
-    [data-reduced-motion="true"] .grounding-card,
-    [data-reduced-motion="true"] .grounding-card[data-state="active"],
-    [data-reduced-motion="true"] .grounding-card:active,
-    [data-reduced-motion="true"] .grounding-card.pressed {
-        transform: none !important;
-        animation: none !important;
-    }
-
-    [data-reduced-motion="true"] .step-badge,
-    [data-reduced-motion="true"] .step-badge::after {
-        animation: none !important;
-    }
-
-    [data-reduced-motion="true"] .step-bar[data-state="active"]::after,
-    [data-reduced-motion="true"] .grounding-card[data-state="active"] .step-rail::after {
-        animation: none !important;
+    [data-reduced-motion="true"] * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 </style>
 
 <script define:vars={{ steps }}>
     const root = document.querySelector('[data-grounding-root]');
+    const startContainer = document.querySelector('[data-start-container]');
+    const startButton = document.querySelector('[data-start-button]');
+    const exerciseContent = document.querySelector('[data-exercise-content]');
     const cards = Array.from(document.querySelectorAll('[data-grounding-step]'));
     const bars = Array.from(document.querySelectorAll('[data-progress-bar]'));
     const statusText = document.querySelector('[data-grounding-status]');
@@ -322,7 +476,8 @@ const glows = [
     const completeBanner = document.querySelector('[data-complete-banner]');
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    const state = steps.map((step, idx) => ({ ...step, state: idx === 0 ? 'active' : 'pending' }));
+    let completionTimeout = null;
+    const state = steps.map(() => ({ state: 'pending' }));
 
     const applyReducedMotion = (value) => {
         root?.setAttribute('data-reduced-motion', value ? 'true' : 'false');
@@ -332,7 +487,7 @@ const glows = [
         const activeIndex = state.findIndex((item) => item.state === 'active');
         if (!statusText) return;
         if (activeIndex === -1) {
-            statusText.textContent = 'Complete — breathe easy';
+            statusText.textContent = 'All steps complete!';
         } else {
             statusText.textContent = `Step ${activeIndex + 1} of ${state.length}`;
         }
@@ -341,7 +496,6 @@ const glows = [
     const syncCards = () => {
         cards.forEach((card, idx) => {
             const data = state[idx];
-            const badge = card.querySelector('[data-step-badge]');
             const check = card.querySelector('[data-check]');
             const count = card.querySelector('[data-count]');
 
@@ -355,10 +509,6 @@ const glows = [
                 check?.classList.add('hidden');
                 count?.classList.remove('hidden');
             }
-
-            if (badge) {
-                badge.setAttribute('aria-label', `${data.action ?? 'Step'} (${data.state})`);
-            }
         });
 
         bars.forEach((bar, idx) => {
@@ -368,73 +518,82 @@ const glows = [
         updateStatus();
     };
 
-    const setActive = (index) => {
-        state.forEach((item, idx) => {
-            if (idx === index) return;
-            if (item.state === 'active') {
-                item.state = 'pending';
-            }
-        });
-        state[index].state = 'active';
-        syncCards();
-    };
-
     const hideCompletion = () => {
         if (!completeBanner) return;
-        completeBanner.classList.add('hidden');
-        completeBanner.setAttribute('aria-hidden', 'true');
+        if (completionTimeout) {
+            clearTimeout(completionTimeout);
+            completionTimeout = null;
+        }
+        completeBanner.classList.add('fade-out');
+        setTimeout(() => {
+            completeBanner.classList.add('hidden');
+            completeBanner.classList.remove('fade-out');
+        }, 500);
     };
 
     const showCompletion = () => {
         if (!completeBanner) return;
         completeBanner.classList.remove('hidden');
-        completeBanner.setAttribute('aria-hidden', 'false');
         completeBanner.focus?.();
+        
+        // Auto-hide after 5 seconds
+        completionTimeout = setTimeout(() => {
+            hideCompletion();
+        }, 5000);
     };
 
     const completeStep = (index) => {
         state[index].state = 'done';
         const next = state.findIndex((item, idx) => idx > index && item.state !== 'done');
         if (next !== -1) {
-            setActive(next);
+            state[next].state = 'active';
         } else {
-            updateStatus();
             showCompletion();
         }
         syncCards();
     };
 
+    const startExercise = () => {
+        startContainer?.classList.add('hidden');
+        exerciseContent?.classList.remove('hidden');
+        state[0].state = 'active';
+        syncCards();
+    };
+
     const resetFlow = () => {
-        state.forEach((item, idx) => {
-            item.state = idx === 0 ? 'active' : 'pending';
+        state.forEach((item) => {
+            item.state = 'pending';
         });
+        state[0].state = 'active';
         hideCompletion();
         syncCards();
     };
 
+    // Start button
+    startButton?.addEventListener('click', startExercise);
+
+    // Step cards
     cards.forEach((card, idx) => {
         card.addEventListener('click', () => {
-            const current = state[idx].state;
-            if (current === 'active') {
+            if (state[idx].state === 'active') {
                 completeStep(idx);
             }
         });
-
-        card.addEventListener('pointerdown', () => card.classList.add('pressed'));
-        card.addEventListener('pointerup', () => card.classList.remove('pressed'));
-        card.addEventListener('pointerleave', () => card.classList.remove('pressed'));
     });
 
+    // Reset button
     resetBtn?.addEventListener('click', resetFlow);
+
+    // Complete banner (dismiss on click)
     completeBanner?.addEventListener('click', hideCompletion);
 
+    // Reduced motion support
     prefersReduced.addEventListener('change', (event) => {
         applyReducedMotion(event.matches);
     });
 
+    // Initialize
     requestAnimationFrame(() => {
-        root?.classList.add('ready');
         applyReducedMotion(prefersReduced.matches);
-        syncCards();
     });
 </script>
