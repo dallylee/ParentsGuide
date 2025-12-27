@@ -15,6 +15,7 @@
   const container = document.querySelector('[data-install-container]');
   const button = container?.querySelector('button');
   let deferredPrompt = null;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const hide = () => {
     container?.classList.add('hidden');
@@ -27,29 +28,35 @@
   const alreadyInstalled = () =>
     window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-  if (alreadyInstalled()) {
+  if (!isMobile || alreadyInstalled()) {
     hide();
   }
 
-  window.addEventListener('beforeinstallprompt', (event) => {
-    if (alreadyInstalled()) return;
-    event.preventDefault();
-    deferredPrompt = event;
-    show();
-  });
-
-  button?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    button.disabled = true;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
+  if (!isMobile) {
     hide();
-    button.disabled = false;
-  });
+  }
 
-  window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    hide();
-  });
+  if (isMobile) {
+    window.addEventListener('beforeinstallprompt', (event) => {
+      if (alreadyInstalled()) return;
+      event.preventDefault();
+      deferredPrompt = event;
+      show();
+    });
+
+    button?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      button.disabled = true;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      hide();
+      button.disabled = false;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      hide();
+    });
+  }
 </script>
