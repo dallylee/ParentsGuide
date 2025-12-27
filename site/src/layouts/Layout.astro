@@ -22,6 +22,18 @@ const resolvedImagePath = image.startsWith("http") ? image : withBase(image);
 const ogImage = Astro.site
   ? new URL(resolvedImagePath, Astro.site).toString()
   : resolvedImagePath;
+
+const stripTrailingSlash = (path = "") => path.replace(/\/+$/, "");
+const currentPath = stripTrailingSlash(Astro.url.pathname);
+const homePath = stripTrailingSlash(withBase("/"));
+
+const navItems = [
+  { href: withBase("/"), label: "Home" },
+  { href: withBase("section/start/"), label: "Your guide" },
+  { href: withBase("tools/"), label: "Tools" },
+  { href: withBase("section/timeline/"), label: "Timeline" },
+  { href: withBase("notes/"), label: "Notes" },
+];
 ---
 
 <!doctype html>
@@ -74,6 +86,23 @@ const ogImage = Astro.site
   >
     <main class="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <div class="w-full mx-auto max-w-xl sm:max-w-2xl lg:max-w-3xl xl:max-w-4xl min-h-screen bg-bg shadow-2xl shadow-gray-200/50 relative overflow-x-hidden">
+        <nav aria-label="Primary" class="hidden lg:flex items-center justify-center gap-6 border-b border-gray-100 bg-white/90 px-6 py-4 text-sm font-semibold text-slate-700">
+          {navItems.map(({ href, label }) => {
+            const hrefPath = stripTrailingSlash(href);
+            const isActive = currentPath === hrefPath || (hrefPath !== homePath && currentPath.startsWith(hrefPath));
+            return (
+              <a
+                href={href}
+                class:list={[
+                  "transition-colors",
+                  isActive ? "text-slate-900" : "text-slate-600 hover:text-slate-900"
+                ]}
+              >
+                {label}
+              </a>
+            );
+          })}
+        </nav>
         <slot />
         <BottomNav />
         <InstallPrompt />
