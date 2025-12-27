@@ -10,14 +10,16 @@ const hrefWithBase = (href) =>
 const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
 ---
 <Layout title="A Parent's Guide">
-    <main class="min-h-[100svh] relative overflow-hidden bg-white lg:flex lg:flex-col">
-        <HeroBackgroundIntro
-            imgSrc={heroImgSrc}
-            typingTargets={[".hero-reveal-1", ".hero-reveal-2", ".hero-reveal-3"]}
-        />
+    <main class="min-h-[100svh] lg:min-h-0 relative overflow-hidden lg:overflow-visible bg-white lg:flex lg:flex-col">
+        <div class="lg:hidden">
+            <HeroBackgroundIntro
+                imgSrc={heroImgSrc}
+                typingTargets={[".hero-reveal-1", ".hero-reveal-2", ".hero-reveal-3"]}
+            />
+        </div>
 
         <div class="relative z-10 min-h-[100svh] px-5 sm:px-8 lg:order-1 lg:min-h-0">
-            <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14 lg:min-h-0">
+            <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14 lg:min-h-0 lg:grid-rows-[auto_auto] lg:gap-6">
                 <header class="w-full mx-auto text-center">
                     <h1 class="text-black text-3xl sm:text-4xl font-semibold leading-tight hero-reveal hero-reveal-1">
                         {home.hero_title}
@@ -27,13 +29,16 @@ const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
                     </p>
                 </header>
 
-                <div aria-hidden="true"></div>
+                <div aria-hidden="true" class="block lg:hidden"></div>
 
                 <section class="w-full mx-auto pb-6 text-center">
                     <p class="mt-0 text-black text-base sm:text-lg leading-relaxed max-w-prose mx-auto font-semibold hero-reveal hero-reveal-3">
                         {home.hero_description ?? ""}
                     </p>
                 </section>
+            </div>
+            <div class="hidden lg:block mt-10">
+                <img src={heroImgSrc} alt="" class="w-full h-auto object-contain" />
             </div>
         </div>
     </main>

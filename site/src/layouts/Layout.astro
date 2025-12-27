@@ -50,14 +50,17 @@ const navItems = [
     <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
 
     <!-- PWA Manifest (mobile only) -->
-    <script is:inline>
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isMobile) {
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = '${withBase("manifest.webmanifest")}';
+    <script is:inline define:vars={{ manifestHref: withBase("manifest.webmanifest") }}>
+      (() => {
+        const ua = navigator.userAgent || "";
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+        if (!isMobile) return;
+
+        const link = document.createElement("link");
+        link.rel = "manifest";
+        link.href = manifestHref;
         document.head.appendChild(link);
-      }
+      })();
     </script>
 
     <meta name="generator" content={Astro.generator} />
@@ -110,12 +113,18 @@ const navItems = [
         </nav>
         <slot />
         <BottomNav />
-        <InstallPrompt />
+        <div class="lg:hidden">
+          <InstallPrompt />
+        </div>
       </div>
     </main>
     <script>
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isMobile && 'serviceWorker' in navigator) {
+      (() => {
+        const ua = navigator.userAgent || "";
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+        if (!isMobile) return;
+        if (!('serviceWorker' in navigator)) return;
+
         window.addEventListener('load', () => {
           const swUrl = `${import.meta.env.BASE_URL}sw.js`;
           navigator.serviceWorker
@@ -124,7 +133,7 @@ const navItems = [
               console.error('Service worker registration failed:', error);
             });
         });
-      }
+      })();
     </script>
   </body>
 </html>
