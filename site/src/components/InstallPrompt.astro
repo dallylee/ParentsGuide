@@ -1,5 +1,5 @@
 <div
-  class="fixed bottom-28 right-4 z-40 hidden max-w-[85vw] md:max-w-xs"
+  class="fixed bottom-28 right-4 z-40 hidden max-w-[85vw] md:max-w-xs lg:hidden"
   data-install-container
   aria-live="polite"
 >
@@ -28,15 +28,11 @@
   const alreadyInstalled = () =>
     window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-  if (!isMobile || alreadyInstalled()) {
-    hide();
-  }
-
   if (!isMobile) {
     hide();
-  }
-
-  if (isMobile) {
+  } else if (alreadyInstalled()) {
+    hide();
+  } else {
     window.addEventListener('beforeinstallprompt', (event) => {
       if (alreadyInstalled()) return;
       event.preventDefault();
