@@ -10,14 +10,14 @@ const hrefWithBase = (href) =>
 const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
 ---
 <Layout title="A Parent's Guide">
-    <main class="min-h-[100svh] relative overflow-hidden bg-white">
+    <main class="min-h-[100svh] relative overflow-hidden bg-white lg:flex lg:flex-col">
         <HeroBackgroundIntro
             imgSrc={heroImgSrc}
             typingTargets={[".hero-reveal-1", ".hero-reveal-2", ".hero-reveal-3"]}
         />
 
-        <div class="relative z-10 min-h-[100svh] px-5 sm:px-8">
-            <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14">
+        <div class="relative z-10 min-h-[100svh] px-5 sm:px-8 lg:order-1 lg:min-h-0">
+            <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14 lg:min-h-0">
                 <header class="w-full mx-auto text-center">
                     <h1 class="text-black text-3xl sm:text-4xl font-semibold leading-tight hero-reveal hero-reveal-1">
                         {home.hero_title}

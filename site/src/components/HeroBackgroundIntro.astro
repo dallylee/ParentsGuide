@@ -9,7 +9,7 @@ const base = import.meta.env.BASE_URL ?? '/';
 const videoSrc = `${base}${'images/hero_animated.mp4'.replace(/^\/+/, '')}`;
 ---
 <div
-    class="absolute inset-0 h-full w-full"
+    class="absolute inset-0 h-full w-full lg:static lg:relative lg:order-2 lg:mt-10 lg:h-[360px]"
     data-hero-intro
     data-typing-targets={JSON.stringify(typingTargets)}
 >
