@@ -1,55 +1,101 @@
+---
+// site/src/components/InstallPrompt.astro
+---
 <div
-  class="fixed bottom-28 right-4 z-40 hidden max-w-[85vw] md:max-w-xs"
+  class="hidden"
   data-install-container
   aria-live="polite"
 >
   <button
     type="button"
     class="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-700/30 transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-500"
+    data-install-button
   >
-    <span>Install app</span>
+    <span data-install-label>Install app</span>
   </button>
 </div>
 
+<style>
+  /* Keep this prompt visually inside the phone-sized experience, even on wide screens */
+  [data-install-container] {
+    position: fixed;
+    z-index: 40;
+    bottom: 7rem; /* above bottom nav */
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(min(92vw, 640px));
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none;
+  }
+  [data-install-container] > button {
+    pointer-events: auto;
+  }
+</style>
+
 <script>
   const container = document.querySelector('[data-install-container]');
-  const button = container?.querySelector('button');
+  const button = container?.querySelector('[data-install-button]');
+  const label = container?.querySelector('[data-install-label]');
+
   let deferredPrompt = null;
-
-  const hide = () => {
-    container?.classList.add('hidden');
-  };
-
-  const show = () => {
-    container?.classList.remove('hidden');
-  };
 
   const alreadyInstalled = () =>
     window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-  if (alreadyInstalled()) {
-    hide();
-  }
+  const isIOS = () => /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isMobileLike = () => {
+    const coarse = window.matchMedia?.('(pointer: coarse)').matches;
+    const small = window.matchMedia?.('(max-width: 900px)').matches;
+    return Boolean(coarse || small || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+  };
 
-  window.addEventListener('beforeinstallprompt', (event) => {
-    if (alreadyInstalled()) return;
-    event.preventDefault();
-    deferredPrompt = event;
+  const hide = () => container?.classList.add('hidden');
+  const show = () => container?.classList.remove('hidden');
+
+  // Never show on desktop, and never show if already installed
+  if (!isMobileLike() || alreadyInstalled()) {
+    hide();
+  } else if (isIOS()) {
+    // iOS Safari does not support beforeinstallprompt, so provide instructions
+    if (label) label.textContent = 'Add to Home Screen';
+
     show();
-  });
 
-  button?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    button.disabled = true;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    hide();
-    button.disabled = false;
-  });
+    button?.addEventListener('click', () => {
+      // Keep it simple and reliable. A small instruction is enough.
+      alert(
+        'To add this guide to your Home Screen:\n\n' +
+          '1) Tap the Share button (square with arrow)\n' +
+          '2) Choose "Add to Home Screen"\n\n' +
+          'Notes are stored on this device only.'
+      );
+    });
+  } else {
+    // Android / supported browsers: use beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (event) => {
+      if (!isMobileLike() || alreadyInstalled()) return;
 
-  window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    hide();
-  });
+      event.preventDefault();
+      deferredPrompt = event;
+      show();
+    });
+
+    button?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+
+      button.disabled = true;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+
+      deferredPrompt = null;
+      hide();
+      button.disabled = false;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      hide();
+    });
+  }
 </script>
