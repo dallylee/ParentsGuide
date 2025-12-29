@@ -1,97 +1,110 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
+import { ArrowLeft } from "lucide-astro";
+
+const base = import.meta.env.BASE_URL;
+const withBase = (path = "") => `${base}${path.replace(/^\/+/, "")}`;
+
+const glows = [
+  "rgba(207, 232, 255, 0.75)",
+  "rgba(255, 227, 216, 0.7)",
+  "rgba(230, 255, 216, 0.7)",
+  "rgba(245, 232, 255, 0.75)",
+];
 ---
 
 <Layout title="About this guide">
-  <main class="mx-auto max-w-2xl space-y-6 pb-24">
-    <Card as="section" class="p-7 sm:p-10">
-      <div
-        class="prose prose-slate guide-content max-w-none about-content
-          text-[15px] leading-relaxed
-          prose-p:text-slate-800 prose-p:font-medium
-          prose-li:text-slate-800 prose-li:font-medium
-          prose-headings:text-slate-900
-          prose-a:text-emerald-700
-          prose-a:font-semibold
-          prose-a:no-underline
-          hover:prose-a:text-emerald-900
-          hover:prose-a:underline"
-      >
-        <h1>About this guide</h1>
+  <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 z-40 px-4 py-4 flex items-center">
+    <a href={withBase("")} class="p-2 -ml-2 text-slate-700 hover:text-slate-900 transition-colors" aria-label="Back">
+      <ArrowLeft size={24} />
+    </a>
+    <span class="ml-2 font-semibold text-gray-800">About this guide</span>
+  </div>
 
-        <p>This guide began as a personal project.</p>
+  <div class="px-4 sm:px-6 py-6 space-y-6 pb-28">
+    <header class="space-y-2">
+      <h1 class="text-3xl font-semibold text-gray-900">About this guide</h1>
+      <p class="text-slate-800 text-base font-medium">
+        A short note on why this exists, how privacy works, and where to find support.
+      </p>
+    </header>
 
-        <p>
-          A close friend’s child was scheduled for major surgery. Like many parents in that situation,
-          they were understandably anxious, overwhelmed, and unsure how best to prepare, both practically and emotionally.
+    <Card class="p-5 sm:p-6 about-card" style={`--glow: ${glows[0]}`}>
+      <div class="space-y-3">
+        <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+          This guide began as a personal project.
         </p>
 
-        <p>
-          While hospitals provide excellent medical care, parents are often left to manage their own stress while trying to be a steady,
-          reassuring presence for their child. This guide was created to help fill that gap.
+        <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+          A close friend’s child was scheduled for major surgery. Like many parents in that situation, they were understandably
+          anxious, overwhelmed, and unsure how best to prepare, both practically and emotionally.
         </p>
 
-        <p>
+        <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+          While hospitals provide excellent medical care, parents are often left to manage their own stress while trying to be a
+          steady, reassuring presence for their child. This guide was created to help fill that gap.
+        </p>
+
+        <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
           The content is informed by well-established guidance and research from trusted sources, including the NHS, Mayo Clinic,
           the British Psychological Society, and paediatric psychology research on anxiety and recovery.
         </p>
 
-        <p>This guide is not a substitute for medical advice. It is designed to offer:</p>
-
-        <ul>
-          <li>structure during an uncertain time</li>
-          <li>preparation steps you can return to at your own pace</li>
-          <li>reassurance grounded in evidence</li>
-          <li>gentle, proven calming techniques</li>
-        </ul>
+        <div class="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+          <p class="font-semibold text-emerald-900 mb-1">What this guide is for</p>
+          <ul class="list-disc list-inside space-y-1 text-emerald-900/90 font-medium">
+            <li>structure during an uncertain time</li>
+            <li>preparation steps you can return to at your own pace</li>
+            <li>reassurance grounded in evidence</li>
+            <li>gentle, proven calming techniques</li>
+          </ul>
+        </div>
       </div>
     </Card>
 
-    <Card as="section" class="p-7 sm:p-10">
-      <div
-        class="prose prose-slate guide-content max-w-none about-content
-          text-[15px] leading-relaxed
-          prose-p:text-slate-800 prose-p:font-medium
-          prose-li:text-slate-800 prose-li:font-medium
-          prose-headings:text-slate-900"
-      >
-        <h2>Privacy and your notes</h2>
+    <Card class="p-5 sm:p-6 about-card" style={`--glow: ${glows[1]}`}>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <h2 class="text-xl font-semibold text-gray-900">Privacy and your notes</h2>
+          <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+            This app does not require accounts and does not collect personal information.
+          </p>
+          <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+            Anything you type into the notes area is saved locally in your browser on your device. Nothing is uploaded or tracked.
+            If you clear your browser data or switch devices, you may lose saved notes.
+          </p>
+        </div>
 
-        <p>This app does not require accounts and does not collect personal information.</p>
+        <div class="space-y-2">
+          <h2 class="text-xl font-semibold text-gray-900">Disclaimer</h2>
+          <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+            This guide is provided for general informational and supportive purposes only. It is not a substitute for professional
+            medical, psychological, or clinical advice. Always follow guidance from your child’s healthcare team.
+          </p>
+        </div>
 
-        <p>
-          Anything you type into the notes area is saved locally in your browser on your device.
-          Nothing is uploaded or tracked. If you clear your browser data or switch devices, you may lose saved notes.
-        </p>
+        <div class="space-y-2">
+          <h2 class="text-xl font-semibold text-gray-900">Supporting this work</h2>
+          <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+            This guide is shared freely and is not monetised. If you found it helpful and would like to support the time and care
+            that went into creating and maintaining it, you can do so here:
+          </p>
 
-        <h2>Disclaimer</h2>
+          <a
+            href="https://ko-fi.com/dali10"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-soft border border-emerald-100 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+          >
+            Support on Ko-fi
+          </a>
 
-        <p>
-          This guide is provided for general informational and supportive purposes only.
-          It is not a substitute for professional medical, psychological, or clinical advice.
-          Always follow guidance from your child’s healthcare team.
-        </p>
-
-        <h2>Supporting this work</h2>
-
-        <p>
-          This guide is shared freely and is not monetised. If you found it helpful and would like to support the time and care that went into
-          creating and maintaining it, you can do so here:
-        </p>
-
-        <p>
-          <a href="https://ko-fi.com/dali10" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a>
-        </p>
-
-        <p>Support is entirely optional and never expected.</p>
+          <p class="text-slate-700 text-sm leading-relaxed font-medium">
+            Support is entirely optional and never expected.
+          </p>
+        </div>
       </div>
     </Card>
-  </main>
-
-  <style>
-    .about-content :global(p) { margin-top: 0.6em; margin-bottom: 0.6em; }
-    .about-content :global(ul) { margin-top: 0.6em; margin-bottom: 0.6em; }
-    .about-content :global(li) { margin-top: 0.25em; margin-bottom: 0.25em; }
-  </style>
+  </div>
 </Layout>
