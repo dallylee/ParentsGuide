@@ -9,60 +9,34 @@ interface Props {
 }
 
 const base = import.meta.env.BASE_URL;
-const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
+const withBase = (path = "") => `${base}${path.replace(/^\/+/, "")}`;
 
 const {
   title,
   description = "A parent's guide for supporting a child through surgery.",
-  image = "/images/hero.jpg"
+  image = "/images/hero.jpg",
 } = Astro.props;
-
-const resolvedImagePath = image.startsWith("http") ? image : withBase(image);
-const ogImage = Astro.site
-  ? new URL(resolvedImagePath, Astro.site).toString()
-  : resolvedImagePath;
 ---
 
-<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content={description} />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
-
-    <!-- PWA Manifest -->
-    <link
-      rel="manifest"
-      href={`${import.meta.env.BASE_URL}manifest.webmanifest`}
-    />
-
-    <meta name="generator" content={Astro.generator} />
-
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={ogImage} />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>{title}</title>
+
+    <meta name="description" content={description} />
+
+    <!-- Basic social previews -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={withBase(image)} />
+    <meta property="og:type" content="website" />
+
+    <!-- PWA-ish hints -->
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="manifest" href={withBase("manifest.webmanifest")} />
+    <link rel="icon" href={withBase("favicon.svg")} />
   </head>
 
   <body class="min-h-screen bg-bg pb-28 text-slate-800 font-medium overflow-x-hidden">
@@ -71,17 +45,15 @@ const ogImage = Astro.site
     >
       <slot />
       <BottomNav />
-      <InstallPrompt />
     </main>
+
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           const swUrl = `${import.meta.env.BASE_URL}sw.js`;
           navigator.serviceWorker
             .register(swUrl, { scope: import.meta.env.BASE_URL })
-            .catch((error) => {
-              console.error('Service worker registration failed:', error);
-            });
+            .catch(() => {});
         });
       }
     </script>
