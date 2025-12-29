@@ -1,62 +1,84 @@
 ---
+// Updated homepage (index.astro)
+// Adds a discreet "About this guide" link that appears LAST in the intro sequence.
+// Source base file: :contentReference[oaicite:0]{index=0}
+
 import Layout from '../layouts/Layout.astro';
 import HeroBackgroundIntro from '../components/HeroBackgroundIntro.astro';
 import siteIndex from '../../../content/index.json';
 
 const home = siteIndex.home;
 const base = import.meta.env.BASE_URL;
+
 const hrefWithBase = (href) =>
-    href.startsWith("/") ? `${base}${href.replace(/^\/+/, "")}` : href;
+  href.startsWith("/") ? `${base}${href.replace(/^\/+/, "")}` : href;
+
 const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
 ---
 <Layout title="A Parent's Guide">
-    <main class="min-h-[100svh] relative overflow-hidden bg-white">
-        <HeroBackgroundIntro
-            imgSrc={heroImgSrc}
-            typingTargets={[".hero-reveal-1", ".hero-reveal-2", ".hero-reveal-3"]}
-        />
+  <main class="min-h-[100svh] relative overflow-hidden bg-white">
+    <HeroBackgroundIntro
+      imgSrc={heroImgSrc}
+      typingTargets={[
+        ".hero-reveal-1",
+        ".hero-reveal-2",
+        ".hero-reveal-3",
+        ".hero-reveal-4",
+      ]}
+    />
 
-        <div class="relative z-10 min-h-[100svh] px-5 sm:px-8">
-            <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14">
-                <header class="max-w-2xl mx-auto text-center">
-                    <h1 class="text-black text-3xl sm:text-4xl font-semibold leading-tight hero-reveal hero-reveal-1">
-                        {home.hero_title}
-                    </h1>
-                    <p class="mt-3 text-black text-[17px] sm:text-xl leading-relaxed font-semibold hero-reveal hero-reveal-2">
-                        {home.hero_subtitle}
-                    </p>
-                </header>
+    <div class="relative z-10 min-h-[100svh] px-5 sm:px-8">
+      <div class="min-h-[100svh] grid grid-rows-[auto_1fr_auto] pb-28 pt-10 sm:pt-14">
+        <header class="max-w-2xl mx-auto text-center">
+          <h1 class="text-black text-3xl sm:text-4xl font-semibold leading-tight hero-reveal hero-reveal-1">
+            {home.hero_title}
+          </h1>
+          <p class="mt-3 text-black text-[17px] sm:text-xl leading-relaxed font-semibold hero-reveal hero-reveal-2">
+            {home.hero_subtitle}
+          </p>
+        </header>
 
-                <div aria-hidden="true"></div>
+        <div aria-hidden="true"></div>
 
-                <section class="max-w-2xl mx-auto pb-6 text-center">
-                    <p class="mt-0 text-black text-[16px] sm:text-lg leading-relaxed max-w-prose mx-auto font-semibold hero-reveal hero-reveal-3">
-                        {home.hero_description ?? ""}
-                    </p>
-                </section>
-            </div>
-        </div>
-    </main>
+        <section class="max-w-2xl mx-auto pb-6 text-center">
+          <p class="mt-0 text-black text-[16px] sm:text-lg leading-relaxed max-w-prose mx-auto font-semibold hero-reveal hero-reveal-3">
+            {home.hero_description ?? ""}
+          </p>
+
+          <!-- Discreet footer link, appears LAST -->
+          <div class="mt-10 hero-reveal hero-reveal-4">
+            <a
+              href={hrefWithBase("/about")}
+              class="inline-flex text-sm font-semibold text-slate-600 underline underline-offset-4 hover:text-slate-800"
+            >
+              About this guide
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
 </Layout>
+
 <style>
-    .hero-reveal {
-        opacity: 0;
-    }
+  .hero-reveal {
+    opacity: 0;
+  }
 
-    :global(body.hero-intro-paused .hero-reveal.is-on) {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-    }
+  :global(body.hero-intro-paused .hero-reveal.is-on) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
 
-    :global(html.hero-text-locked .hero-reveal) {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        animation: none !important;
-    }
+  :global(html.hero-text-locked .hero-reveal) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    animation: none !important;
+  }
 
-    :global(.hero-reveal.is-on) {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        animation: none !important;
-    }
+  :global(.hero-reveal.is-on) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    animation: none !important;
+  }
 </style>
