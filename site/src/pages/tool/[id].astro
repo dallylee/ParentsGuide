@@ -50,16 +50,16 @@ const { entry } = Astro.props;
         ) : entry.data.type === 'embed' && entry.data.embed ? (
             <div class="space-y-4 pg-link-reset">
                 <div class="mt-4 w-full max-w-xl">
-                    <iframe
-                        src={entry.data.embed.src}
-                        width="100%"
-                        height={entry.data.embed.height ?? 152}
-                        frameborder="0"
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                        loading="lazy"
-                        title={entry.data.name}
-                        class="rounded-lg border border-black/5"
-                    ></iframe>
+         <iframe
+  title={entry.data.title ?? "Spotify audio player"}
+  src={entry.data.embed.src}
+  width="100%"
+  height={entry.data.embed.height ?? 152}
+  loading="lazy"
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  referrerpolicy="no-referrer-when-downgrade"
+  style="border:0"
+></iframe>
                 </div>
                 <a
                     href={entry.data.embed.share_url}
