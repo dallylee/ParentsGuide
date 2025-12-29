@@ -1,61 +1,99 @@
+// site/src/pages/about.astro
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
-import { ArrowLeft } from 'lucide-astro';
-
-const base = import.meta.env.BASE_URL;
-const withBase = (path = "") => `${base}${path.replace(/^\//, "")}`;
-const glows = [
-  'rgba(207, 232, 255, 0.75)',
-  'rgba(255, 227, 216, 0.7)',
-  'rgba(230, 255, 216, 0.7)',
-  'rgba(245, 232, 255, 0.75)',
-];
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
 ---
 
 <Layout title="About this guide">
-  <div class="p-6 space-y-6">
-    <a
-      href={withBase('')}
-      class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-slate-900"
-      aria-label="Back to home"
-    >
-      <ArrowLeft size={18} class="mr-2" />
-      Back to home
-    </a>
-
-    <Card class="p-6" style={`--glow: ${glows[0]}`}>
-      <article class="prose prose-slate max-w-none text-slate-800">
+  <main class="mx-auto max-w-2xl space-y-6 pb-24">
+    <Card as="section" class="p-7 sm:p-10">
+      <div class="prose prose-slate guide-content max-w-none about-content
+        text-[15px] leading-relaxed
+        prose-p:text-slate-800 prose-p:font-medium
+        prose-li:text-slate-800 prose-li:font-medium
+        prose-headings:text-slate-900
+        prose-a:text-emerald-700
+        prose-a:font-semibold
+        prose-a:no-underline
+        hover:prose-a:text-emerald-900
+        hover:prose-a:underline
+      ">
         <h1>About this guide</h1>
+
         <p>This guide began as a personal project.</p>
-        <p>A close friend’s child was scheduled for major surgery. Like many parents in that situation, they were understandably anxious, overwhelmed, and unsure how best to prepare, both practically and emotionally.</p>
-        <p>While hospitals provide excellent medical care, parents are often left to manage their own stress while trying to be a steady, reassuring presence for their child. This guide was created to help fill that gap.</p>
-        <p>The content is informed by well-established guidance and research from trusted sources, including the NHS, Mayo Clinic, the British Psychological Society, and paediatric psychology research on anxiety and recovery.</p>
+
+        <p>
+          A close friend’s child was scheduled for major surgery. Like many parents in that situation,
+          they were understandably anxious, overwhelmed, and unsure how best to prepare, both practically and emotionally.
+        </p>
+
+        <p>
+          While hospitals provide excellent medical care, parents are often left to manage their own stress while trying to be a steady,
+          reassuring presence for their child. This guide was created to help fill that gap.
+        </p>
+
+        <p>
+          The content is informed by well-established guidance and research from trusted sources, including the NHS, Mayo Clinic,
+          the British Psychological Society, and paediatric psychology research on anxiety and recovery.
+        </p>
+
         <p>This guide is not a substitute for medical advice. It is designed to offer:</p>
+
         <ul>
           <li>structure during an uncertain time</li>
           <li>preparation steps you can return to at your own pace</li>
           <li>reassurance grounded in evidence</li>
           <li>gentle, proven calming techniques</li>
         </ul>
+      </div>
+    </Card>
 
+    <Card as="section" class="p-7 sm:p-10">
+      <div class="prose prose-slate guide-content max-w-none about-content
+        text-[15px] leading-relaxed
+        prose-p:text-slate-800 prose-p:font-medium
+        prose-li:text-slate-800 prose-li:font-medium
+        prose-headings:text-slate-900
+      ">
         <h2>Privacy and your notes</h2>
-        <p>This app does not require accounts, and it does not collect personal information.</p>
-        <p>Any notes or inputs you add are saved locally on your device, in your browser storage. That means:</p>
-        <ul>
-          <li>your data stays on your phone or computer</li>
-          <li>there is no login, and nothing is uploaded to a server</li>
-          <li>if you clear your browser data, or switch devices, your saved notes may be lost</li>
-        </ul>
-        <p>If you want to keep anything important, consider copying it somewhere safe.</p>
+
+        <p>
+          This app does not require accounts and does not collect personal information.
+        </p>
+
+        <p>
+          Anything you type into the notes area is saved locally in your browser on your device.
+          Nothing is uploaded or tracked. If you clear your browser data or switch devices, you may lose saved notes.
+        </p>
+
+        <h2>Disclaimer</h2>
+
+        <p>
+          This guide is provided for general informational and supportive purposes only.
+          It is not a substitute for professional medical, psychological, or clinical advice.
+          Always follow guidance from your child’s healthcare team.
+        </p>
 
         <h2>Supporting this work</h2>
-        <p>This guide is shared freely and is not monetised.</p>
-        <p>If you found it helpful and would like to support the time and care that went into creating and maintaining it, you can do so here. Support is entirely optional and never expected.</p>
+
+        <p>
+          This guide is shared freely and is not monetised. If you found it helpful and would like to support the time and care that went into
+          creating and maintaining it, you can do so here:
+        </p>
+
         <p>
           <a href="https://ko-fi.com/dali10" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a>
         </p>
-      </article>
+
+        <p>Support is entirely optional and never expected.</p>
+      </div>
     </Card>
-  </div>
+  </main>
+
+  <style>
+    /* Tighten spacing only on this page, without affecting other guide pages */
+    .about-content :global(p) { margin-top: 0.6em; margin-bottom: 0.6em; }
+    .about-content :global(ul) { margin-top: 0.6em; margin-bottom: 0.6em; }
+    .about-content :global(li) { margin-top: 0.25em; margin-bottom: 0.25em; }
+  </style>
 </Layout>
