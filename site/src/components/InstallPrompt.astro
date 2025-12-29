@@ -6,53 +6,33 @@
   <button
     type="button"
     class="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-700/30 transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-500"
-    data-install-button
   >
     <span>Install app</span>
   </button>
-  <p class="mt-2 text-xs font-semibold text-slate-700 hidden" data-ios-instruction>
-    Share → Add to Home Screen
-  </p>
 </div>
 
 <script>
-  (() => {
-    const container = document.querySelector('[data-install-container]');
-    const button = container?.querySelector('[data-install-button]');
-    const iosInstruction = container?.querySelector('[data-ios-instruction]');
-    let deferredPrompt = null;
-    const ua = navigator.userAgent || "";
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const container = document.querySelector('[data-install-container]');
+  const button = container?.querySelector('button');
+  let deferredPrompt = null;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    const hide = () => {
-      container?.classList.add('hidden');
-    };
+  const hide = () => {
+    container?.classList.add('hidden');
+  };
 
-    const show = () => {
-      container?.classList.remove('hidden');
-    };
+  const show = () => {
+    container?.classList.remove('hidden');
+  };
 
-    const alreadyInstalled = () =>
-      window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const alreadyInstalled = () =>
+    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-    if (!isMobile) {
-      hide();
-      return;
-    }
-
-    if (alreadyInstalled()) {
-      hide();
-      return;
-    }
-
-    if (isIOS) {
-      button?.classList.add('hidden');
-      iosInstruction?.classList.remove('hidden');
-      show();
-      return;
-    }
-
+  if (!isMobile) {
+    hide();
+  } else if (alreadyInstalled()) {
+    hide();
+  } else {
     window.addEventListener('beforeinstallprompt', (event) => {
       if (alreadyInstalled()) return;
       event.preventDefault();
@@ -74,5 +54,5 @@
       deferredPrompt = null;
       hide();
     });
-  })();
+  }
 </script>
