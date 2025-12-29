@@ -44,20 +44,20 @@ const heroImgSrc = `${base}${home.hero_image.replace(/^\/+/, "")}`;
           <p class="mt-0 text-black text-[16px] sm:text-lg leading-relaxed max-w-prose mx-auto font-semibold hero-reveal hero-reveal-3">
             {home.hero_description ?? ""}
           </p>
-
-          <!-- Discreet footer link, appears LAST -->
-          <div class="mt-10 hero-reveal hero-reveal-4">
-            <a
-              href={hrefWithBase("/about")}
-              class="inline-flex text-sm font-semibold text-slate-600 underline underline-offset-4 hover:text-slate-800"
-            >
-              About this guide
-            </a>
-          </div>
         </section>
       </div>
     </div>
   </main>
+  <section class="min-h-[56px] px-5 sm:px-8 pb-8">
+    <div class="max-w-2xl mx-auto flex justify-end">
+      <a
+        href={hrefWithBase("/about")}
+        class="text-[12px] font-semibold text-slate-500 underline underline-offset-4 hover:text-slate-700 hero-reveal hero-reveal-4"
+      >
+        About this guide
+      </a>
+    </div>
+  </section>
 </Layout>
 
 <style>
