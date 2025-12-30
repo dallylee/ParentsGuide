@@ -32,7 +32,7 @@ const { tool } = Astro.props;
                 <input
                     id="worry-time-input"
                     type="time"
-                    class="w-full rounded-xl border border-gray-200 px-4 py-4 text-lg text-gray-900 shadow-inner"
+                    class="time-input w-full rounded-2xl border border-gray-200 px-5 py-5 text-xl text-gray-900 shadow-inner"
                     data-time-input
                 />
             </div>
@@ -71,7 +71,7 @@ const { tool } = Astro.props;
         </div>
     </div>
 
-    <button type="button" class="text-sm font-semibold text-emerald-700" data-change-time>Change/Reset worry time</button>
+    <button type="button" class="text-sm font-semibold text-emerald-700" data-change-time>Change worry time</button>
 
     <div class="worry-modal hidden" data-worry-modal aria-hidden="true">
         <div class="modal-backdrop" data-close-modal></div>
@@ -95,10 +95,12 @@ const { tool } = Astro.props;
         </div>
     </div>
 
-    <div class="completion-overlay hidden" data-completion-overlay aria-hidden="true">
-        <button type="button" class="completion-message" data-dismiss-completion>
-            <span>Good job. Now breathe.</span>
-        </button>
+    <div class="complete-banner hidden" data-completion-overlay aria-live="assertive">
+        <div class="complete-card">
+            <div class="complete-icon">✓</div>
+            <p class="complete-title">Good job. Now take a breath.</p>
+            <p class="complete-subtitle">Tap to dismiss</p>
+        </div>
     </div>
 </section>
 
@@ -153,12 +155,23 @@ const { tool } = Astro.props;
         align-self: flex-start;
     }
 
+    .time-input {
+        min-height: 3.5rem;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.02em;
+    }
+
+    .time-input:focus {
+        outline: 3px solid rgba(16, 185, 129, 0.25);
+        outline-offset: 2px;
+    }
+
     .worry-window {
-        background: #ecfdf5;
+        background: linear-gradient(135deg, #ecfdf5, #dcfce7);
         border: 1px solid rgba(16,185,129,0.3);
         border-radius: 1rem;
         padding: 0.9rem 1rem;
-        box-shadow: inset 0 0 0 1px rgba(16,185,129,0.08);
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.18);
     }
 
     .worry-window-header {
@@ -278,32 +291,78 @@ const { tool } = Astro.props;
         padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
     }
 
-    .completion-overlay {
+    .complete-banner {
         position: fixed;
         inset: 0;
-        display: grid;
-        place-items: center;
-        background: rgba(15,23,42,0.2);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 160ms ease-out;
-        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 50;
+        cursor: pointer;
+        animation: fadeIn 300ms ease-out;
     }
 
-    .completion-overlay.show {
-        opacity: 1;
-        pointer-events: auto;
+    .complete-banner.hidden {
+        display: none;
     }
 
-    .completion-message {
-        background: #bbf7d0;
-        border: 1px solid rgba(16,185,129,0.35);
+    .complete-banner.fade-out {
+        animation: fadeOut 500ms ease-out forwards;
+    }
+
+    .complete-card {
+        background: linear-gradient(135deg, #ecfdf3, #d1fae5);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+        text-align: center;
+        animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-width: 340px;
+        width: 100%;
+    }
+
+    .complete-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
         color: #065f46;
-        border-radius: 999px;
-        padding: 1rem 1.5rem;
-        font-weight: 700;
-        box-shadow: 0 16px 30px rgba(16,185,129,0.25);
+        animation: checkPop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms backwards;
+    }
+
+    .complete-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #065f46;
+        margin-bottom: 0.5rem;
+    }
+
+    .complete-subtitle {
+        font-size: 0.9375rem;
+        color: #059669;
+        font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes checkPop {
+        from { opacity: 0; transform: scale(0) rotate(-45deg); }
+        to { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -341,7 +400,6 @@ const { tool } = Astro.props;
     const saveWorryButton = document.querySelector('[data-save-worry]');
     const closeModalButtons = document.querySelectorAll('[data-close-modal]');
     const completionOverlay = document.querySelector('[data-completion-overlay]');
-    const dismissCompletion = document.querySelector('[data-dismiss-completion]');
 
     const storage = {
         setup: 'parentsGuideWorrySetup_v1',
@@ -477,24 +535,33 @@ const { tool } = Astro.props;
         }
     };
 
-    const showCompletion = () => {
+    const hideCompletion = () => {
         if (!completionOverlay) return;
-        completionOverlay.classList.add('show');
-        completionOverlay.setAttribute('aria-hidden', 'false');
-        clearTimeout(completionTimer);
-        completionTimer = setTimeout(() => dismissCompletionMessage(), 3000);
+        if (completionTimer) {
+            clearTimeout(completionTimer);
+            completionTimer = null;
+        }
+        completionOverlay.classList.add('fade-out');
+        setTimeout(() => {
+            completionOverlay.classList.add('hidden');
+            completionOverlay.classList.remove('fade-out');
+        }, 500);
     };
 
-    const dismissCompletionMessage = () => {
+    const showCompletion = () => {
         if (!completionOverlay) return;
-        completionOverlay.classList.remove('show');
-        completionOverlay.setAttribute('aria-hidden', 'true');
+        completionOverlay.classList.remove('hidden');
+        completionOverlay.focus?.();
+        completionTimer = setTimeout(() => {
+            hideCompletion();
+        }, 3000);
     };
 
     const handleCompletion = (dateKey) => {
         session.completedOn = dateKey;
         persistJSON(storage.session, session);
         showCompletion();
+        updateTimer();
     };
 
     const renderWorries = () => {
@@ -694,7 +761,7 @@ const { tool } = Astro.props;
         }
     });
 
-    dismissCompletion?.addEventListener('click', dismissCompletionMessage);
+    completionOverlay?.addEventListener('click', hideCompletion);
 
     window.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') setModalOpen(false);
