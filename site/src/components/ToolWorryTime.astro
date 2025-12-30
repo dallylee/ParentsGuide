@@ -8,8 +8,17 @@ const { tool } = Astro.props;
 
 <section class="space-y-6 pb-28" data-worry-root>
     <div class="rounded-xl bg-white border border-black/5 shadow-soft shadow-[0_0_22px_rgba(99,102,241,0.08)] p-4 sm:p-5 space-y-2">
-        <p class="text-gray-900 font-semibold">“Worry Time” is a well-established CBT technique with strong clinical backing.</p>
-        <p class="text-slate-800 text-sm font-medium">Set one daily window for worries so the rest of the day feels lighter.</p>
+        <p class="text-gray-900 font-semibold">Worry Time is a well-established CBT technique with strong clinical backing.</p>
+        <div class="space-y-2" data-instructions>
+            <ul class="instructions-list text-sm text-slate-800 font-medium space-y-1" data-instructions-content>
+                <li>Choose a daily time for worry time.</li>
+                <li>During the day, capture worries using “Enter new worry”.</li>
+                <li>At worry time, work through the list, tick to dismiss.</li>
+            </ul>
+            <button type="button" class="instructions-toggle text-sm font-semibold text-emerald-700 hidden" data-instructions-toggle>
+                See instructions
+            </button>
+        </div>
     </div>
 
     <div class="rounded-xl bg-white border border-black/5 shadow-soft shadow-[0_0_24px_rgba(16,185,129,0.1)] p-4 sm:p-5 space-y-4" data-config-card>
@@ -62,24 +71,26 @@ const { tool } = Astro.props;
         </div>
     </div>
 
-    <button type="button" class="text-sm font-semibold text-emerald-700" data-change-time>Change worry time</button>
+    <button type="button" class="text-sm font-semibold text-emerald-700" data-change-time>Change/Reset worry time</button>
 
     <div class="worry-modal hidden" data-worry-modal aria-hidden="true">
         <div class="modal-backdrop" data-close-modal></div>
         <div class="modal-sheet" role="dialog" aria-modal="true" aria-label="Add a worry">
-            <div class="flex items-center justify-between mb-3">
-                <p class="font-semibold text-gray-900">New worry</p>
-                <button type="button" class="text-sm text-slate-700 font-semibold" data-close-modal>Cancel</button>
-            </div>
-            <textarea
-                class="w-full rounded-lg border border-gray-200 p-3 text-gray-900 shadow-inner"
-                rows="3"
-                placeholder="Capture the worry to revisit later"
-                data-worry-input
-            ></textarea>
-            <div class="mt-4 flex justify-end gap-2">
-                <button type="button" class="nav-chip ghost" data-close-modal>Cancel</button>
-                <button type="button" class="nav-chip" data-save-worry>Save</button>
+            <div class="modal-content">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="font-semibold text-gray-900">New worry</p>
+                    <button type="button" class="text-sm text-slate-700 font-semibold" data-close-modal>Cancel</button>
+                </div>
+                <textarea
+                    class="w-full rounded-lg border border-gray-200 p-3 text-gray-900 shadow-inner"
+                    rows="3"
+                    placeholder="Capture the worry to revisit later"
+                    data-worry-input
+                ></textarea>
+                <div class="modal-actions mt-4 flex justify-end gap-2">
+                    <button type="button" class="nav-chip ghost" data-close-modal>Cancel</button>
+                    <button type="button" class="nav-chip" data-save-worry>Save</button>
+                </div>
             </div>
         </div>
     </div>
@@ -131,6 +142,15 @@ const { tool } = Astro.props;
 
     .nav-chip:active {
         transform: translateY(1px);
+    }
+
+    .instructions-list {
+        list-style: disc;
+        padding-left: 1.25rem;
+    }
+
+    .instructions-toggle {
+        align-self: flex-start;
     }
 
     .worry-window {
@@ -240,6 +260,22 @@ const { tool } = Astro.props;
         border-radius: 1rem;
         padding: 1.1rem;
         box-shadow: 0 16px 32px rgba(0,0,0,0.18);
+        max-height: min(85vh, 560px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-content {
+        overflow-y: auto;
+        padding-right: 0.25rem;
+    }
+
+    .modal-actions {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding-top: 0.75rem;
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
     }
 
     .completion-overlay {
@@ -298,6 +334,8 @@ const { tool } = Astro.props;
     const worriesList = document.querySelector('[data-worries-list]');
     const worriesCount = document.querySelector('[data-worry-count]');
     const noWorries = document.querySelector('[data-no-worries]');
+    const instructionsContent = document.querySelector('[data-instructions-content]');
+    const instructionsToggle = document.querySelector('[data-instructions-toggle]');
     const worryModal = document.querySelector('[data-worry-modal]');
     const worryInput = document.querySelector('[data-worry-input]');
     const saveWorryButton = document.querySelector('[data-save-worry]');
@@ -318,6 +356,7 @@ const { tool } = Astro.props;
     let completionTimer;
     let worries = [];
     let wasActive = false;
+    let instructionsExpanded = true;
 
     const readJSON = (key, fallback) => {
         try {
@@ -516,6 +555,13 @@ const { tool } = Astro.props;
         renderWorries();
     };
 
+    const updateInstructions = () => {
+        if (!instructionsContent || !instructionsToggle) return;
+        instructionsContent.classList.toggle('hidden', !instructionsExpanded);
+        instructionsToggle.classList.toggle('hidden', !setup?.time || !localStorage.getItem(storage.setup));
+        instructionsToggle.textContent = instructionsExpanded ? 'Hide instructions' : 'See instructions';
+    };
+
     const updateStateVisibility = (configured) => {
         stateInitial?.classList.toggle('hidden', configured);
         stateConfigured?.classList.toggle('hidden', !configured);
@@ -568,6 +614,8 @@ const { tool } = Astro.props;
         session.completedOn = null;
         persistJSON(storage.session, session);
         updateStateVisibility(true);
+        instructionsExpanded = false;
+        updateInstructions();
         updateTimer();
         clearTick();
         tickId = setInterval(updateTimer, 1000);
@@ -580,6 +628,8 @@ const { tool } = Astro.props;
         persistJSON(storage.session, session);
         updateStateVisibility(false);
         if (timeInput) timeInput.value = setup.time;
+        instructionsExpanded = true;
+        updateInstructions();
         clearTick();
     };
 
@@ -606,7 +656,9 @@ const { tool } = Astro.props;
     const bootstrap = () => {
         if (timeInput) timeInput.value = setup.time ?? setupDefaults.time;
         const configured = Boolean(setup?.time && localStorage.getItem(storage.setup));
+        instructionsExpanded = !configured;
         updateStateVisibility(configured);
+        updateInstructions();
         renderWorries();
         if (configured) {
             updateTimer();
@@ -626,6 +678,10 @@ const { tool } = Astro.props;
     openWorryButton?.addEventListener('click', () => setModalOpen(true));
     saveWorryButton?.addEventListener('click', saveWorry);
     closeModalButtons.forEach((button) => button.addEventListener('click', () => setModalOpen(false)));
+    instructionsToggle?.addEventListener('click', () => {
+        instructionsExpanded = !instructionsExpanded;
+        updateInstructions();
+    });
 
     worriesList?.addEventListener('click', (event) => {
         const target = event.target;
