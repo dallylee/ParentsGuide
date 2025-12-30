@@ -17,6 +17,16 @@ const totalCycleSeconds = phases.reduce((total, phase) => total + (phase.duratio
 ---
 
 <section class="space-y-5" data-breathing-root>
+    <!-- Quick how-to (ONLY for Breathing tool) -->
+    <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-4 sm:p-5">
+        <p class="font-semibold text-emerald-900 mb-1">Quick how-to</p>
+        <ul class="list-disc list-inside space-y-1 text-emerald-900/90 text-sm sm:text-base">
+            <li>Select how many cycles you want to run below.</li>
+            <li>Start begins the sequence, Pause holds the timer, Restart resets everything.</li>
+            <li>Breathe in through your nose and out slowly through your mouth.</li>
+        </ul>
+    </div>
+
     <div class="flex items-center justify-between text-sm text-slate-800">
         <span data-cycle-display>Cycle 1 of {baseCycles}</span>
         <span data-total-remaining>~{totalCycleSeconds * baseCycles}s total</span>
