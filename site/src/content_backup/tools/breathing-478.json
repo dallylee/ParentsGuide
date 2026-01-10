@@ -1,0 +1,25 @@
+{
+    "id": "breathing-478",
+    "name": "4-7-8 Breathing",
+    "summary": "A powerful relaxation technique to calm the nervous system.",
+    "type": "timer",
+    "steps": [
+        {
+            "phase": "inhale",
+            "duration": 4,
+            "text": "Inhale deeply through your nose"
+        },
+        {
+            "phase": "hold",
+            "duration": 7,
+            "text": "Hold your breath"
+        },
+        {
+            "phase": "exhale",
+            "duration": 8,
+            "text": "Exhale slowly through your mouth"
+        }
+    ],
+    "instructions": "Place the tip of your tongue against the ridge of tissue just behind your upper front teeth, and keep it there through the entire exercise.",
+    "repeat": 4
+}

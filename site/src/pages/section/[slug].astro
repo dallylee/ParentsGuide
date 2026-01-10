@@ -175,7 +175,7 @@ const nextCta = nextSection
           class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:text-gray-900 hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
         >
             <ArrowLeft size={20} />
-            <span class="leading-none">Back</span>
+            <span class="leading-none">Terug</span>
         </a>
         <span class="ml-3 font-semibold text-gray-800 truncate">{entry.data.title}</span>
     </div>
@@ -209,7 +209,7 @@ const nextCta = nextSection
             <Card class="p-5 md:p-6" style={`--glow: ${glows[2]}`}>
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div class="space-y-1">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">What to do next</p>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Wat nu te doen</p>
                         <h2 class="text-xl font-semibold text-slate-900 md:text-2xl">
                             {nextSection ? nextSection.title : 'Return to Home'}
                         </h2>
@@ -224,9 +224,7 @@ const nextCta = nextSection
                             <a
                                 href={withBase(`section/${previousSection.slug}/`)}
                                 class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-gray-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                            >
-                                Previous
-                            </a>
+                            >Vorige</a>
                         )}
                         <a
                             href={nextCta.href}

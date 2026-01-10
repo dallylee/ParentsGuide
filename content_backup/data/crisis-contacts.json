@@ -1,0 +1,19 @@
+{
+    "contacts": [
+        {
+            "name": "NHS Mental Health Crisis Line",
+            "number": "111",
+            "description": "Select the mental health option. Failed/urgent medical help."
+        },
+        {
+            "name": "Samaritans",
+            "number": "116 123",
+            "description": "Available 24/7 for anyone struggling to cope."
+        },
+        {
+            "name": "Emergency Services",
+            "number": "999",
+            "description": "For immediate danger to life or safety."
+        }
+    ]
+}

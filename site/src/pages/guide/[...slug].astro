@@ -55,7 +55,7 @@ const glows = [
                         <div class="mt-8 grid grid-cols-2 gap-4">
                                 {prevEntry ? (
                                         <Card as="a" href={withBase(`guide/${prevEntry.slug}`)} class="p-4 transition group" style={`--glow: ${glows[1]}`}>
-                                                <span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Previous</span>
+                                                <span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Vorige</span>
                                                 <span class="block text-slate-700 font-medium group-hover:text-blue-600">{prevEntry.data.title}</span>
                                         </Card>
                                 ) : (
@@ -64,7 +64,7 @@ const glows = [
 
                                 {nextEntry ? (
                                         <Card as="a" href={withBase(`guide/${nextEntry.slug}`)} class="p-4 text-right transition group" style={`--glow: ${glows[2]}`}>
-                                                <span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Next</span>
+                                                <span class="block text-xs text-slate-400 uppercase tracking-wide mb-1">Volgende</span>
                                                 <span class="block text-slate-700 font-medium group-hover:text-blue-600">{nextEntry.data.title}</span>
                                         </Card>
 				) : (

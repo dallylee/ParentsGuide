@@ -1,0 +1,12 @@
+{
+    "id": "worry-time",
+    "name": "Worry Time",
+    "summary": "Contain your worries to a specific time of day.",
+    "type": "technique",
+    "instructions": [
+        "Designate a specific time (e.g., 6:00 PM) for 15-20 minutes.",
+        "During the day, if a worry arises, write it down and tell yourself 'I'll think about this at worry time'.",
+        "During your scheduled time, allow yourself to worry freely and problem-solve.",
+        "When time is up, close the book on your worries until tomorrow."
+    ]
+}

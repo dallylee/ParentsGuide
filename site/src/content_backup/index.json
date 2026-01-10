@@ -1,0 +1,214 @@
+{
+    "version": 1,
+    "home": {
+        "hero_image": "images/hero.jpg",
+        "hero_title": "Parent’s Guide to Child’s Surgery",
+        "hero_subtitle": "Why your calm matters and where to begin",
+        "primary_cta": { "label": "Start here", "href": "/section/start/" },
+        "secondary_ctas": [
+            { "label": "Tools", "href": "/tools/" },
+            { "label": "Timeline", "href": "/section/timeline/" }
+        ]
+    },
+    "sections": [
+        {
+            "id": "start",
+            "title": "Start Here",
+            "slug": "start",
+            "group": "guide",
+            "order": 1,
+            "summary": "Reassurance, why your calm matters, where to begin.",
+            "tags": [
+                "orientation",
+                "anxiety"
+            ],
+            "est_read": 3,
+            "body": "sections/01-start-here.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "worries",
+            "title": "Understanding Your Worries",
+            "slug": "worries",
+            "group": "guide",
+            "order": 2,
+            "summary": "Why you feel this way and how to name it.",
+            "tags": [
+                "anxiety",
+                "mindset"
+            ],
+            "est_read": 4,
+            "body": "sections/02-understanding-worries.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "toolkit",
+            "title": "Your Calm Toolkit",
+            "slug": "toolkit",
+            "group": "guide",
+            "order": 3,
+            "summary": "Practical tools to manage thoughts and body response.",
+            "tags": [
+                "tools",
+                "coping"
+            ],
+            "est_read": 5,
+            "body": "sections/03-calm-toolkit.md",
+            "hero_image": "images/calm.jpg"
+        },
+        {
+            "id": "talking",
+            "title": "Talking with Your Child",
+            "slug": "talking",
+            "group": "guide",
+            "order": 4,
+            "summary": "Warm honesty and age-appropriate language.",
+            "tags": [
+                "communication",
+                "children"
+            ],
+            "est_read": 4,
+            "body": "sections/04-talking-child.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "timeline",
+            "title": "Timeline: Before Hospital",
+            "slug": "timeline",
+            "group": "timeline",
+            "order": 5,
+            "summary": "Countdown, week of surgery, and the night before.",
+            "tags": [
+                "planning",
+                "preparation"
+            ],
+            "est_read": 4,
+            "body": "sections/05-timeline.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "hospital",
+            "title": "Hospital Experience",
+            "slug": "hospital",
+            "group": "timeline",
+            "order": 6,
+            "summary": "Surgery day, coping while waiting, and reunion.",
+            "tags": [
+                "hospital",
+                "surgery-day"
+            ],
+            "est_read": 5,
+            "body": "sections/06-hospital-experience.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "recovery",
+            "title": "Bringing Your Child Home",
+            "slug": "recovery",
+            "group": "timeline",
+            "order": 7,
+            "summary": "Creating a healing space and preventing burnout.",
+            "tags": [
+                "recovery",
+                "home"
+            ],
+            "est_read": 4,
+            "body": "sections/07-home-recovery.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "self-care",
+            "title": "Daily Self-Care",
+            "slug": "self-care",
+            "group": "timeline",
+            "order": 8,
+            "summary": "Simple, non-negotiable actions for your wellbeing.",
+            "tags": [
+                "self-care",
+                "routine"
+            ],
+            "est_read": 3,
+            "body": "sections/08-self-care-routine.md",
+            "hero_image": "images/calm.jpg"
+        },
+        {
+            "id": "support",
+            "title": "When You Need Extra Support",
+            "slug": "support",
+            "group": "timeline",
+            "order": 9,
+            "summary": "Red flags and avenues for professional help.",
+            "tags": [
+                "support",
+                "resources"
+            ],
+            "est_read": 3,
+            "body": "sections/09-extra-support.md",
+            "hero_image": "images/hero.jpg"
+        },
+        {
+            "id": "growth",
+            "title": "Growing Stronger",
+            "slug": "growth",
+            "group": "timeline",
+            "order": 10,
+            "summary": "Processing, celebrating, and finding closure.",
+            "tags": [
+                "growth",
+                "resilience"
+            ],
+            "est_read": 3,
+            "body": "sections/10-growing-stronger.md",
+            "hero_image": "images/hero.jpg"
+        }
+    ],
+    "quick_tools": [
+        {
+            "id": "breathing-478",
+            "title": "4-7-8 Breathing",
+            "data": "tools/breathing-478.json",
+            "image": "images/calm.jpg",
+            "summary": "Relaxation timer"
+        },
+        {
+            "id": "grounding-54321",
+            "title": "5-4-3-2-1 Grounding",
+            "data": "tools/grounding-54321.json",
+            "summary": "Sensory grounding"
+        },
+        {
+            "id": "worry-time",
+            "title": "Worry Time",
+            "data": "tools/worry-time.json",
+            "summary": "Scheduled worry"
+        },
+        {
+            "id": "podcast-episode-01",
+            "title": "Podcast episode",
+            "data": "tools/podcast-episode-01.json",
+            "image": "images/calm.jpg"
+        },
+        {
+            "id": "meditations",
+            "title": "Meditations for relaxation, stress relief and calm",
+            "route": "/tool/meditations",
+            "type": "video",
+            "summary": "Guided meditations to help you relax and feel steadier."
+        }
+    ],
+    "checklists": [
+        {
+            "id": "hospital-bag",
+            "title": "Hospital Bag",
+            "data": "checklists/hospital-bag.json"
+        },
+        {
+            "id": "discharge",
+            "title": "Discharge Readiness",
+            "data": "checklists/discharge.json"
+        }
+    ],
+    "support": {
+        "crisis_contacts": "data/crisis-contacts.json"
+    }
+}
